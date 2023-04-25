@@ -27,7 +27,7 @@
 
 int drmOpen(const char *name, const char *busid)
 {
-    return 0;
+    return 0x123;
 }
 
 int drmGetDevices2(uint32_t flags, drmDevicePtr devices[], int max_devices)
