@@ -24,6 +24,7 @@
 #include <xf86drm.h>
 #include <stdlib.h>
 #include <string.h>
+#include <assert.h>
 
 int drmOpen(const char *name, const char *busid)
 {
@@ -79,4 +80,24 @@ void drmFreeDevices(drmDevicePtr devices[], int count)
     for (int32_t i=0; i<count; i++) {
         drmFreeDevice(&devices[i]);
     }
+}
+
+drmVersionPtr drmGetVersion(int fd)
+{
+    drmVersionPtr drmversion;
+    
+    drmversion = malloc(sizeof(drmVersion));
+    assert(drmversion);
+
+    drmversion->version_major = 1;
+    drmversion->version_minor = 2;
+    drmversion->name = "rvgpu cmodel";
+    drmversion->name_len = (strlen(drmversion->name));
+
+    return drmversion;
+}
+
+void drmFreeVersion(drmVersionPtr versionptr)
+{
+    free(versionptr);
 }
