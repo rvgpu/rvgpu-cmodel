@@ -66,3 +66,17 @@ int drmGetDevice2(int fd, uint32_t flags, drmDevicePtr *device)
 {
     return drmGetDevices2(0, device, 1);
 }
+
+void drmFreeDevice(drmDevicePtr *device)
+{
+    if (*device) {
+        free(*device);
+    }
+}
+
+void drmFreeDevices(drmDevicePtr devices[], int count)
+{
+    for (int32_t i=0; i<count; i++) {
+        drmFreeDevice(&devices[i]);
+    }
+}
