@@ -8,3 +8,4 @@ set(project_top_path ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${project_top_path})
 
 add_subdirectory(src)
+add_subdirectory(libdrm)
