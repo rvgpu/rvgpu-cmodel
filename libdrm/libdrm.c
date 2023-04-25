@@ -64,5 +64,5 @@ int drmGetDevices2(uint32_t flags, drmDevicePtr devices[], int max_devices)
 
 int drmGetDevice2(int fd, uint32_t flags, drmDevicePtr *device)
 {
-    drmGetDevices2(0, device, 1);
+    return drmGetDevices2(0, device, 1);
 }
