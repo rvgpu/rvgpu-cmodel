@@ -26,6 +26,24 @@
 #include <string.h>
 #include <assert.h>
 
+unsigned int sync_id = 0;
+
+static int rvgsim_ioctl_syncobj_create(struct drm_syncobj_create *syncobj)
+{
+    syncobj->handle = sync_id ++;
+    return 0;
+}
+
+int drmIoctl(int fd, unsigned long request, void *arg)
+{
+    switch (request) {
+        case DRM_IOCTL_SYNCOBJ_CREATE:
+            return rvgsim_ioctl_syncobj_create(arg);
+        default:
+            return -1;
+    }
+}
+
 int drmOpen(const char *name, const char *busid)
 {
     return 0x123;
@@ -100,4 +118,36 @@ drmVersionPtr drmGetVersion(int fd)
 void drmFreeVersion(drmVersionPtr versionptr)
 {
     free(versionptr);
+}
+
+int drmSyncobjCreate(int fd, uint32_t flags, uint32_t *handle)
+{
+    int ret;
+
+    struct drm_syncobj_create syncobj;
+    syncobj.flags = DRM_SYNCOBJ_CREATE_SIGNALED;
+
+    ret = drmIoctl(fd, DRM_IOCTL_SYNCOBJ_CREATE, &syncobj);
+    if (ret) {
+        return ret;
+    }
+
+    *handle = syncobj.handle;
+
+    return 0;
+}
+
+int drmSyncobjWait(int fd, uint32_t *handles, unsigned num_handles, int64_t timeout_nsec, unsigned flags, uint32_t *first_signaled)
+{
+    return 0;
+}
+
+int drmSyncobjDestroy(int fd, uint32_t handle)
+{
+    return 0;
+}
+
+int drmGetCap(int fd, uint64_t capability, uint64_t *value)
+{
+    return 0;
 }
