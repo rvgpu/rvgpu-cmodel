@@ -151,3 +151,8 @@ int drmGetCap(int fd, uint64_t capability, uint64_t *value)
 {
     return 0;
 }
+
+int drmAuthMagic(int fd, drm_magic_t magic)
+{
+    return 0;
+}
