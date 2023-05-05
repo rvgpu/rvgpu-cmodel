@@ -21,13 +21,20 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef RVGPU_CMODEL_CU_H
-#define RVGPU_CMODEL_CU_H
+#ifndef RVGSIM_INST_CONSTANT_H
+#define RVGSIM_INST_CONSTANT_H
 
+#include <cstdint>
+#include <cmath>
+#include "softfloat_types.h"
 
-class cu {
+typedef uint64_t reg_t;
+typedef int64_t sreg_t;
+typedef float128_t freg_t;
 
-};
+const int NXPR = 256;
+const int NFPR = 32;
 
+#define DEFAULT_RSTVEC     0x00001000
 
-#endif //RVGPU_CMODEL_CU_H
+#endif //RVGSIM_INST_CONSTANT_H

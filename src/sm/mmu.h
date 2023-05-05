@@ -21,4 +21,17 @@
  * IN THE SOFTWARE.
  */
 
-#include "cu.h"
+#ifndef RVGSIM_MMU_H
+#define RVGSIM_MMU_H
+
+#include <cstdint>
+
+class mmu {
+public:
+    template<class T> T read(uint64_t addr){
+        return *((T*)(addr));
+    }
+
+    template<class T> void write(uint64_t addr, T data){}
+};
+#endif //RVGSIM_MMU_H

@@ -1,0 +1,2 @@
+rvsim_unit_test(gtest_framework)
+rvsim_unit_test(ut_load_insn)
