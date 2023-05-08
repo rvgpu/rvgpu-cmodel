@@ -30,12 +30,14 @@
 #define MASK_ADDI 0x707f
 #define MATCH_AUIPC 0x17
 #define MASK_AUIPC 0x7f
-
+#define MATCH_LUI 0x37
+#define MASK_LUI 0x7f
 #endif
 #ifdef DECLARE_INSN
 
 DECLARE_INSN(addi, MATCH_ADDI, MASK_ADDI)
 DECLARE_INSN(auipc, MATCH_AUIPC, MASK_AUIPC)
+DECLARE_INSN(lui, MATCH_LUI, MASK_LUI)
 
 #endif
 
