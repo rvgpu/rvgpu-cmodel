@@ -44,3 +44,22 @@ TEST(load_insn, shoulde_decode_and_execute_rv32i_addi_correcly){
     EXPECT_EQ(next_pc, pc + 4);
     EXPECT_EQ(result, 0x80002800);
 }
+
+TEST(load_insn, shoulde_decode_and_execute_rv32i_li_correcly) {
+    auto cu = new class compute_unit();
+    auto mem = (uint32_t*)calloc(2, sizeof(uint32_t));
+    //li bits: 0x02000e93, imm == 32 , dst == x32
+    mem[0] = 0x02000e93;
+    mem[1] = 0xffff;
+    auto pc = (uint64_t)(&mem[0]);
+
+    auto fetch = cu->load_insn(pc);
+    // load immediate data, execute addi actually, which equal to x[rd] = x0 + sext(imm)
+    uint64_t next_pc = cu->execute_insn(pc, fetch);
+
+    next_pc = (uint64_t)((uint32_t)next_pc - (uint32_t)pc) + pc;
+    uint32_t res = READ_REG(fetch.insn.rd());
+
+    EXPECT_EQ(next_pc, pc + 4);
+    EXPECT_EQ(res, 0x20);
+}
