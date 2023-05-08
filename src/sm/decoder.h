@@ -40,6 +40,7 @@ typedef uint64_t insn_bits_t;
 #define WRITE_REG(reg, value) ({ CHECK_REG(reg); STATE.XPR.write(reg, value); })
 #define CHECK_REG(reg) ((void) 0)
 #define READ_REG(reg) ({ CHECK_REG(reg); STATE.XPR[reg]; })
+#define RS1 READ_REG(insn.rs1() | cu->ext_rs1())
 
 class insn_t {
 public:
@@ -49,7 +50,9 @@ public:
     [[nodiscard]] insn_bits_t bits() const { return b; }
 
     int64_t u_imm() { return int64_t(xs(12, 20) << 12); }
+    int64_t i_imm() { return int64_t(xs(20, 12)); }
     uint64_t rd() { return x(7, 5); }
+    uint64_t rs1() { return x(15, 5); }
 
 private:
     insn_bits_t b;

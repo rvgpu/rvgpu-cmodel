@@ -26,11 +26,15 @@
 #ifndef RISCV_ENCODING_H
 #define RISCV_ENCODING_H
 
+#define MATCH_ADDI 0x13
+#define MASK_ADDI 0x707f
 #define MATCH_AUIPC 0x17
 #define MASK_AUIPC 0x7f
 
 #endif
 #ifdef DECLARE_INSN
+
+DECLARE_INSN(addi, MATCH_ADDI, MASK_ADDI)
 DECLARE_INSN(auipc, MATCH_AUIPC, MASK_AUIPC)
 
 #endif

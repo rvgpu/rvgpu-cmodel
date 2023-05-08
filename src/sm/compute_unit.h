@@ -82,6 +82,7 @@ public:
     reg_t execute_insn(reg_t pc, insn_fetch_t fetch);
 
     [[nodiscard]] uint64_t ext_rd() const { return m_state.regext_info.valid ? (m_state.regext_info.ext_rd << 5) : 0; }
+    uint64_t ext_rs1(){ return m_state.regext_info.valid ? (m_state.regext_info.ext_rs1<<5)  : 0;}
     state_t* get_state(){return &m_state;}
 
 private:

@@ -22,3 +22,25 @@ TEST(load_insn, should_decode_and_execute_rv32i_auipc_correctly) {
     EXPECT_EQ(next_pc, pc + 4);
     EXPECT_EQ(pc_constsnt_offset, 0x1000);
 }
+
+TEST(load_insn, shoulde_decode_and_execute_rv32i_addi_correcly){
+    auto cu = new class compute_unit();
+    auto mem = (uint32_t*)calloc(2, sizeof(uint32_t));
+    //addi bits: 0x8193, imm == -2048
+    mem[0] = 0x80018193;
+    mem[1] = 0xffff;
+
+    auto pc = (uint64_t)(&mem[0]);
+    auto fetch = cu->load_insn(pc);
+
+    //write data 0x80003000 to rs1 register for addi inst
+    WRITE_REG(fetch.insn.rs1(), 0x80003000);
+
+    //x[rd] = x[rs1] + sext(immediate)
+    uint64_t next_pc = cu->execute_insn(pc, fetch);
+    next_pc = (uint64_t)((uint32_t)next_pc - (uint32_t)pc) + pc;
+    uint32_t result = READ_REG(fetch.insn.rd());
+
+    EXPECT_EQ(next_pc, pc + 4);
+    EXPECT_EQ(result, 0x80002800);
+}

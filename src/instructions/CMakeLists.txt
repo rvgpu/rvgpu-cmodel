@@ -1,4 +1,6 @@
 set(INST_FILES
+        instructions/addi.h
+        instructions/addi.cpp
         instructions/auipc.cpp
         instructions/auipc.h
         instructions/encoding.h
