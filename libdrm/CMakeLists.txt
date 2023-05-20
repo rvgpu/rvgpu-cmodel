@@ -10,4 +10,4 @@ target_include_directories(drm PRIVATE ${LIBDRM_INCLUDE_DIRS})
 set_target_properties(drm PROPERTIES VERSION 2)
 set_target_properties(drm PROPERTIES LINK_FLAGS_RELEASE -s)
 
-install(TARGETS drm LIBRARY DESTINATION lib64)
+install(TARGETS drm LIBRARY DESTINATION lib)
