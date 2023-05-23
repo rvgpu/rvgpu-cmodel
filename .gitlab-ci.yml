@@ -1,0 +1,16 @@
+build-job:
+  stage: build
+  script:
+    - echo "build cmodel for rvgpu"
+    - /tools/build/build.sh --prefix /home/rvgpu
+
+test-job:
+  stage: test
+  script:
+    - echo "Test TODO"
+
+deploy-job:
+  stage: deploy
+  script:
+    - echo "Package TODO"
+
