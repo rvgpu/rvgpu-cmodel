@@ -156,3 +156,7 @@ int drmAuthMagic(int fd, drm_magic_t magic)
 {
     return 0;
 }
+
+int drmSyncobjReset(int fd, const uint32_t *handles, uint32_t handle_count) {
+    return 0;
+}
