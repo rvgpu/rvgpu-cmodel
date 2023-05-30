@@ -160,3 +160,8 @@ int drmAuthMagic(int fd, drm_magic_t magic)
 int drmSyncobjReset(int fd, const uint32_t *handles, uint32_t handle_count) {
     return 0;
 }
+
+int drmSyncobjTimelineWait(int fd, uint32_t *handles, uint64_t *points, unsigned num_handles, int64_t timeout_nsec, unsigned flags, uint32_t *first_signaled)
+{
+    return 0;
+}
