@@ -11,4 +11,5 @@ include_directories(${project_top_path})
 include_directories(${project_top_path}/src)
 
 add_subdirectory(src)
+add_subdirectory(libdrm)
 add_subdirectory(test)
