@@ -1,6 +1,8 @@
 set(SM_FILES
-        sm/compute_unit.h
-        sm/compute_unit.cpp
-        sm/decoder.h
-        sm/mmu.h
-        PARENT_SCOPE)
+    compute_unit.h
+    compute_unit.cpp
+    decoder.h
+    mmu.h
+    )
+
+add_library(sm OBJECT ${SM_FILES})

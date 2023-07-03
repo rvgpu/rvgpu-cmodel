@@ -1,3 +1,0 @@
-DEFINE_INSN(auipc)
-DEFINE_INSN(addi)
-DEFINE_INSN(lui)

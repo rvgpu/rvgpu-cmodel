@@ -21,5 +21,5 @@ foreach(iname ${inst_list})
 endforeach()
 list(APPEND list_source_list insn_list.h)
 
-add_library(insns STATIC ${inst_source_list})
+add_library(insns OBJECT ${inst_source_list})
 target_include_directories(insns PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})

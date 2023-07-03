@@ -68,20 +68,20 @@ void compute_unit::register_base_instructions() {
     insn_bits_t name##_match = (match), name##_mask = (mask); \
     bool name##_supported = true;
 
-#include "instructions/encoding.h"
+#include "insns/encoding.h"
 
 #undef DECLARE_INSN
 
 #define DEFINE_INSN(name) \
-    extern reg_t rv32i_##name(compute_unit*, insn_t, reg_t); \
+    extern reg_t fast_rv32i_##name(compute_unit*, insn_t, reg_t); \
     if (name##_supported) { \
       register_insn((insn_desc_t) { \
         name##_match, \
         name##_mask, \
-        rv32i_##name}); \
+        fast_rv32i_##name}); \
     }
 
-#include "instructions/insn_list.h"
+#include "insns/insn_list.h"
 #undef DEFINE_INSN
 
     build_opcode_map();
