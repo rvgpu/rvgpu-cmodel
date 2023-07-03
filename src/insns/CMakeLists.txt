@@ -5,12 +5,21 @@ macro(add_instruction instname)
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/generate_inst.py
     )
 
-    list(APPEND inst_source_list ${instname}.cpp)
+    list(APPEND inst_list ${instname})
 endmacro()
 
+# Need add instruction here
 add_instruction(addi)
 add_instruction(auipc)
 add_instruction(lui)
+
+# Generate insn_list.h and append to source list
+FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/insn_list.h "")
+foreach(iname ${inst_list})
+    FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/insn_list.h "DEFINE_INSN(${iname})\n")
+    list(APPEND inst_source_list ${iname}.cpp)
+endforeach()
+list(APPEND list_source_list insn_list.h)
 
 add_library(insns STATIC ${inst_source_list})
 target_include_directories(insns PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
