@@ -1,4 +1,4 @@
-
+add_subdirectory(insns)
 add_subdirectory(instructions)
 add_subdirectory(common)
 add_subdirectory(sm)

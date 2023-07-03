@@ -34,13 +34,13 @@ typedef uint64_t insn_bits_t;
    ((x) & 0x3f) < 0x3f ? 6 : \
    8)
 
-#define STATE (*cu->get_state())
+#define STATE (*p->get_state())
 #define sext_xlen(x) (((sreg_t)(x) << (64 - xlen)) >> (64 - xlen))
-#define WRITE_RD(value) WRITE_REG((insn.rd() | cu->ext_rd()), value)
+#define WRITE_RD(value) WRITE_REG((insn.rd() | p->ext_rd()), value)
 #define WRITE_REG(reg, value) ({ CHECK_REG(reg); STATE.XPR.write(reg, value); })
 #define CHECK_REG(reg) ((void) 0)
 #define READ_REG(reg) ({ CHECK_REG(reg); STATE.XPR[reg]; })
-#define RS1 READ_REG(insn.rs1() | cu->ext_rs1())
+#define RS1 READ_REG(insn.rs1() | p->ext_rs1())
 
 class insn_t {
 public:

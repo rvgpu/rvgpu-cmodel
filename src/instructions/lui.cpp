@@ -2,7 +2,7 @@
 #include "instructions/encoding.h"
 #include "sm/compute_unit.h"
 
-reg_t rv32i_lui(compute_unit* cu, insn_t insn, reg_t pc)
+reg_t rv32i_lui(compute_unit* p, insn_t insn, reg_t pc)
 {
   #define xlen 32
   reg_t npc = sext_xlen(pc + insn_length( MATCH_LUI));
