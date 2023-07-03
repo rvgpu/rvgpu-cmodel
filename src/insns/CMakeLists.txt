@@ -8,10 +8,7 @@ macro(add_instruction instname)
     list(APPEND inst_list ${instname})
 endmacro()
 
-# Need add instruction here
-add_instruction(addi)
-add_instruction(auipc)
-add_instruction(lui)
+include(instructions.cmake)
 
 # Generate insn_list.h and append to source list
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/insn_list.h "")
