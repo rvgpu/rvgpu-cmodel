@@ -5,6 +5,7 @@ set(CMAKE_C_STANDARD  11)
 set(CMAKE_CXX_STANDARD 20)
 
 include(compile_options.cmake)
+enable_testing()
 
 set(project_top_path ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${project_top_path})
