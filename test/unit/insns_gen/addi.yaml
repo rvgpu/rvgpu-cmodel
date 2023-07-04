@@ -1,0 +1,20 @@
+testsuite:
+  - testcase: 
+    - inst: [ 
+            0xe4010113,     # addi    sp, sp, -448
+            0x1234565       # none
+          ]
+    - exec:
+        in: [rs1: 500]
+        out: [rd: 52]
+    - exec:
+        in: [rs1: 448]
+        out: [rd: 0]
+  - testcase: 
+    - inst: [0xe4010113]    # addi    sp, sp, -448
+    - exec:
+        in: [rs1: 447]
+        out: [rd: -1]
+    - exec:
+        in: [rs1: 446]
+        out: [rd: -2]
