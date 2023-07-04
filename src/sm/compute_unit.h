@@ -86,7 +86,7 @@ public:
     state_t* get_state(){return &m_state;}
 
 private:
-    mmu *m_mmu;
+    mmu_t *m_mmu;
     state_t m_state;
 
     std::vector<insn_desc_t> instructions{};

@@ -26,7 +26,7 @@
 
 #include <cstdint>
 
-class mmu {
+class mmu_t {
 public:
     template<class T> T read(uint64_t addr){
         return *((T*)(addr));

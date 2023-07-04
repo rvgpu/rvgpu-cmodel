@@ -58,7 +58,7 @@ insn_func_t compute_unit::decode_insn(insn_t insn) {
 }
 
 compute_unit::compute_unit() {
-    m_mmu = new mmu();
+    m_mmu = new mmu_t();
     register_base_instructions();
     m_state.reset();
 }
