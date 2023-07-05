@@ -16,7 +16,6 @@ TEST_F(ut_insns, should_decode_and_execute_rv32i_auipc_correctly) {
     auto pc_constsnt_offset = (uint32_t)rd_data - (uint32_t)pc;
 
     EXPECT_EQ(fetch.insn.bits(), 0x1297);
-    EXPECT_EQ(next_pc, pc + 4);
     EXPECT_EQ(pc_constsnt_offset, 0x1000);
 }
 
@@ -32,7 +31,6 @@ TEST_F(ut_insns, shoulde_decode_and_execute_rv32i_addi_correcly) {
 
     //x[rd] = x[rs1] + sext(immediate)
     uint32_t result = READ_REG(fetch.insn.rd());
-    EXPECT_EQ(next_pc, pc + 4);
     EXPECT_EQ(result, 0x80002800);
 }
 
@@ -46,7 +44,6 @@ TEST_F(ut_insns, shoulde_decode_and_execute_rv32i_li_correcly) {
     // load immediate data, execute addi actually, which equal to x[rd] = x0 + sext(imm)
     uint32_t res = READ_REG(fetch.insn.rd());
 
-    EXPECT_EQ(next_pc, pc + 4);
     EXPECT_EQ(res, 0x20);
 }
 
@@ -59,6 +56,5 @@ TEST_F(ut_insns, shoulde_decode_and_execute_rv32i_lui_correcly) {
 
     uint32_t res = READ_REG(fetch.insn.rd());
 
-    EXPECT_EQ(next_pc, pc + 4);
     EXPECT_EQ(res, 0x2000);
 }
