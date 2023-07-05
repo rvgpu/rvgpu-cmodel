@@ -24,7 +24,6 @@ protected:
 
     void ExecuateInst() {
         next_pc = p->execute_insn(pc, fetch);
-        next_pc = (uint64_t)((uint32_t)next_pc - (uint32_t)pc) + pc;
     }
 
     void SetspHighToMMU() {
