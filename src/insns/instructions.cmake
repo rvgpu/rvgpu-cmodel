@@ -2,3 +2,4 @@
 add_instruction(addi)
 add_instruction(auipc)
 add_instruction(lui)
+add_instruction(sw)

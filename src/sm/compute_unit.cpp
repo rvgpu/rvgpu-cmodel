@@ -26,7 +26,7 @@
 #include "common/inst_constant.h"
 
 insn_fetch_t compute_unit::load_insn(reg_t pc) {
-    auto insn = (insn_bits_t) (m_mmu->read<uint32_t>(pc));
+    auto insn = (insn_bits_t) (m_mmu->load<uint32_t>(pc));
     return insn_fetch_t{decode_insn(insn_t(insn)), insn_t(insn)};
 }
 

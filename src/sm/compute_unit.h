@@ -30,6 +30,7 @@
 #include "decoder.h"
 #include "mmu.h"
 #include "common/inst_constant.h"
+#include "decode_macros.h"
 
 class compute_unit;
 
@@ -84,6 +85,7 @@ public:
     [[nodiscard]] uint64_t ext_rd() const { return m_state.regext_info.valid ? (m_state.regext_info.ext_rd << 5) : 0; }
     uint64_t ext_rs1(){ return m_state.regext_info.valid ? (m_state.regext_info.ext_rs1<<5)  : 0;}
     state_t* get_state(){return &m_state;}
+    mmu_t* get_mmu() { return m_mmu; }
 
 private:
     mmu_t *m_mmu;

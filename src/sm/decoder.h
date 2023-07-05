@@ -26,6 +26,7 @@
 
 #include <cstdint>
 #include <cstring>
+#include <stdio.h>
 
 typedef uint64_t insn_bits_t;
 #define insn_length(x) \
@@ -51,9 +52,10 @@ public:
 
     int64_t u_imm() { return int64_t(xs(12, 20) << 12); }
     int64_t i_imm() { return int64_t(xs(20, 12)); }
+    int64_t s_imm() { return x(7, 5) + (xs(25, 7) << 5); }
     uint64_t rd() { return x(7, 5); }
     uint64_t rs1() { return x(15, 5); }
-
+    uint64_t rs2() { return x(20, 5); }
 private:
     insn_bits_t b;
 

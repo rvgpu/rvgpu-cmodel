@@ -28,10 +28,18 @@
 
 class mmu_t {
 public:
-    template<class T> T read(uint64_t addr){
+    template<class T> T load(uint64_t addr){
         return *((T*)(addr));
     }
 
-    template<class T> void write(uint64_t addr, T data){}
+    template<class T> void store(uint32_t addr, T data){
+        *(T*)(addr + m_base_addr) = data;
+    }
+
+    void set_base_addr(uint64_t base_addr) {
+        m_base_addr = base_addr;
+    }
+private:
+    uint64_t m_base_addr = 0;
 };
 #endif //RVGSIM_MMU_H
