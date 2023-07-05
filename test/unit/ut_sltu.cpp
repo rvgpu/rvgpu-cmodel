@@ -4,7 +4,8 @@
 TEST_F(ut_insns, decode_and_execute_snez_rd_reg_should_set_to_1) {
     // snez: 0xa03533;
     // SNEZ rd, rs;  says: rs != 0 ? write 1 to rd : write 0 to rd;  which is assembler pseudoinstruction
-    // is same with SLTU
+    // is same with SLTU rd, x0, rs2 ; SLTU perform unsigned compares respectively,
+    // writing 1 to rd if rs1 < rs2, 0 otherwise
     insts.push_back(0xa03533);
     LoadInst();
     WRITE_REG(fetch.insn.rs1(), 0);
