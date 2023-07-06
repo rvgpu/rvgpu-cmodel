@@ -18,3 +18,12 @@ TEST_F(ut_rv32_insns, should_decode_and_execute_rv32i_auipc_correctly) {
     EXPECT_EQ(fetch.insn.bits(), 0x1297);
     EXPECT_EQ(pc_constsnt_offset, 0x1000);
 }
+
+TEST_F(ut_rv64_insns, should_decode_and_execute_auipc_correctly) {
+    //auipc bits: 0x97; auipc  ra, 0
+    insts.push_back(0x97);
+    LoadInst();
+    ExecuateInst();
+    auto rd_data = READ_REG(fetch.insn.rd());
+    EXPECT_EQ(rd_data, pc);
+}
