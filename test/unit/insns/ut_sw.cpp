@@ -14,3 +14,15 @@ TEST_F(ut_rv32_insns, should_decode_and_execute_sw_correctly) {
     ExecuateInst();
     EXPECT_EQ(*(uint32_t*)((uint64_t)sp + 1164), 333);
 }
+
+TEST_F(ut_rv64_insns, should_decode_and_execute_sw_correctly){
+    //sw bits: 0x00c52823 # sw  a2, 16(a0)
+    insts.push_back(0x00c52823);
+    LoadInst();
+
+    WRITE_REG(fetch.insn.rs1(), (uint64_t)sp);
+    WRITE_REG(fetch.insn.rs2(), (uint64_t)333);
+
+    ExecuateInst();
+    EXPECT_EQ(*(uint32_t*)((uint64_t)sp + 16), 333);
+}
