@@ -55,7 +55,6 @@ protected:
         auto isa_parser = new isa_parser_t("RV64I");
         p = new class compute_unit(isa_parser);
         sp = (uint32_t*) malloc(STACK_SIZE * sizeof (uint32_t));
-        SetspHighToMMU();
     }
     void TearDown() override {
         delete p;

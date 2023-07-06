@@ -33,13 +33,15 @@ public:
     }
 
     template<class T> void store(uint64_t addr, T data){
-        *(T*)(addr + m_base_addr) = data;
+        *(T*)(addr + m_addr_high) = data;
     }
 
-    void set_base_addr(uint64_t base_addr) {
-        m_base_addr = base_addr;
+    void set_base_addr(uint64_t addr_high) {
+        m_addr_high = addr_high;
     }
 private:
-    uint64_t m_base_addr = 0;
+    // used for rv32, sp etc. is 64 bit but register is 32 bit, should register the high 32 bit to m_addr_high
+    // m_addr_high is 0 when use rv64;
+    uint64_t m_addr_high = 0;
 };
 #endif //RVGSIM_MMU_H
