@@ -15,6 +15,7 @@ TEST_F(ut_rv32_insns, should_decode_and_execute_rv32i_add_correctly) {
     insts.push_back(0x00b785b3);
     uint32_t result;
     LoadInst();
+    CheckDecoderRegister(11, 15, 11);
 
     CHECK_ADD(1, 2);
     CHECK_ADD(-1, 2);
@@ -27,6 +28,7 @@ TEST_F(ut_rv64_insns, should_decode_and_execute_rv64i_add_correctly) {
     insts.push_back(0x00d786b3);
     uint32_t result;
     LoadInst();
+    CheckDecoderRegister(13, 15, 13);
 
     CHECK_ADD(1, 2);
 }

@@ -19,6 +19,13 @@ protected:
         uint64_t sp_high = (uint64_t)sp & (0xffffffffLU << 32U);
         MMU.set_base_addr(sp_high);
     }
+
+    void CheckDecoderRegister(uint32_t rd, uint32_t rs1, uint32_t rs2) {
+        EXPECT_EQ(fetch.insn.rd(), rd);
+        EXPECT_EQ(fetch.insn.rs1(), rs1);
+        EXPECT_EQ(fetch.insn.rs2(), rs2);
+    }
+
     compute_unit *p;
     std::vector<uint32_t> insts;
 
