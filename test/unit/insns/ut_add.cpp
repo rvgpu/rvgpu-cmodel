@@ -2,12 +2,12 @@
 #include "sm/compute_unit.h"
 #include "ut_insns.hpp"
 
-#define CHECK_ADD(sum, a, b) do { \
+#define CHECK_ADD(a, b) do { \
         WRITE_REG(fetch.insn.rs1(), a); \
         WRITE_REG(fetch.insn.rs2(), b); \
         ExecuateInst();           \
         result = READ_REG(fetch.insn.rd()); \
-        EXPECT_EQ(result, sum); \
+        EXPECT_EQ(result, (a + b)); \
     } while(0)
 
 TEST_F(ut_rv32_insns, should_decode_and_execute_rv32i_add_correctly) {
@@ -16,10 +16,10 @@ TEST_F(ut_rv32_insns, should_decode_and_execute_rv32i_add_correctly) {
     uint32_t result;
     LoadInst();
 
-    CHECK_ADD(3, 1, 2);
-    CHECK_ADD(1, -1, 2);
-    CHECK_ADD(-1, 1, -2);
-    CHECK_ADD(0, 1, -1);
+    CHECK_ADD(1, 2);
+    CHECK_ADD(-1, 2);
+    CHECK_ADD(1, -2);
+    CHECK_ADD(1, -1);
 }
 
 TEST_F(ut_rv64_insns, should_decode_and_execute_rv64i_add_correctly) {
@@ -28,5 +28,5 @@ TEST_F(ut_rv64_insns, should_decode_and_execute_rv64i_add_correctly) {
     uint32_t result;
     LoadInst();
 
-    CHECK_ADD(3, 1, 2);
+    CHECK_ADD(1, 2);
 }
