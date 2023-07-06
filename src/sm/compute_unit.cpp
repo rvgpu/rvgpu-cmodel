@@ -54,10 +54,12 @@ insn_func_t compute_unit::decode_insn(insn_t insn) {
         opcode_cache[idx] = desc;
         opcode_cache[idx].match = insn.bits();
     }
-    return desc.func();
+    return desc.func(m_xlen);
 }
 
 compute_unit::compute_unit() {
+    m_isa = new isa_parser_t("RV32I");
+    m_xlen = 32;
     m_mmu = new mmu_t();
     register_base_instructions();
     m_state.reset();
@@ -74,11 +76,13 @@ void compute_unit::register_base_instructions() {
 
 #define DEFINE_INSN(name) \
     extern reg_t fast_rv32i_##name(compute_unit*, insn_t, reg_t); \
+    extern reg_t fast_rv64i_##name(compute_unit*, insn_t, reg_t);  \
     if (name##_supported) { \
       register_insn((insn_desc_t) { \
         name##_match, \
         name##_mask, \
-        fast_rv32i_##name}); \
+        fast_rv32i_##name, \
+        fast_rv64i_##name}); \
     }
 
 #include "insns/insn_list.h"
@@ -124,6 +128,14 @@ void compute_unit::ext_clear() {
     m_state.regext_info.ext_rs1 = 0;
     m_state.regext_info.ext_rs2 = 0;
     m_state.regext_info.ext_rs3 = 0;
+}
+
+compute_unit::compute_unit(const isa_parser_t *isa) {
+    m_isa = isa;
+    m_xlen = isa->get_max_xlen();
+    m_mmu = new mmu_t();
+    register_base_instructions();
+    m_state.reset();
 }
 
 void state_t::reset() {

@@ -85,7 +85,7 @@ class test_generator:
 
         # write testcase function
         self.outf.write("\n")
-        self.outf.write("TEST_F(ut_insns, generate_ut_%s_%d) {\n" % ("addi", self.tc_counter))
+        self.outf.write("TEST_F(ut_rv32_insns, generate_ut_%s_%d) {\n" % ("addi", self.tc_counter))
         self.outf.write("\tuint32_t result = 0;\n")
 
         tc = tcdict["testcase"]

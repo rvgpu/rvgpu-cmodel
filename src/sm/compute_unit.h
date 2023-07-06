@@ -31,6 +31,7 @@
 #include "mmu.h"
 #include "common/inst_constant.h"
 #include "decode_macros.h"
+#include "isa_parser.h"
 
 class compute_unit;
 
@@ -45,9 +46,14 @@ struct insn_desc_t {
     insn_bits_t match;
     insn_bits_t mask;
     insn_func_t rv32i;
+    insn_func_t rv64i;
 
     [[nodiscard]] insn_func_t func() const {
         return rv32i;
+    }
+
+    insn_func_t func(uint32_t xlen) {
+        return xlen == 64 ? rv64i : rv32i;
     }
 
     static insn_desc_t illegal() {
@@ -77,7 +83,7 @@ struct state_t {
 class compute_unit {
 public:
     compute_unit();
-
+    explicit compute_unit(const isa_parser_t *isa);
     insn_fetch_t load_insn(reg_t pc);
     insn_func_t decode_insn(insn_t insn);
     reg_t execute_insn(reg_t pc, insn_fetch_t fetch);
@@ -90,6 +96,8 @@ public:
 private:
     mmu_t *m_mmu;
     state_t m_state;
+    uint32_t m_xlen;
+    const isa_parser_t* m_isa;
 
     std::vector<insn_desc_t> instructions{};
     static const size_t OPCODE_CACHE_SIZE = 8191;

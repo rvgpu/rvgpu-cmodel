@@ -3,7 +3,7 @@
 
 #include "ut_insns.hpp"
 
-TEST_F(ut_insns, should_decode_and_execute_rv32i_auipc_correctly) {
+TEST_F(ut_rv32_insns, should_decode_and_execute_rv32i_auipc_correctly) {
     //auipc bits: 0x1297
     insts.push_back(0x1297);
     LoadInst();
@@ -19,7 +19,7 @@ TEST_F(ut_insns, should_decode_and_execute_rv32i_auipc_correctly) {
     EXPECT_EQ(pc_constsnt_offset, 0x1000);
 }
 
-TEST_F(ut_insns, shoulde_decode_and_execute_rv32i_addi_correcly) {
+TEST_F(ut_rv32_insns, shoulde_decode_and_execute_rv32i_addi_correcly) {
     //addi bits: 0x8193, imm == -2048
     insts.push_back(0x80018193);
     LoadInst();
@@ -34,7 +34,7 @@ TEST_F(ut_insns, shoulde_decode_and_execute_rv32i_addi_correcly) {
     EXPECT_EQ(result, 0x80002800);
 }
 
-TEST_F(ut_insns, shoulde_decode_and_execute_rv32i_li_correcly) {
+TEST_F(ut_rv32_insns, shoulde_decode_and_execute_rv32i_li_correcly) {
     //li bits: 0x02000e93, imm == 32 , dst == x32
     insts.push_back(0x02000e93);
     LoadInst();
@@ -47,7 +47,7 @@ TEST_F(ut_insns, shoulde_decode_and_execute_rv32i_li_correcly) {
     EXPECT_EQ(res, 0x20);
 }
 
-TEST_F(ut_insns, shoulde_decode_and_execute_rv32i_lui_correcly) {
+TEST_F(ut_rv32_insns, shoulde_decode_and_execute_rv32i_lui_correcly) {
     //li bits: 0x02000e93, imm == 32 , dst == x32
     insts.push_back(0x00002eb7);
     LoadInst();
