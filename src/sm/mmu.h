@@ -32,7 +32,7 @@ public:
         return *((T*)(addr));
     }
 
-    template<class T> void store(uint32_t addr, T data){
+    template<class T> void store(uint64_t addr, T data){
         *(T*)(addr + m_base_addr) = data;
     }
 
