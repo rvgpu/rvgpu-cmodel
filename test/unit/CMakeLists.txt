@@ -1,3 +1,13 @@
+function(rvsim_unit_test testname)
+    set(testcase ${testname})
+    add_executable(${testcase} ${testname}.cpp)
+    target_link_libraries(${testcase} rvgsim gtest gtest_main)
+    target_include_directories(${testcase} PRIVATE ${project_top_path}/src)
+    target_include_directories(${testcase} PRIVATE ${project_top_path}/test)
+    target_include_directories(${testcase} PRIVATE ${project_top_path}/test/unit)
+    add_test(NAME ${testname} COMMAND ${testname})
+endfunction()
+
 rvsim_unit_test(gtest_framework)
 
 add_subdirectory(insns)
