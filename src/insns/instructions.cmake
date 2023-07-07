@@ -1,6 +1,8 @@
 # Need add instruction here
 add_instruction(add)
 add_instruction(addi)
+add_instruction(addiw)
+add_instruction(addw)
 add_instruction(auipc)
 add_instruction(lui)
 add_instruction(sw)
