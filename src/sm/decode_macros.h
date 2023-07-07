@@ -7,4 +7,9 @@
 
 #define require_rv64 require(xlen == 64)
 #define sext32(x) ((sreg_t)(int32_t)(x))
+
+#define set_pc(x) \
+        do { p->check_pc_alignment(x); \
+             npc = sext_xlen(x);       \
+           } while (0)
 #endif //RVGSIM_DECODE_MACROS_H

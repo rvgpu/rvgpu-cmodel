@@ -15,6 +15,10 @@ protected:
         next_pc = p->execute_insn(pc, fetch);
     }
 
+    [[nodiscard]] uint64_t GetNextpc() const {
+        return next_pc;
+    }
+
     void SetspHighToMMU() {
         uint64_t sp_high = (uint64_t)sp & (0xffffffffLU << 32U);
         MMU.set_base_addr(sp_high);

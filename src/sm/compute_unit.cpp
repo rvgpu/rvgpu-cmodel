@@ -92,7 +92,7 @@ void compute_unit::register_base_instructions() {
 }
 
 void compute_unit::register_insn(insn_desc_t desc) {
-    assert(desc.rv32i);
+    assert(desc.rv64i);
     instructions.push_back(desc);
 }
 

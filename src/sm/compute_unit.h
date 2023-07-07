@@ -93,6 +93,15 @@ public:
     state_t* get_state(){return &m_state;}
     mmu_t* get_mmu() { return m_mmu; }
 
+     reg_t pc_alignment_mask() {
+        //fixme: if extension_enabled(EXT_ZCA), return ~(reg_t)(0)
+        return ~(reg_t)(2);
+    }
+     void check_pc_alignment(reg_t pc) {
+        if(pc & ~pc_alignment_mask()) {
+            printf("instruction address misaligned \n");
+        }
+    }
 private:
     mmu_t *m_mmu;
     state_t m_state;
