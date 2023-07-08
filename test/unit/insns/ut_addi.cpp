@@ -27,3 +27,13 @@ TEST_F(ut_rv64_insns, shoulde_decode_and_execute_addi_correcly) {
     uint64_t result = READ_REG(fetch.insn.rd());
     EXPECT_EQ(result, 0);
 }
+
+TEST_F(ut_rv64_insns, should_decode_and_execute_mv_correctly) {
+    //bits: 0x000b0513 #mv  a0, s3  pseudoinstruction of addi rd, rs, 0
+    insts.push_back(0x000b0513);
+    LoadInst();
+    WRITE_REG(fetch.insn.rs1(), 0x1234);
+    ExecuateInst();
+    auto res = READ_REG(fetch.insn.rd());
+    EXPECT_EQ(res, 0x1234);
+}
