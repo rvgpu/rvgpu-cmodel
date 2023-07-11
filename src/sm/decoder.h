@@ -42,6 +42,7 @@ typedef uint64_t insn_bits_t;
 #define CHECK_REG(reg) ((void) 0)
 #define READ_REG(reg) ({ CHECK_REG(reg); STATE.XPR[reg]; })
 #define RS1 READ_REG(insn.rs1() | p->ext_rs1())
+#define BRANCH_TARGET (pc + insn.sb_imm())
 
 class insn_t {
 public:
@@ -56,11 +57,13 @@ public:
     uint64_t rd() { return x(7, 5); }
     uint64_t rs1() { return x(15, 5); }
     uint64_t rs2() { return x(20, 5); }
+    int64_t sb_imm() { return (x(8, 4) << 1) + (x(25, 6) << 5) + (x(7, 1) << 11) + (imm_sign() << 12); }
 private:
     insn_bits_t b;
 
     [[nodiscard]] uint64_t xs(int lo, int len) const { return int64_t(b) << (64 - lo - len) >> (64 - len); }
     [[nodiscard]] uint64_t x(int lo, int len) const { return (b >> lo) & ((insn_bits_t(1) << len) - 1); }
+    [[nodiscard]] uint64_t imm_sign() { return xs(31, 1); }
 };
 
 template<class T, size_t N, bool zero_reg>

@@ -15,6 +15,10 @@ protected:
         next_pc = p->execute_insn(pc, fetch);
     }
 
+    [[nodiscard]] uint64_t Getpc() const {
+        return pc;
+    }
+
     [[nodiscard]] uint64_t GetNextpc() const {
         return next_pc;
     }
