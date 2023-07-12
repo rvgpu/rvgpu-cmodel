@@ -43,6 +43,7 @@ typedef uint64_t insn_bits_t;
 #define READ_REG(reg) ({ CHECK_REG(reg); STATE.XPR[reg]; })
 #define RS1 READ_REG(insn.rs1() | p->ext_rs1())
 #define BRANCH_TARGET (pc + insn.sb_imm())
+#define JUMP_TARGET (pc + insn.uj_imm())
 
 class insn_t {
 public:
@@ -58,6 +59,7 @@ public:
     uint64_t rs1() { return x(15, 5); }
     uint64_t rs2() { return x(20, 5); }
     int64_t sb_imm() { return (x(8, 4) << 1) + (x(25, 6) << 5) + (x(7, 1) << 11) + (imm_sign() << 12); }
+    int64_t uj_imm() { return (x(21, 10) << 1) + (x(20, 1) << 11) + (x(12, 8) << 12) + (imm_sign() << 20); }
 private:
     insn_bits_t b;
 
