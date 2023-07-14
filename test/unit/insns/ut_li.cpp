@@ -3,27 +3,18 @@
 
 #include "ut_insns.hpp"
 
-TEST_F(ut_rv32_insns, shoulde_decode_and_execute_rv32i_li_correcly) {
-    //li bits: 0x02000e93, imm == 32 , dst == x32
-    insts.push_back(0x02000e93);
+#define CHECK_ADD(a, b) do { \
+        WRITE_REG(fetch.insn.rs1(), a); \
+        ExecuateInst();           \
+        result = READ_REG(fetch.insn.rd()); \
+        EXPECT_EQ(result, (a + b)); \
+    } while(0)
+
+TEST_F(ut_rv64_insns, decode_and_execute_pseudo_li) {
+    // 0x07f00513 : li a0, 127 (addi x10, x0, 127)
+    insts.push_back(0x07f00513);
+    uint64_t result;
     LoadInst();
 
-    ExecuateInst();
-
-    // load immediate data, execute addi actually, which equal to x[rd] = x0 + sext(imm)
-    uint32_t res = READ_REG(fetch.insn.rd());
-
-    EXPECT_EQ(res, 0x20);
-}
-
-TEST_F(ut_rv32_insns, shoulde_decode_and_execute_rv32i_lui_correcly) {
-    //li bits: 0x02000e93, imm == 32 , dst == x32
-    insts.push_back(0x00002eb7);
-    LoadInst();
-
-    ExecuateInst();
-
-    uint32_t res = READ_REG(fetch.insn.rd());
-
-    EXPECT_EQ(res, 0x2000);
+    CHECK_ADD(0, 127);
 }
