@@ -2,7 +2,7 @@
 #include "sm/compute_unit.h"
 #include "ut_insns.hpp"
 
-TEST_F(ut_rv64_insns, decode_and_exec_sgtz_should_set_0) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_pseudo_sgtz_set_to_0) {
     //bits: 0x00a02ab3    #sgtz s5, a0
     //sgtz is pseudoinstructions inst, same as: slt rd, x0, rs, Set if > zero
     insts.push_back(0x00a02ab3);
@@ -14,7 +14,7 @@ TEST_F(ut_rv64_insns, decode_and_exec_sgtz_should_set_0) {
     EXPECT_EQ(res, 0);
 }
 
-TEST_F(ut_rv64_insns, decode_and_exec_sgtz_should_set_1) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_pseudo_sgtz_set_to_1) {
     //bits: 0x00a02ab3    #sgtz s5, a0
     //sgtz is pseudoinstructions inst, same as: slt rd, x0, rs, Set if > zero
     insts.push_back(0x00a02ab3);

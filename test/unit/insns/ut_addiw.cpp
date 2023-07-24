@@ -9,7 +9,7 @@
         EXPECT_EQ(result, (a + b)); \
     } while(0)
 
-TEST_F(ut_rv64_insns, should_decode_and_execute_rv64i_add_correctly) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_addiw) {
     // 0x0017071b : addiw a4, a4, 1
     insts.push_back(0x0017071b);
     uint64_t result;
@@ -22,7 +22,7 @@ TEST_F(ut_rv64_insns, should_decode_and_execute_rv64i_add_correctly) {
     CHECK_ADD(-12, 1);    
 }
 
-TEST_F(ut_rv64_insns, execute_pseudoinstruction_sextw_correctly) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_pseudo_sextw) {
     //bits: 0x0006869b  #sext.w  a3, a3  pseudoinstruction of addiw rd, rs, 0
     // writes the sign-extension of the lower 32 bits of register rs1 into register rd
     insts.push_back(0x0006869b);

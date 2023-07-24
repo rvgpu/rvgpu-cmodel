@@ -2,7 +2,7 @@
 #include "sm/compute_unit.h"
 #include "ut_insns.hpp"
 
-TEST_F(ut_rv32_insns, should_decode_and_execute_sw_correctly) {
+TEST_F(ut_rv32_insns, decode_and_execute_rv32i_sw) {
     //sw bits: 0x48112623
     insts.push_back(0x48112623);
     uint32_t sp_low = (uint64_t)sp & 0xffffffff;
@@ -15,7 +15,7 @@ TEST_F(ut_rv32_insns, should_decode_and_execute_sw_correctly) {
     EXPECT_EQ(*(uint32_t*)((uint64_t)sp + 1164), 333);
 }
 
-TEST_F(ut_rv64_insns, should_decode_and_execute_sw_correctly){
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_sw){
     //sw bits: 0x00c52823 # sw  a2, 16(a0)
     insts.push_back(0x00c52823);
     LoadInst();

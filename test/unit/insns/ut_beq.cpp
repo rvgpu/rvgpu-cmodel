@@ -15,7 +15,7 @@
     } while(0)
 
 
-TEST_F(ut_rv64_insns, should_decode_and_execute_rv64i_add_correctly) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_beq) {
     // 0xfa0506e3 : beqz a0, -84 (beq a0, 0, -84)
     insts.push_back(0xfa0506e3);
     LoadInst();

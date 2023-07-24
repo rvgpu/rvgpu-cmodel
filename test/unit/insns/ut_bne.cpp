@@ -15,7 +15,7 @@
     } while(0)
 
 
-TEST_F(ut_rv64_insns, should_decode_and_execute_rv64i_add_correctly) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_bne) {
     // 0xfa0418e3 : bnez s0, -80 (bne s0, 0, -80)
     insts.push_back(0xfa0418e3);
     LoadInst();

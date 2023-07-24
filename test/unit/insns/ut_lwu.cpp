@@ -3,7 +3,7 @@
 
 #include "ut_insns.hpp"
 
-TEST_F(ut_rv64_insns, shoulde_decode_and_execute_rv64i_lwu_correcly) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_lwu) {
     // 0x01456603 : lwu a2, 20(a0)
 
     // Base = addr, offset = 20 / 4 = 5

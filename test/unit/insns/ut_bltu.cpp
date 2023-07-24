@@ -16,7 +16,7 @@
     } while(0)
 
 
-TEST_F(ut_rv64_insns, should_decode_and_execute_rv64i_add_correctly) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_bltu) {
     // 0x009ce463 : bltu s9, s1, 8
     insts.push_back(0x009ce463);
     LoadInst();

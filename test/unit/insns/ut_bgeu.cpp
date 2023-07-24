@@ -16,7 +16,7 @@
     } while(0)
 
 
-TEST_F(ut_rv64_insns, should_decode_and_execute_rv64i_add_correctly) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_bgeu) {
     // 0x0496f663 : bgeu a3, s1, 76
     insts.push_back(0x0496f663);
     LoadInst();

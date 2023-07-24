@@ -3,7 +3,7 @@
 
 #include "ut_insns.hpp"
 
-TEST_F(ut_rv32_insns, should_decode_and_execute_rv32i_auipc_correctly) {
+TEST_F(ut_rv32_insns, decode_and_execute_rv32i_auipc) {
     //auipc bits: 0x1297
     insts.push_back(0x1297);
     LoadInst();
@@ -19,7 +19,7 @@ TEST_F(ut_rv32_insns, should_decode_and_execute_rv32i_auipc_correctly) {
     EXPECT_EQ(pc_constsnt_offset, 0x1000);
 }
 
-TEST_F(ut_rv64_insns, should_decode_and_execute_auipc_correctly) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_auipc) {
     //auipc bits: 0x97; auipc  ra, 0
     insts.push_back(0x97);
     LoadInst();

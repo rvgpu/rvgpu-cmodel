@@ -2,7 +2,7 @@
 #include "sm/compute_unit.h"
 #include "ut_insns.hpp"
 
-TEST_F(ut_rv64_insns, decode_and_execute_andi) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_andi) {
     // 0x020bfb93 : andi s7, s7, 32
     insts.push_back(0x020bfb93);
     LoadInst();

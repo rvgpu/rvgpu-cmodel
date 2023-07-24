@@ -2,7 +2,7 @@
 #include "sm/compute_unit.h"
 #include "ut_insns.hpp"
 
-TEST_F(ut_rv64_insns, decode_and_execute_sd_should_write_data_to_memory_address) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_sd) {
     //bits: 0x00a13c23   sd  a0, 24(sp)
     insts.push_back(0x00a13c23);
     LoadInst();

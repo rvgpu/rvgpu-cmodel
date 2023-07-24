@@ -10,7 +10,7 @@
         EXPECT_EQ(result, (a + b)); \
     } while(0)
 
-TEST_F(ut_rv64_insns, should_decode_and_execute_rv64i_add_correctly) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_addw) {
     // 0x00e5053b : addw a0, a0, a4
     insts.push_back(0x00e5053b);
     uint64_t result;

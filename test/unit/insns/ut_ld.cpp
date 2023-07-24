@@ -3,7 +3,7 @@
 
 #include "ut_insns.hpp"
 
-TEST_F(ut_rv64_insns, shoulde_decode_and_execute_rv64i_ld_correcly) {
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_ld) {
     // 0x39813a03 : ld s4, 920(sp)
 
     // Base = sp, offset = 920 / 8 = 115

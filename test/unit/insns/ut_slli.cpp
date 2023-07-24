@@ -2,7 +2,7 @@
 #include "sm/compute_unit.h"
 #include "ut_insns.hpp"
 
-TEST_F(ut_rv64_insns, should_decode_and_exe_slli_corectly){
+TEST_F(ut_rv64_insns, decode_and_execute_rv64i_slli){
     //bits: 0x02061613  #slli a2, a2, 32
     insts.push_back(0x02061613);
     LoadInst();
