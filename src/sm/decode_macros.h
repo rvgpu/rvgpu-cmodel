@@ -6,6 +6,7 @@
 #define SHAMT (insn.i_imm() & 0x3F)
 
 #define require_rv64 require(xlen == 64)
+#define require_either_extension(A,B) require(p->extension_enabled(A) || p->extension_enabled(B));
 #define sext32(x) ((sreg_t)(int32_t)(x))
 
 #define set_pc(x) \
