@@ -21,29 +21,40 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef RVGSIM_MMU_H
-#define RVGSIM_MMU_H
+#pragma once
 
-#include <cstdint>
+#include  <stdint.h>
 
-class mmu_t {
-public:
-    template<class T> T load(uint64_t addr){
-        // printf("load from [0x%lx]: 0x%lx\n", addr, *((unsigned long*)(addr)));
-        return *((T*)(addr));
-    }
+/*
+ * +-----------------+
+ * | cmd_type        |
+ * | desc            |  ------------>   command_desc
+ * +-----------------+
+ * | cmd_type        |
+ * | desc            |  ------------>   command_desc
+ * +-----------------+
+ */
 
-    template<class T> void store(uint64_t addr, T data){
-        // printf("store to [0x%lx]: 0x%lx\n", addr, (unsigned long)data);
-        *(T*)(addr + m_addr_high) = data;
-    }
+typedef struct {
+    uint64_t input;
+    uint64_t output;
+    uint64_t shader;
+} cs_vs_desc;
 
-    void set_base_addr(uint64_t addr_high) {
-        m_addr_high = addr_high;
-    }
-private:
-    // used for rv32, sp etc. is 64 bit but register is 32 bit, should register the high 32 bit to m_addr_high
-    // m_addr_high is 0 when use rv64;
-    uint64_t m_addr_high = 0;
+enum cs_type {
+    CS_TYPE_VS = 1,
+    CS_TYPE_FS = 2,
+    CS_TYPE_END = 3,
 };
-#endif //RVGSIM_MMU_H
+
+typedef struct {
+    uint32_t vertex_count;
+    uint64_t desc;
+} command_stream_vs;
+
+typedef struct {
+    enum cs_type type;
+    union {
+        command_stream_vs vs;
+    } cmd;
+} command_stream;

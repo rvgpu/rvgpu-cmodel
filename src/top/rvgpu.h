@@ -21,29 +21,23 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef RVGSIM_MMU_H
-#define RVGSIM_MMU_H
+#pragma once
 
-#include <cstdint>
+#include <vector>
 
-class mmu_t {
+#include "sm/stream_multiprocessor.h"
+#include "cp/command_processor.h"
+
+#include "message.h"
+
+class rvgpu {
 public:
-    template<class T> T load(uint64_t addr){
-        // printf("load from [0x%lx]: 0x%lx\n", addr, *((unsigned long*)(addr)));
-        return *((T*)(addr));
-    }
+    rvgpu();
 
-    template<class T> void store(uint64_t addr, T data){
-        // printf("store to [0x%lx]: 0x%lx\n", addr, (unsigned long)data);
-        *(T*)(addr + m_addr_high) = data;
-    }
-
-    void set_base_addr(uint64_t addr_high) {
-        m_addr_high = addr_high;
-    }
+    void run(uint64_t cmd);
 private:
-    // used for rv32, sp etc. is 64 bit but register is 32 bit, should register the high 32 bit to m_addr_high
-    // m_addr_high is 0 when use rv64;
-    uint64_t m_addr_high = 0;
+    command_processor *m_cp;
+    sm *m_sm;
+
+    std::vector<message> m_messages;
 };
-#endif //RVGSIM_MMU_H

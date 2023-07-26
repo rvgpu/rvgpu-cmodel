@@ -21,29 +21,38 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef RVGSIM_MMU_H
-#define RVGSIM_MMU_H
+#include <cstdio>
+#include "cp/command_stream.h"
+#include "stream_multiprocessor.h"
 
-#include <cstdint>
+sm::sm() {
+    auto isa_parser = new isa_parser_t("RV64IMAFD");
+    p = new compute_unit(isa_parser);
+    sp = (uint32_t*) malloc(2000 * sizeof (uint32_t));
+    sp = sp + 100;
+}
 
-class mmu_t {
-public:
-    template<class T> T load(uint64_t addr){
-        // printf("load from [0x%lx]: 0x%lx\n", addr, *((unsigned long*)(addr)));
-        return *((T*)(addr));
+void sm::run_vs(message msg) {
+    printf("[SM] receive message VS: %d %d\n", msg.start, msg.count);
+    printf("[SM] SP is: %p\n", sp);
+    cs_vs_desc *desc = (cs_vs_desc *)msg.desc;
+    pc = desc->shader;
+    p->init_register(2, (uint64_t)sp);
+    p->init_register(10, msg.desc);
+    p->init_register(11, msg.start);
+
+    printf("Run Instruction:\n");
+    do {
+        fetch = p->load_insn(pc);
+        next_pc = p->execute_insn(pc, fetch);
+        pc = next_pc;
+    } while (1);
+}
+
+void sm::run(message msg) {
+    switch(msg.msg) {
+        case CMD_MESSAGE_START_CU_VS:  run_vs(msg);
+        default:
+            break;
     }
-
-    template<class T> void store(uint64_t addr, T data){
-        // printf("store to [0x%lx]: 0x%lx\n", addr, (unsigned long)data);
-        *(T*)(addr + m_addr_high) = data;
-    }
-
-    void set_base_addr(uint64_t addr_high) {
-        m_addr_high = addr_high;
-    }
-private:
-    // used for rv32, sp etc. is 64 bit but register is 32 bit, should register the high 32 bit to m_addr_high
-    // m_addr_high is 0 when use rv64;
-    uint64_t m_addr_high = 0;
-};
-#endif //RVGSIM_MMU_H
+}

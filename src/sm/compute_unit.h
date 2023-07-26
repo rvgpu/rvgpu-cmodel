@@ -27,6 +27,9 @@
 #include <cstdint>
 #include <cstdio>
 #include <vector>
+
+#include "top/message.h"
+
 #include "decoder.h"
 #include "mmu.h"
 #include "common/inst_constant.h"
@@ -84,6 +87,8 @@ class compute_unit {
 public:
     compute_unit();
     explicit compute_unit(const isa_parser_t *isa);
+
+    void init_register(uint32_t regn, reg_t data);
     insn_fetch_t load_insn(reg_t pc);
     insn_func_t decode_insn(insn_t insn);
     reg_t execute_insn(reg_t pc, insn_fetch_t fetch);

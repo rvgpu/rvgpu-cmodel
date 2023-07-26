@@ -22,6 +22,7 @@
  */
 
 #include <cassert>
+#include "cp/command_stream.h"
 #include "compute_unit.h"
 #include "common/inst_constant.h"
 
@@ -89,6 +90,10 @@ void compute_unit::register_base_instructions() {
 #undef DEFINE_INSN
 
     build_opcode_map();
+}
+
+void compute_unit::init_register(uint32_t regn, reg_t data) {
+    m_state.XPR.write(regn, data);
 }
 
 void compute_unit::register_insn(insn_desc_t desc) {

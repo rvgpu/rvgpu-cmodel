@@ -21,29 +21,33 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef RVGSIM_MMU_H
-#define RVGSIM_MMU_H
+#include "cp/command_stream.h"
 
-#include <cstdint>
+#include "message.h"
+#include "rvgpu.h"
 
-class mmu_t {
-public:
-    template<class T> T load(uint64_t addr){
-        // printf("load from [0x%lx]: 0x%lx\n", addr, *((unsigned long*)(addr)));
-        return *((T*)(addr));
+rvgpu::rvgpu() {
+    m_sm = new sm();
+}
+
+void rvgpu::run(uint64_t cmd) {
+    command_stream *cs = (command_stream *)cmd;
+    std::vector<message> msg;
+    if (cs->type == CS_TYPE_VS) {
+        command_stream_vs vs = cs->cmd.vs;
+
+        for (uint32_t i=0; i<vs.vertex_count; i++) {  // one vertex on one sm now
+            message tmsg = {};
+            tmsg.target = 0; // message send to sm[0]
+            tmsg.msg = CMD_MESSAGE_START_CU_VS;
+            tmsg.start = i;
+            tmsg.count = 1;
+            tmsg.desc = vs.desc;
+            msg.push_back(std::move(tmsg));
+        }
     }
 
-    template<class T> void store(uint64_t addr, T data){
-        // printf("store to [0x%lx]: 0x%lx\n", addr, (unsigned long)data);
-        *(T*)(addr + m_addr_high) = data;
+    for (auto m : msg) {
+        m_sm->run(m);
     }
-
-    void set_base_addr(uint64_t addr_high) {
-        m_addr_high = addr_high;
-    }
-private:
-    // used for rv32, sp etc. is 64 bit but register is 32 bit, should register the high 32 bit to m_addr_high
-    // m_addr_high is 0 when use rv64;
-    uint64_t m_addr_high = 0;
-};
-#endif //RVGSIM_MMU_H
+}

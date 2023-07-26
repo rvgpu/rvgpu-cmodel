@@ -1,0 +1,11 @@
+function(rvsim_test_draw testname)
+    set(testcase test_draw_${testname})
+    add_executable(${testcase} ${testname}.cpp)
+    target_link_libraries(${testcase} rvgsim gtest gtest_main)
+    target_include_directories(${testcase} PRIVATE ${project_top_path}/src)
+    target_include_directories(${testcase} PRIVATE ${project_top_path}/test)
+    target_include_directories(${testcase} PRIVATE ${project_top_path}/test/draw)
+    add_test(NAME ${testcase} COMMAND ${testcase})
+endfunction()
+
+rvsim_test_draw(vertex)

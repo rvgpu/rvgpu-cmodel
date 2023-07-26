@@ -4,6 +4,8 @@ set(SM_FILES
         decoder.h
         decode_macros.h
         mmu.h
-        isa_parser.h)
+        isa_parser.h
+        stream_multiprocessor.h
+        stream_multiprocessor.cpp)
 
 add_library(sm OBJECT ${SM_FILES})

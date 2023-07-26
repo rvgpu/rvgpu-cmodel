@@ -21,29 +21,18 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef RVGSIM_MMU_H
-#define RVGSIM_MMU_H
+#pragma once
 
 #include <cstdint>
 
-class mmu_t {
-public:
-    template<class T> T load(uint64_t addr){
-        // printf("load from [0x%lx]: 0x%lx\n", addr, *((unsigned long*)(addr)));
-        return *((T*)(addr));
-    }
-
-    template<class T> void store(uint64_t addr, T data){
-        // printf("store to [0x%lx]: 0x%lx\n", addr, (unsigned long)data);
-        *(T*)(addr + m_addr_high) = data;
-    }
-
-    void set_base_addr(uint64_t addr_high) {
-        m_addr_high = addr_high;
-    }
-private:
-    // used for rv32, sp etc. is 64 bit but register is 32 bit, should register the high 32 bit to m_addr_high
-    // m_addr_high is 0 when use rv64;
-    uint64_t m_addr_high = 0;
+enum message_type {
+    CMD_MESSAGE_START_CU_VS = 1,
 };
-#endif //RVGSIM_MMU_H
+
+typedef struct {
+    uint32_t target;
+    enum message_type msg;
+    uint32_t start;
+    uint32_t count;
+    uint64_t desc;
+} message;

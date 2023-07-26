@@ -72,11 +72,14 @@ template<class T, size_t N, bool zero_reg>
 class regfile_t {
 public:
     void write(size_t i, T value) {
-        if (!zero_reg || i != 0)
+        if (!zero_reg || i != 0) {
+            // printf("write rd[%ld]: 0x%lx\n", i, value);
             data[i] = value;
+        }
     }
 
     const T &operator[](size_t i) const {
+        // printf("inst read r[%ld]: 0x%lx\n", i, data[i]);
         return data[i];
     }
 
