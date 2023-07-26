@@ -93,6 +93,13 @@ public:
     state_t* get_state(){return &m_state;}
     mmu_t* get_mmu() { return m_mmu; }
 
+    bool extension_enabled(unsigned char ext) const {
+        return extension_enabled(isa_extension_t(ext));
+    }
+    bool extension_enabled(isa_extension_t ext) const {
+        return m_isa->extension_enabled(ext);
+    }
+
      reg_t pc_alignment_mask() {
         //fixme: if extension_enabled(EXT_ZCA), return ~(reg_t)(0)
         return ~(reg_t)(2);

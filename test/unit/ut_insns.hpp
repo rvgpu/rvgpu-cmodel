@@ -60,7 +60,7 @@ protected:
 class ut_rv64_insns : public ut_insns {
 protected:
     void SetUp() override {
-        auto isa_parser = new isa_parser_t("RV64I");
+        auto isa_parser = new isa_parser_t("RV64IMAFD");
         p = new class compute_unit(isa_parser);
         sp = (uint32_t*) malloc(STACK_SIZE * sizeof (uint32_t));
     }
