@@ -88,3 +88,35 @@ TEST_F(Draw, vertex_shader_multi_array_mul) {
         EXPECT_EQ(out[i], in1[i] * in2[i]);
     }
 }
+
+TEST_F(Draw, vertex_shader_multi_array_muladd) {
+    Shader shader;
+    int32_t count = 32;
+    int i = 0;
+    uint32_t *in1 = (uint32_t *)malloc(count * 4);
+    uint32_t *in2 = (uint32_t *)malloc(count * 4);
+    uint32_t *in3 = (uint32_t *)malloc(count * 4);
+    uint32_t *out = (uint32_t *)malloc(count * 4);
+
+    shader.SetupShaderBinary("multi_array_muladd.vs");
+    shader.SetupIO(0, (uint64_t)in1);
+    shader.SetupIO(1, (uint64_t)in2);
+    shader.SetupIO(2, (uint64_t)in3);
+    shader.SetupIO(3, (uint64_t)out);
+
+    for (i=0; i<count; i++) {
+        in1[i] = i * 100;
+        in2[i] = i + 34;
+        in3[i] = i * 4;
+        out[i] = 5678;
+    }
+
+    vertex_command(count, (uint64_t)shader.binary, (uint64_t)shader.layout);
+    end_command();
+
+    run();
+
+    for (i=0; i<count; i++) {
+        EXPECT_EQ(out[i], in1[i] * in2[i] + in3[i]);
+    }
+}
