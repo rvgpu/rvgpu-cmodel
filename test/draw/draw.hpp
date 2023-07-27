@@ -4,6 +4,7 @@
 #include "common/configs.h"
 #include "top/rvgpu.h"
 
+#define IO_NUM 4
 #define SHADER_BINARY_SIZE 0x1000
 
 class Draw : public ::testing::Test {
@@ -15,8 +16,13 @@ protected:
     void TearDown() override {
     }
 
-    void vertex_command(rvgpu_command_vs cs_vs) {
-        commands.push_back(rvgpu_command {.type = RVGPU_COMMAND_TYPE_VS, .cmd = {cs_vs}});
+
+    void vertex_command(uint32_t vcount, uint64_t binary, uint64_t layout) {
+        rvgpu_command_vs vs = {};
+        vs.vertex_count = vcount;
+        vs.shader = binary;
+        vs.layout = layout;
+        commands.push_back(rvgpu_command {.type = RVGPU_COMMAND_TYPE_VS, .cmd = {vs}});
     }
 
     void end_command() {
@@ -28,6 +34,34 @@ protected:
     }
 
     void load_shader(const char *fname, uint32_t *binary) {
+
+    }
+
+private:
+    rvgpu *gpu;
+    std::vector<rvgpu_command> commands;
+};
+
+class Shader {
+public:
+    struct shaderlayout {
+        uint64_t io[IO_NUM];
+    };
+
+    Shader() {
+        layout = (struct shaderlayout *)malloc(sizeof(struct shaderlayout));
+        binary = (uint32_t *)malloc(SHADER_BINARY_SIZE * 4);
+    }
+
+    void SetupIO(int index, uint64_t ptr) {
+        layout->io[index] = ptr;
+    }
+
+    void SetupShaderBinary(uint64_t shaderbin) {
+        binary = (uint32_t *)shaderbin;
+    }
+
+    void SetupShaderBinary(const char *fname) {
         std::string fpath;
         fpath += PROJECT_TEST_DRAW_SHADER_DATA_PATH;
         fpath += "/";
@@ -48,7 +82,6 @@ protected:
         }
     }
 
-private:
-    rvgpu *gpu;
-    std::vector<rvgpu_command> commands;
+    struct shaderlayout *layout;
+    uint32_t *binary;
 };

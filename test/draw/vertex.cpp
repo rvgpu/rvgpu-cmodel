@@ -6,111 +6,85 @@
 #include "draw.hpp"
 
 TEST_F(Draw, vertex_shader_array_add) {
+    Shader shader;
+    int32_t count = 16;
     int i = 0;
-    uint32_t binary[SHADER_BINARY_SIZE];
-    load_shader("array_add.vs", binary);
+    uint32_t *in = (uint32_t *)malloc(count * 4);
+    uint32_t *out = (uint32_t *)malloc(count * 4);
 
-    struct addlayout {
-        uint64_t input;
-        uint64_t output;
-    };
-    struct addlayout *layout = (struct addlayout *)malloc(sizeof(struct addlayout));
-    layout->input = (uint64_t)malloc(100);
-    layout->output = (uint64_t)malloc(100);
-    rvgpu_command_vs cs_vs = {};
-    cs_vs.vertex_count = 16;
-    cs_vs.layout = (uint64_t)layout;
-    cs_vs.shader = (uint64_t)binary;
+    shader.SetupShaderBinary("array_add.vs");
+    shader.SetupIO(0, (uint64_t)in);
+    shader.SetupIO(1, (uint64_t)out);
 
-    vertex_command(cs_vs);
-    end_command();
-
-    // input of data
-    int *in = (int *)layout->input;
-    for (i=0; i<16; i++) {
+    for (i=0; i<count; i++) {
         in[i] = i * 100;
+        out[i] = 5678;   // test of array[i] + 100;
     }
+
+    vertex_command(count, (uint64_t)shader.binary, (uint64_t)shader.layout);
+    end_command();
 
     run();
 
-    int *out = (int *)layout->output;
     for (i=0; i<16; i++) {
         EXPECT_EQ(out[i], in[i] + 100);
     }
 }
 
 TEST_F(Draw, vertex_shader_multi_array_add) {
+    Shader shader;
+    int32_t count = 32;
     int i = 0;
-    uint32_t binary[SHADER_BINARY_SIZE];
-    load_shader("multi_array_add.vs", binary);
+    uint32_t *in1 = (uint32_t *)malloc(count * 4);
+    uint32_t *in2 = (uint32_t *)malloc(count * 4);
+    uint32_t *out = (uint32_t *)malloc(count * 4);
 
-    struct addlayout {
-        uint64_t input1;
-        uint64_t input2;
-        uint64_t output;
-    };
-    struct addlayout *layout = (struct addlayout *)malloc(sizeof(struct addlayout));
-    layout->input1 = (uint64_t)malloc(100);
-    layout->input2 = (uint64_t)malloc(100);
-    layout->output = (uint64_t)malloc(100);
-    rvgpu_command_vs cs_vs = {};
-    cs_vs.vertex_count = 32;
-    cs_vs.layout = (uint64_t)layout;
-    cs_vs.shader = (uint64_t)binary;
+    shader.SetupShaderBinary("multi_array_add.vs");
+    shader.SetupIO(0, (uint64_t)in1);
+    shader.SetupIO(1, (uint64_t)in2);
+    shader.SetupIO(2, (uint64_t)out);
 
-    vertex_command(cs_vs);
-    end_command();
-
-    // input of data
-    int *in1 = (int *)layout->input1;
-    int *in2 = (int *)layout->input2;
-    for (i=0; i<32; i++) {
+    for (i=0; i<count; i++) {
         in1[i] = i * 100;
-        in2[i] = i * 23;
+        in2[i] = i + 34;
+        out[i] = 5678;   // test of array[i] + array[i];
     }
+
+    vertex_command(count, (uint64_t)shader.binary, (uint64_t)shader.layout);
+    end_command();
 
     run();
 
-    int *out = (int *)layout->output;
-    for (i=0; i<16; i++) {
+    for (i=0; i<count; i++) {
         EXPECT_EQ(out[i], in1[i] + in2[i]);
     }
 }
 
 TEST_F(Draw, vertex_shader_multi_array_mul) {
+    Shader shader;
+    int32_t count = 32;
     int i = 0;
-    uint32_t binary[SHADER_BINARY_SIZE];
-    load_shader("multi_array_mul.vs", binary);
+    uint32_t *in1 = (uint32_t *)malloc(count * 4);
+    uint32_t *in2 = (uint32_t *)malloc(count * 4);
+    uint32_t *out = (uint32_t *)malloc(count * 4);
 
-    struct addlayout {
-        uint64_t input1;
-        uint64_t input2;
-        uint64_t output;
-    };
-    struct addlayout *layout = (struct addlayout *)malloc(sizeof(struct addlayout));
-    layout->input1 = (uint64_t)malloc(100);
-    layout->input2 = (uint64_t)malloc(100);
-    layout->output = (uint64_t)malloc(100);
-    rvgpu_command_vs cs_vs = {};
-    cs_vs.vertex_count = 32;
-    cs_vs.layout = (uint64_t)layout;
-    cs_vs.shader = (uint64_t)binary;
+    shader.SetupShaderBinary("multi_array_mul.vs");
+    shader.SetupIO(0, (uint64_t)in1);
+    shader.SetupIO(1, (uint64_t)in2);
+    shader.SetupIO(2, (uint64_t)out);
 
-    vertex_command(cs_vs);
-    end_command();
-
-    // input of data
-    int *in1 = (int *)layout->input1;
-    int *in2 = (int *)layout->input2;
-    for (i=0; i<32; i++) {
+    for (i=0; i<count; i++) {
         in1[i] = i * 100;
-        in2[i] = i * 43;
+        in2[i] = i + 34;
+        out[i] = 5678;
     }
+
+    vertex_command(count, (uint64_t)shader.binary, (uint64_t)shader.layout);
+    end_command();
 
     run();
 
-    int *out = (int *)layout->output;
-    for (i=0; i<16; i++) {
+    for (i=0; i<count; i++) {
         EXPECT_EQ(out[i], in1[i] * in2[i]);
     }
 }
