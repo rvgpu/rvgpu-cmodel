@@ -32,6 +32,7 @@ enum message_type {
 typedef struct {
     uint32_t target;
     enum message_type msg;
+    uint64_t shader;
     uint32_t start;
     uint32_t count;
     uint64_t desc;

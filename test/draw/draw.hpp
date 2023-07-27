@@ -15,8 +15,8 @@ protected:
     void TearDown() override {
     }
 
-    void vertex_command(command_stream_vs cs_vs) {
-        commands.push_back(command_stream {.type = CS_TYPE_VS, .cmd = {cs_vs}});
+    void vertex_command(uint64_t binary, command_stream_vs cs_vs) {
+        commands.push_back(command_stream {.type = CS_TYPE_VS, .shader = (uint64_t)binary, .cmd = {cs_vs}});
     }
 
     void end_command() {

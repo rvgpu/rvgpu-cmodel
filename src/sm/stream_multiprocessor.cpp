@@ -35,8 +35,7 @@ sm::sm() {
 void sm::run_vs(message msg) {
     printf("[SM] receive message VS: %d %d\n", msg.start, msg.count);
     printf("[SM] SP is: %p\n", sp);
-    cs_vs_desc *desc = (cs_vs_desc *)msg.desc;
-    pc = desc->shader;
+    pc = msg.shader;
     p->init_register(2, (uint64_t)sp);
     p->init_register(10, msg.desc);
     p->init_register(11, msg.start);

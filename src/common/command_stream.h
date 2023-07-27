@@ -38,7 +38,6 @@
 typedef struct {
     uint64_t input;
     uint64_t output;
-    uint64_t shader;
 } cs_vs_desc;
 
 enum cs_type {
@@ -54,6 +53,7 @@ typedef struct {
 
 typedef struct {
     enum cs_type type;
+    uint64_t shader;
     union {
         command_stream_vs vs;
     } cmd;

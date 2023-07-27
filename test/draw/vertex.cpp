@@ -13,12 +13,11 @@ TEST_F(Draw, vertex_shader_add) {
     cs_vs_desc *vs = (cs_vs_desc *)malloc(sizeof(cs_vs_desc));
     vs->input = (uint64_t)malloc(100);
     vs->output = (uint64_t)malloc(100);
-    vs->shader = (uint64_t)binary;
     command_stream_vs cs_vs = {};
     cs_vs.vertex_count = 16;
     cs_vs.desc = (uint64_t)vs;
 
-    vertex_command(cs_vs);
+    vertex_command((uint64_t)binary, cs_vs);
     end_command();
 
     // input of data
