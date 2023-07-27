@@ -25,21 +25,21 @@
 
 #include  <stdint.h>
 
-enum cs_type {
-    CS_TYPE_VS = 1,
-    CS_TYPE_FS = 2,
-    CS_TYPE_END = 3,
-};
+typedef enum {
+    RVGPU_COMMAND_TYPE_VS = 1,
+    RVGPU_COMMAND_TYPE_FS = 2,
+    RVGPU_COMMAND_TYPE_END = 3,
+} rvgpu_command_type;
 
 typedef struct {
     uint32_t vertex_count;
     uint64_t shader;
     uint64_t layout;
-} command_stream_vs;
+} rvgpu_command_vs;
 
 typedef struct {
-    enum cs_type type;
+    rvgpu_command_type type;
     union {
-        command_stream_vs vs;
+        rvgpu_command_vs vs;
     } cmd;
-} command_stream;
+} rvgpu_command;

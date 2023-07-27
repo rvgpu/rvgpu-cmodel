@@ -30,11 +30,11 @@ rvgpu::rvgpu() {
     m_sm = new sm();
 }
 
-void rvgpu::run(uint64_t cmd) {
-    command_stream *cs = (command_stream *)cmd;
+void rvgpu::run(uint64_t cmds) {
+    rvgpu_command *cs = (rvgpu_command *)cmds;
     std::vector<message> msg;
-    if (cs->type == CS_TYPE_VS) {
-        command_stream_vs vs = cs->cmd.vs;
+    if (cs->type == RVGPU_COMMAND_TYPE_VS) {
+        rvgpu_command_vs vs = cs->cmd.vs;
 
         for (uint32_t i=0; i<vs.vertex_count; i++) {  // one vertex on one sm now
             message tmsg = {};

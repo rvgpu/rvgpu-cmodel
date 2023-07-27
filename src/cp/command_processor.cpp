@@ -27,6 +27,6 @@
 command_processor::command_processor() {
 }
 
-void command_processor::run(command_stream cmd) {
+void command_processor::run(rvgpu_command cmds) {
 
 }

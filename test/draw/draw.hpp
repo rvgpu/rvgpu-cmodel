@@ -15,12 +15,12 @@ protected:
     void TearDown() override {
     }
 
-    void vertex_command(command_stream_vs cs_vs) {
-        commands.push_back(command_stream {.type = CS_TYPE_VS, .cmd = {cs_vs}});
+    void vertex_command(rvgpu_command_vs cs_vs) {
+        commands.push_back(rvgpu_command {.type = RVGPU_COMMAND_TYPE_VS, .cmd = {cs_vs}});
     }
 
     void end_command() {
-        commands.push_back(command_stream {.type = CS_TYPE_END, .cmd = {}});
+        commands.push_back(rvgpu_command {.type = RVGPU_COMMAND_TYPE_END, .cmd = {}});
     }
 
     void run() {
@@ -50,5 +50,5 @@ protected:
 
 private:
     rvgpu *gpu;
-    std::vector<command_stream> commands;
+    std::vector<rvgpu_command> commands;
 };

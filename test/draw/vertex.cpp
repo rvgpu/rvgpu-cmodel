@@ -17,7 +17,7 @@ TEST_F(Draw, vertex_shader_array_add) {
     struct addlayout *layout = (struct addlayout *)malloc(sizeof(struct addlayout));
     layout->input = (uint64_t)malloc(100);
     layout->output = (uint64_t)malloc(100);
-    command_stream_vs cs_vs = {};
+    rvgpu_command_vs cs_vs = {};
     cs_vs.vertex_count = 16;
     cs_vs.layout = (uint64_t)layout;
     cs_vs.shader = (uint64_t)binary;
@@ -53,7 +53,7 @@ TEST_F(Draw, vertex_shader_multi_array_add) {
     layout->input1 = (uint64_t)malloc(100);
     layout->input2 = (uint64_t)malloc(100);
     layout->output = (uint64_t)malloc(100);
-    command_stream_vs cs_vs = {};
+    rvgpu_command_vs cs_vs = {};
     cs_vs.vertex_count = 32;
     cs_vs.layout = (uint64_t)layout;
     cs_vs.shader = (uint64_t)binary;

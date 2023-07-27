@@ -31,7 +31,7 @@ class rvgpu;
 class command_processor {
 public:
     command_processor();
-    void run(command_stream cmd);
+    void run(rvgpu_command cmdstream);
 
 private:
 };
