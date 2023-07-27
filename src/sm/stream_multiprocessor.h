@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "top/message.h"
+#include "common/message.h"
 #include "compute_unit.h"
 
 class sm {

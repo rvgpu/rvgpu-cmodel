@@ -22,9 +22,9 @@
  */
 
 #include <cassert>
-#include "cp/command_stream.h"
-#include "compute_unit.h"
 #include "common/inst_constant.h"
+#include "common/command_stream.h"
+#include "compute_unit.h"
 
 insn_fetch_t compute_unit::load_insn(reg_t pc) {
     auto insn = (insn_bits_t) (m_mmu->load<uint32_t>(pc));

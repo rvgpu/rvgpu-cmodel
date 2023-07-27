@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-#include "top/message.h"
+#include "common/message.h"
 #include "command_processor.h"
 
 command_processor::command_processor() {

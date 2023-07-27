@@ -28,7 +28,7 @@
 #include <cstdio>
 #include <vector>
 
-#include "top/message.h"
+#include "common/message.h"
 
 #include "decoder.h"
 #include "mmu.h"

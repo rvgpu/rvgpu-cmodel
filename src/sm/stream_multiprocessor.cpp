@@ -22,7 +22,7 @@
  */
 
 #include <cstdio>
-#include "cp/command_stream.h"
+#include "common/command_stream.h"
 #include "stream_multiprocessor.h"
 
 sm::sm() {

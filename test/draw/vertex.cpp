@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "top/rvgpu.h"
-#include "cp/command_stream.h"
+#include "common/command_stream.h"
 #include "read_asm.hpp"
 
 TEST(Draw, Draw_add) {

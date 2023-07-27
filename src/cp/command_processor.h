@@ -23,8 +23,8 @@
 
 #pragma once
 
+#include "common/command_stream.h"
 #include "sm/compute_unit.h"
-#include "cp/command_stream.h"
 
 class rvgpu;
 
