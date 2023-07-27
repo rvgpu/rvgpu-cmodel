@@ -42,11 +42,11 @@ void sm::run_vs(message msg) {
     p->init_register(11, msg.start);
 
     printf("Run Instruction:\n");
-    do {
+    while(pc != 0) {
         fetch = p->load_insn(pc);
         next_pc = p->execute_insn(pc, fetch);
         pc = next_pc;
-    } while (1);
+    };
 }
 
 void sm::run(message msg) {

@@ -13,7 +13,8 @@ TEST(Draw, Draw_add) {
     vs->output = (uint64_t)malloc(100);
     vs->shader = (uint64_t)add_vs;
     int *in = (int *)vs->input;
-    for (int i=0; i<16; i++) {
+    int i = 0;
+    for (i=0; i<16; i++) {
         in[i] = i * 100;
     }
 
@@ -28,5 +29,8 @@ TEST(Draw, Draw_add) {
 
     rvgpu.run((uint64_t)cs.data());
 
-    EXPECT_STRNE("Hello", "gtest");
+    int *out = (int *)vs->output;
+    for (i=0; i<16; i++) {
+        EXPECT_EQ(out[i], in[i] + 100);
+    }
 }
