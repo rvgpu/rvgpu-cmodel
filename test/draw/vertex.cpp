@@ -2,16 +2,18 @@
 
 #include "top/rvgpu.h"
 #include "cp/command_stream.h"
+#include "read_asm.hpp"
 
 TEST(Draw, Draw_add) {
-    #include "add.vs"
+    uint32_t binary[1000];
+    read_asm_file("add.vs", binary);
 
     rvgpu rvgpu;
 
     cs_vs_desc *vs = (cs_vs_desc *)malloc(sizeof(cs_vs_desc));
     vs->input = (uint64_t)malloc(100);
     vs->output = (uint64_t)malloc(100);
-    vs->shader = (uint64_t)add_vs;
+    vs->shader = (uint64_t)binary;
     int *in = (int *)vs->input;
     int i = 0;
     for (i=0; i<16; i++) {

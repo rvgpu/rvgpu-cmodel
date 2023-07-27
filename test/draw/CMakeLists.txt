@@ -5,6 +5,7 @@ function(rvsim_test_draw testname)
     target_include_directories(${testcase} PRIVATE ${project_top_path}/src)
     target_include_directories(${testcase} PRIVATE ${project_top_path}/test)
     target_include_directories(${testcase} PRIVATE ${project_top_path}/test/draw)
+    target_include_directories(${testcase} PRIVATE ${PROJECT_BINARY_DIR}/src)
     add_test(NAME ${testcase} COMMAND ${testcase})
 endfunction()
 
