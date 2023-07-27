@@ -1,15 +1,15 @@
 typedef struct {
     unsigned long input;
     unsigned long output;
-} this_layout;
+} io;
 
-long vs_main(long descptr, long vid)
+long vs_main(long layout, long vid)
 {
     int *input;
     int *output;
 
     // Global pointer 
-    this_layout *desc = (this_layout *)descptr;
+    io *desc = (io *)layout;
     input = (int *)desc->input;
     output = (int *)desc->output;
 

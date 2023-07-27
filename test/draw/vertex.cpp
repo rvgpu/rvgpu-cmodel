@@ -5,10 +5,10 @@
 
 #include "draw.hpp"
 
-TEST_F(Draw, vertex_shader_add) {
+TEST_F(Draw, vertex_shader_array_add) {
     int i = 0;
     uint32_t binary[SHADER_BINARY_SIZE];
-    load_shader("add.vs", binary);
+    load_shader("array_add.vs", binary);
 
     struct addlayout {
         uint64_t input;
