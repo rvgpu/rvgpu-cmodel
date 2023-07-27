@@ -2,3 +2,4 @@
 build
 install
 cmake-build-debug
+cscope*
