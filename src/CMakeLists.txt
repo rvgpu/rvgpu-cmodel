@@ -1,6 +1,8 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 add_compile_options(-fPIC)
+
+add_subdirectory(common)
 add_subdirectory(insns)
 add_subdirectory(sm)
 add_subdirectory(cp)
