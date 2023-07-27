@@ -1,13 +1,13 @@
-#include "../../../src/cs/cmd_stream.h"
-
-int *input;
-int *output;
+#include "../../../src/cp/command_stream.h"
 
 //                a0            a1
 long vs_main(long descptr, long vid)
 {
+    int *input;
+    int *output;
+
     // Global pointer 
-    cmd_stream_vs *desc = (cmd_stream_vs *)descptr;
+    cs_vs_desc *desc = (cs_vs_desc *)descptr;
     input = (int *)desc->input;
     output = (int *)desc->output;
 
