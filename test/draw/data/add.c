@@ -1,13 +1,15 @@
-#include "../../../src/cp/command_stream.h"
+typedef struct {
+    unsigned long input;
+    unsigned long output;
+} this_layout;
 
-//                a0            a1
 long vs_main(long descptr, long vid)
 {
     int *input;
     int *output;
 
     // Global pointer 
-    cs_vs_desc *desc = (cs_vs_desc *)descptr;
+    this_layout *desc = (this_layout *)descptr;
     input = (int *)desc->input;
     output = (int *)desc->output;
 
