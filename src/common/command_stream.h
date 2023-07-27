@@ -25,21 +25,6 @@
 
 #include  <stdint.h>
 
-/*
- * +-----------------+
- * | cmd_type        |
- * | desc            |  ------------>   command_desc
- * +-----------------+
- * | cmd_type        |
- * | desc            |  ------------>   command_desc
- * +-----------------+
- */
-
-typedef struct {
-    uint64_t input;
-    uint64_t output;
-} cs_vs_desc;
-
 enum cs_type {
     CS_TYPE_VS = 1,
     CS_TYPE_FS = 2,
@@ -48,12 +33,12 @@ enum cs_type {
 
 typedef struct {
     uint32_t vertex_count;
-    uint64_t desc;
+    uint64_t shader;
+    uint64_t layout;
 } command_stream_vs;
 
 typedef struct {
     enum cs_type type;
-    uint64_t shader;
     union {
         command_stream_vs vs;
     } cmd;

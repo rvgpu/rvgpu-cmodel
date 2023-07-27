@@ -35,5 +35,5 @@ typedef struct {
     uint64_t shader;
     uint32_t start;
     uint32_t count;
-    uint64_t desc;
+    uint64_t layout;
 } message;

@@ -37,7 +37,7 @@ void sm::run_vs(message msg) {
     printf("[SM] SP is: %p\n", sp);
     pc = msg.shader;
     p->init_register(2, (uint64_t)sp);
-    p->init_register(10, msg.desc);
+    p->init_register(10, msg.layout);
     p->init_register(11, msg.start);
 
     printf("Run Instruction:\n");

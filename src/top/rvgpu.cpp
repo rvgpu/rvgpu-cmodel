@@ -40,10 +40,10 @@ void rvgpu::run(uint64_t cmd) {
             message tmsg = {};
             tmsg.target = 0; // message send to sm[0]
             tmsg.msg = CMD_MESSAGE_START_CU_VS;
-            tmsg.shader = cs->shader;
+            tmsg.shader = vs.shader;
             tmsg.start = i;
             tmsg.count = 1;
-            tmsg.desc = vs.desc;
+            tmsg.layout = vs.layout;
             msg.push_back(std::move(tmsg));
         }
     }
