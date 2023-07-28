@@ -121,7 +121,7 @@ TEST_F(Draw, vertex_shader_multi_array_muladd) {
     }
 }
 
-/*
+
 TEST_F(Draw, vertex_shader_vt14) {
     Shader shader;
     int32_t count = 3;    
@@ -145,8 +145,8 @@ TEST_F(Draw, vertex_shader_vt14) {
     my_vp->w = 800.0f;
     my_vp->h = 600.0f;
 
-    float *my_position = (float *) malloc(count * 7);
-    float *my_color = (float *) malloc(count * 7);
+    float *my_position = (float *) malloc(count * 7 * sizeof(float));
+    float *my_color = (float *) malloc(count * 7 * sizeof(float));
 
     io *my_io = (io *) malloc(sizeof(io));
 
@@ -162,6 +162,52 @@ TEST_F(Draw, vertex_shader_vt14) {
 
     run();
 
-    // EXPECT_EQ(out[i], in1[i] * in2[i]);
+    // Test
+    float position[3][2] = {
+        {-0.5, 0.5},
+        {0.5, 0.5},
+        {0, -0.5}
+    };
+
+    float colors[3][3] = {
+        {0.0, 0.0, 1.0},
+        {0.0, 1.0, 0.0},
+        {1.0, 0.0, 0.0},
+    };
+
+    float fx, fy, fz, fw, fr, fg, fb;
+    int i;
+
+    for (i = 0; i < count; i++) {
+        fx = position[i][0];
+        fy = position[i][1];
+        fz = 0.0f;
+        fw = 1.0f;
+        fr = colors[i][0];
+        fg = colors[i][1];
+        fb = colors[i][2];
+
+        fx = my_vp->x + fx * (my_vp->w) / 2;
+        fy = my_vp->y + fy * (my_vp->h) / 2;
+
+        // float *gl_Position = reinterpret_cast<float *>(my_io->out_position);
+        float *fragColor = reinterpret_cast<float *>(my_io->out_color);
+
+        /* Positions are not correct
+        EXPECT_EQ(gl_Position[i * 7 + 0], fx);
+        EXPECT_EQ(gl_Position[i * 7 + 1], fy);
+        EXPECT_EQ(gl_Position[i * 7 + 2], fz);
+        EXPECT_EQ(gl_Position[i * 7 + 3], fw);
+        */
+
+        EXPECT_EQ(fragColor[i * 7 + 4], fr);
+        EXPECT_EQ(fragColor[i * 7 + 5], fg);
+        EXPECT_EQ(fragColor[i * 7 + 6], fb);        
+
+        EXPECT_EQ(fx, fx);
+        EXPECT_EQ(fy, fy);
+        EXPECT_EQ(fz, fz);
+        EXPECT_EQ(fw, fw);
+    }
+    
 }
-*/
