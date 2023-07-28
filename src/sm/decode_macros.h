@@ -19,6 +19,9 @@
 #define READ_FREG_F(reg) f32(READ_FREG(reg))
 #define READ_FREG_D(reg) f64(READ_FREG(reg))
 
+#define FRS1 READ_FREG(insn.rs1())
+#define FRS2 READ_FREG(insn.rs2())
+#define FRS3 READ_FREG(insn.rs3())
 #define FRS1_F READ_FREG_F(insn.rs1())
 #define FRS1_D READ_FREG_D(insn.rs1())
 #define FRS2_F READ_FREG_F(insn.rs2())
