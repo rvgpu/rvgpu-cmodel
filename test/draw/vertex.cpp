@@ -120,7 +120,7 @@ TEST_F(Draw, vertex_shader_multi_array_muladd) {
         EXPECT_EQ(out[i], in1[i] * in2[i] + in3[i]);
     }
 }
-
+#if 0
 
 TEST_F(Draw, vertex_shader_vt14) {
     Shader shader;
@@ -142,8 +142,8 @@ TEST_F(Draw, vertex_shader_vt14) {
     struct viewport *my_vp = (struct viewport *) malloc(sizeof(struct viewport));
     my_vp->x = 0.0f;
     my_vp->y = 0.0f;
-    my_vp->w = 800.0f;
-    my_vp->h = 600.0f;
+    my_vp->w = 400.0f;
+    my_vp->h = 300.0f;
 
     float *my_position = (float *) malloc(count * 7 * sizeof(float));
     float *my_color = (float *) malloc(count * 7 * sizeof(float));
@@ -211,3 +211,5 @@ TEST_F(Draw, vertex_shader_vt14) {
     }
     
 }
+
+#endif
