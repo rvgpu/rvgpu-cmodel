@@ -7,6 +7,8 @@ set(SM_FILES
         isa_parser.h
         stream_multiprocessor.h
         stream_multiprocessor.cpp
-        f32_mul.cpp)
+        f32_add.cpp
+        f32_mul.cpp
+        f32_div.cpp)
 
 add_library(sm OBJECT ${SM_FILES})

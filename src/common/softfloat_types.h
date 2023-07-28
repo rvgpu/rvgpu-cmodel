@@ -20,7 +20,8 @@ typedef struct { uint32_t v; } float32_t;
 typedef struct { uint64_t v; } float64_t;
 typedef struct { uint64_t v[2]; } float128_t;
 
+float32_t f32_add(float32_t a, float32_t b);
 float32_t f32_mul(float32_t a, float32_t b);
-float64_t f64_mul(float64_t a, float64_t b);
+float32_t f32_div(float32_t a, float32_t b);
 
 #endif //RVGSIM_SOFTFLOAT_TYPES_H
