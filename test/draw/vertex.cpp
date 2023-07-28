@@ -120,3 +120,48 @@ TEST_F(Draw, vertex_shader_multi_array_muladd) {
         EXPECT_EQ(out[i], in1[i] * in2[i] + in3[i]);
     }
 }
+
+/*
+TEST_F(Draw, vertex_shader_vt14) {
+    Shader shader;
+    int32_t count = 3;    
+
+    struct viewport {
+        float x;
+        float y;
+        float w;
+        float h;
+    };
+
+    typedef struct {
+        unsigned long vp;
+        unsigned long out_position;
+        unsigned long out_color;
+    } io;
+
+    struct viewport *my_vp = (struct viewport *) malloc(sizeof(struct viewport));
+    my_vp->x = 0.0f;
+    my_vp->y = 0.0f;
+    my_vp->w = 800.0f;
+    my_vp->h = 600.0f;
+
+    float *my_position = (float *) malloc(count * 7);
+    float *my_color = (float *) malloc(count * 7);
+
+    io *my_io = (io *) malloc(sizeof(io));
+
+    my_io->vp = reinterpret_cast<unsigned long>(my_vp);
+    my_io->out_position = reinterpret_cast<unsigned long>(my_position);
+    my_io->out_color = reinterpret_cast<unsigned long>(my_color);
+
+    shader.SetupShaderBinary("vertex_shader_vt14.vs");
+
+    vertex_command(count, (uint64_t)shader.binary, (uint64_t)my_io);
+
+    end_command();
+
+    run();
+
+    // EXPECT_EQ(out[i], in1[i] * in2[i]);
+}
+*/
