@@ -120,7 +120,6 @@ TEST_F(Draw, vertex_shader_multi_array_muladd) {
         EXPECT_EQ(out[i], in1[i] * in2[i] + in3[i]);
     }
 }
-#if 0
 
 TEST_F(Draw, vertex_shader_vt14) {
     Shader shader;
@@ -187,18 +186,16 @@ TEST_F(Draw, vertex_shader_vt14) {
         fg = colors[i][1];
         fb = colors[i][2];
 
-        fx = my_vp->x + fx * (my_vp->w) / 2;
-        fy = my_vp->y + fy * (my_vp->h) / 2;
+        fx = my_vp->x + fx * (my_vp->w);
+        fy = my_vp->y + fy * (my_vp->h);
 
-        // float *gl_Position = reinterpret_cast<float *>(my_io->out_position);
+        float *gl_Position = reinterpret_cast<float *>(my_io->out_position);
         float *fragColor = reinterpret_cast<float *>(my_io->out_color);
 
-        /* Positions are not correct
         EXPECT_EQ(gl_Position[i * 7 + 0], fx);
         EXPECT_EQ(gl_Position[i * 7 + 1], fy);
         EXPECT_EQ(gl_Position[i * 7 + 2], fz);
         EXPECT_EQ(gl_Position[i * 7 + 3], fw);
-        */
 
         EXPECT_EQ(fragColor[i * 7 + 4], fr);
         EXPECT_EQ(fragColor[i * 7 + 5], fg);
@@ -212,4 +209,3 @@ TEST_F(Draw, vertex_shader_vt14) {
     
 }
 
-#endif
