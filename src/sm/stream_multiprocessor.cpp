@@ -28,8 +28,8 @@
 sm::sm() {
     auto isa_parser = new isa_parser_t("RV64IMAFD");
     p = new compute_unit(isa_parser);
-    sp = (uint32_t*) malloc(2000 * sizeof (uint32_t));
-    sp = sp + 100;
+    sp = (uint32_t*) malloc(5000 * sizeof (uint32_t));
+    sp = sp + 2000;
 }
 
 void sm::run_vs(message msg) {
