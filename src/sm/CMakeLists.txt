@@ -9,6 +9,7 @@ set(SM_FILES
         stream_multiprocessor.cpp
         f32_add.cpp
         f32_mul.cpp
-        f32_div.cpp)
+        f32_div.cpp
+        f32_mulAdd.cpp)
 
 add_library(sm OBJECT ${SM_FILES})

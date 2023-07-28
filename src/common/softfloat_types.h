@@ -23,5 +23,6 @@ typedef struct { uint64_t v[2]; } float128_t;
 float32_t f32_add(float32_t a, float32_t b);
 float32_t f32_mul(float32_t a, float32_t b);
 float32_t f32_div(float32_t a, float32_t b);
+float32_t f32_mulAdd(float32_t a, float32_t b, float32_t c);
 
 #endif //RVGSIM_SOFTFLOAT_TYPES_H

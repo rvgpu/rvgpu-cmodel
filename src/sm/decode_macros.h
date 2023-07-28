@@ -26,6 +26,8 @@
 #define FRS1_D READ_FREG_D(insn.rs1())
 #define FRS2_F READ_FREG_F(insn.rs2())
 #define FRS2_D READ_FREG_D(insn.rs2())
+#define FRS3_F READ_FREG_F(insn.rs3())
+#define FRS3_D READ_FREG_D(insn.rs3())
 
 #define WRITE_FREG(reg, value) do { \
     freg_t wdata = freg(value); \
