@@ -1,71 +1,66 @@
 #include <gtest/gtest.h>
 
-#include "sm/compute_unit.h"
+#include "sp/stream_processor.hpp"
 
 #define STACK_SIZE  2000
+#define REG_x0  0
+#define REG_ra  1
+#define REG_sp  2
+#define REG_gp  3
+#define REG_tp  4
+#define REG_t0  5
+#define REG_t1  6
+#define REG_t2  7
+#define REG_fp  8
+#define REG_s1  9
+#define REG_a0  10
+#define REG_a1  11
+#define REG_a2  12
+#define REG_a3  13
+#define REG_a4  14
+#define REG_a5  15
+#define REG_a6  16
+#define REG_a7  17
+#define REG_s2  18
+#define REG_s3  19
+#define REG_s4  20
+#define REG_s5  21
+#define REG_s6  22
+#define REG_s7  23
+#define REG_s8  24
+#define REG_s9  25
+#define REG_s10 26
+#define REG_s11 27
+#define REG_t3  28
+#define REG_t4  29
+#define REG_t5  30
+#define REG_t6  31
+
+
 
 class ut_insns : public ::testing::Test {
 protected:
-    void LoadInst() {
-        pc = (uint64_t)insts.data();
-        fetch = p->load_insn(pc);
+    void SetUp() override {
+        m_sp = new stream_processor();
+    }
+    void TearDown() override {
+        delete m_sp;
+    }
+
+    void SetIReg(uint32_t id, uint64_t data) {
+        m_sp->m_reg->write_ireg<uint64_t>(0, id, data);
+    }
+
+    uint64_t GetIReg(uint32_t id) {
+        return m_sp->m_reg->read_ireg(0, id);
     }
 
     void ExecuateInst() {
-        next_pc = p->execute_insn(pc, fetch);
+        insts.push_back(0x00008067); // push ret
+        m_sp->setup((uint64_t)insts.data(), 0, 0, 0);
+        m_sp->run();
     }
 
-    [[nodiscard]] uint64_t Getpc() const {
-        return pc;
-    }
-
-    [[nodiscard]] uint64_t GetNextpc() const {
-        return next_pc;
-    }
-
-    void SetspHighToMMU() {
-        uint64_t sp_high = (uint64_t)sp & (0xffffffffLU << 32U);
-        MMU.set_base_addr(sp_high);
-    }
-
-    void CheckDecoderRegister(uint32_t rd, uint32_t rs1, uint32_t rs2) {
-        EXPECT_EQ(fetch.insn.rd(), rd);
-        EXPECT_EQ(fetch.insn.rs1(), rs1);
-        EXPECT_EQ(fetch.insn.rs2(), rs2);
-    }
-
-    compute_unit *p;
+    stream_processor *m_sp;
     std::vector<uint32_t> insts;
-
-    uint64_t pc;
-    uint64_t next_pc;
-    insn_fetch_t fetch;
-    uint32_t *sp;
-};
-
-class ut_rv32_insns : public ut_insns {
-protected:
-    void SetUp() override {
-        auto isa_parser = new isa_parser_t("RV32I");
-        p = new class compute_unit(isa_parser);
-        sp = (uint32_t*) malloc(STACK_SIZE * sizeof (uint32_t));
-        SetspHighToMMU();
-    }
-    void TearDown() override {
-        delete p;
-        free(sp);
-    }
-};
-
-class ut_rv64_insns : public ut_insns {
-protected:
-    void SetUp() override {
-        auto isa_parser = new isa_parser_t("RV64IMAFD");
-        p = new class compute_unit(isa_parser);
-        sp = (uint32_t*) malloc(STACK_SIZE * sizeof (uint32_t));
-    }
-    void TearDown() override {
-        delete p;
-        free(sp);
-    }
 };

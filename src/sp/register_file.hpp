@@ -24,8 +24,6 @@
 #pragma once
 #include <stdint.h>
 
-#include "common/configs.h"
-
 class register_file {
 public:
     register_file() {

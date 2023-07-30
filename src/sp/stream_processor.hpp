@@ -32,6 +32,7 @@
 #include "load_store.hpp"
 #include "decoder.hpp"
 
+class ut_insns;
 // Stream Processor: A simt-x processor
 
 class stream_processor {
@@ -53,4 +54,6 @@ private:
 
     uint64_t execuator(inst_issue inst);
     uint64_t branch(inst_issue inst);
+
+    friend ut_insns;
 };
