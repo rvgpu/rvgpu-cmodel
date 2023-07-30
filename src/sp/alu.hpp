@@ -23,24 +23,34 @@
 
 #pragma once
 
-#include "common/message.h"
-#include "sp/stream_processor.hpp"
-#include "compute_unit.h"
+#include "encoding.hpp"
+#include "inst_issue.hpp"
 
-class sm {
+class alu {
 public:
-    sm();
-    void run(message msg);
-    void run_vs(message msg);
+    alu();
+
+    uint64_t run(inst_issue instruction);
 
 private:
-    stream_processor *m_sp;
+    inst_issue inst;
 
-    compute_unit *p;
-    std::vector<uint32_t> insts;
-
-    uint64_t pc;
-    uint64_t next_pc;
-    insn_fetch_t fetch;
-    uint32_t *sp;
+    uint64_t add();
+    uint64_t addi();
+    uint64_t addiw();
+    uint64_t addw();
+    uint64_t auipc();
+    uint64_t beq();
+    uint64_t bgeu();
+    uint64_t bltu();
+    uint64_t bne();
+    uint64_t mulw();
+    uint64_t sltu();
+    uint64_t slliw();
+    uint64_t slli();
+    uint64_t slt();
+    uint64_t andi();
+    uint64_t ori();
+    uint64_t xori();
+    uint64_t OR();
 };

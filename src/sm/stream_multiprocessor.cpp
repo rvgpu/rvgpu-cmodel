@@ -27,6 +27,7 @@
 
 sm::sm() {
     auto isa_parser = new isa_parser_t("RV64IMAFD");
+    m_sp = new stream_processor();
     p = new compute_unit(isa_parser);
     sp = (uint32_t*) malloc(5000 * sizeof (uint32_t));
     sp = sp + 2000;
@@ -34,7 +35,10 @@ sm::sm() {
 
 void sm::run_vs(message msg) {
     printf("[SM] receive message VS: %d %d\n", msg.start, msg.count);
-    printf("[SM] SP is: %p\n", sp);
+
+    m_sp->setup(msg.shader, msg.layout, msg.start, 1);
+    m_sp->run();
+#if 0
     pc = msg.shader;
     p->init_register(2, (uint64_t)sp);
     p->init_register(10, msg.layout);
@@ -46,6 +50,7 @@ void sm::run_vs(message msg) {
         next_pc = p->execute_insn(pc, fetch);
         pc = next_pc;
     };
+#endif
 }
 
 void sm::run(message msg) {

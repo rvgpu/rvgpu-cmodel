@@ -21,26 +21,33 @@
  * IN THE SOFTWARE.
  */
 
-#pragma once
+#include "decoder.hpp"
 
-#include "common/message.h"
-#include "sp/stream_processor.hpp"
-#include "compute_unit.h"
+#define IN_DECODER
+#include "encoding.hpp"
 
-class sm {
-public:
-    sm();
-    void run(message msg);
-    void run_vs(message msg);
+dec::dec() {
 
-private:
-    stream_processor *m_sp;
+}
 
-    compute_unit *p;
-    std::vector<uint32_t> insts;
+inst_issue dec::decode_inst(uint32_t instcode) {
+    inst_issue to_issue;
 
-    uint64_t pc;
-    uint64_t next_pc;
-    insn_fetch_t fetch;
-    uint32_t *sp;
-};
+    to_issue.bits = instcode;
+    to_issue.code = encoding::match(instcode);
+    to_issue.type = to_issue.code & encoding::INST_TYPE_MASK;
+
+    bits = instcode;
+    to_issue.rd = xget(7, 5);
+    to_issue.rs1_id = xget(15, 5);
+    to_issue.rs2_id = xget(20, 5);
+    to_issue.rs3_id = xget(27, 5);
+
+    to_issue.u_imm = int64_t(xsget(12, 20) << 12);
+    to_issue.i_imm = int64_t(xsget(20, 12));
+    to_issue.s_imm = xget(7, 5) + (xsget(25, 7) << 5);
+    to_issue.sb_imm = (xget(8, 4) << 1) + (xget(25, 6) << 5) + (xget(7, 1) << 11) + (imm_sign() << 12);
+    to_issue.uj_imm = (xget(21, 10) << 1) + (xget(20, 1) << 11) + (xget(12, 8) << 12) + (imm_sign() << 20);
+
+    return to_issue;
+}

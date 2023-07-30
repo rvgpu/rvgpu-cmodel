@@ -22,25 +22,39 @@
  */
 
 #pragma once
+#include <stdint.h>
 
-#include "common/message.h"
-#include "sp/stream_processor.hpp"
-#include "compute_unit.h"
+#include "common/configs.h"
 
-class sm {
+class register_file {
 public:
-    sm();
-    void run(message msg);
-    void run_vs(message msg);
+    register_file() {
+        ireg[0][0] = 0;
+    };
+
+    template<typename T>
+    void write_ireg(uint32_t warp, uint32_t id, T data) {
+        if (id != 0) {
+            uint64_t regaddr = (uint64_t) &(ireg[warp][id]);
+            *(T *) regaddr = data;
+        }
+    }
+
+    uint64_t read_ireg(uint32_t warp, uint32_t id) {
+        if (id > 32) { return 0; }
+        return ireg[warp][id];
+    }
+
+    void write_freg(uint32_t warp, uint32_t id, uint64_t data) {
+        freg[warp][id] = data;
+    }
+
+    uint64_t read_freg(uint32_t warp, uint32_t id) {
+        if (id > 32) { return 0; }
+        return freg[warp][id];
+    }
 
 private:
-    stream_processor *m_sp;
-
-    compute_unit *p;
-    std::vector<uint32_t> insts;
-
-    uint64_t pc;
-    uint64_t next_pc;
-    insn_fetch_t fetch;
-    uint32_t *sp;
+    uint64_t ireg[1][32];
+    uint64_t freg[1][32];
 };

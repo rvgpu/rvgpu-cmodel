@@ -21,26 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-#pragma once
+#include "flu.hpp"
 
-#include "common/message.h"
-#include "sp/stream_processor.hpp"
-#include "compute_unit.h"
-
-class sm {
-public:
-    sm();
-    void run(message msg);
-    void run_vs(message msg);
-
-private:
-    stream_processor *m_sp;
-
-    compute_unit *p;
-    std::vector<uint32_t> insts;
-
-    uint64_t pc;
-    uint64_t next_pc;
-    insn_fetch_t fetch;
-    uint32_t *sp;
-};
+flu::flu() {
+}

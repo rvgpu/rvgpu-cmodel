@@ -21,26 +21,20 @@
  * IN THE SOFTWARE.
  */
 
-#pragma once
+#ifndef RVGSIM_WARP_SCHEDULE_H
+#define RVGSIM_WARP_SCHEDULE_H
 
-#include "common/message.h"
-#include "sp/stream_processor.hpp"
-#include "compute_unit.h"
+#include <stdint.h>
 
-class sm {
+class warp {
 public:
-    sm();
-    void run(message msg);
-    void run_vs(message msg);
+    warp ();
+
+    void setup_shader(uint64_t shader);
+    bool stop();
 
 private:
-    stream_processor *m_sp;
-
-    compute_unit *p;
-    std::vector<uint32_t> insts;
-
-    uint64_t pc;
-    uint64_t next_pc;
-    insn_fetch_t fetch;
-    uint32_t *sp;
+    uint64_t m_pc;
 };
+
+#endif //RVGSIM_WARP_SCHEDULE_H

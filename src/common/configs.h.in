@@ -4,4 +4,12 @@
 #define PROJECT_TOP_PATH                    "@project_top_path@"
 #define PROJECT_TEST_DRAW_SHADER_DATA_PATH  PROJECT_TOP_PATH"/test/draw/data"
 
+/* Configure STREAM PROCESSOR */
+#define SP_WARP_N                   1
+#define SP_REGFILE_REGWIDTH         64
+#define SP_REGFILE_IREG_N           32
+#define SP_REGFILE_FREG_N           32
+#define SP_REGFILE_MEMSIZE_BIT      ((SP_REGFILE_FREG_N + SP_REGFILE_IREG_N) * SP_REGFILE_REGWIDTH)
+#define SP_REGFILE_MEMSIZE_BYTE     (SP_REGFILE_MEMSIZE_BIT/8)
+
 #endif

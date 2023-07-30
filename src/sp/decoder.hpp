@@ -23,24 +23,20 @@
 
 #pragma once
 
-#include "common/message.h"
-#include "sp/stream_processor.hpp"
-#include "compute_unit.h"
+#include <cstdint>
 
-class sm {
+#include "inst_issue.hpp"
+
+class dec {
 public:
-    sm();
-    void run(message msg);
-    void run_vs(message msg);
+    dec();
+
+    inst_issue decode_inst(uint32_t instcode);
 
 private:
-    stream_processor *m_sp;
+    [[nodiscard]] uint64_t xget(int lo, int len) const { return (bits >> lo) & ((uint64_t(1) << len) - 1); }
+    [[nodiscard]] uint64_t xsget(int lo, int len) const { return int64_t(bits) << (64 - lo - len) >> (64 - len); }
+    [[nodiscard]] uint64_t imm_sign() { return xsget(31, 1); }
 
-    compute_unit *p;
-    std::vector<uint32_t> insts;
-
-    uint64_t pc;
-    uint64_t next_pc;
-    insn_fetch_t fetch;
-    uint32_t *sp;
+    uint32_t bits;
 };

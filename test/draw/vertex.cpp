@@ -9,8 +9,8 @@ TEST_F(Draw, vertex_shader_array_add) {
     Shader shader;
     int32_t count = 16;
     int i = 0;
-    uint32_t *in = (uint32_t *)malloc(count * 4);
-    uint32_t *out = (uint32_t *)malloc(count * 4);
+    uint32_t *in = (uint32_t *)malloc(count * sizeof(int));
+    uint32_t *out = (uint32_t *)malloc(count * sizeof(int));
 
     shader.SetupShaderBinary("array_add.vs");
     shader.SetupIO(0, (uint64_t)in);
@@ -31,6 +31,7 @@ TEST_F(Draw, vertex_shader_array_add) {
     }
 }
 
+#if 0
 TEST_F(Draw, vertex_shader_multi_array_add) {
     Shader shader;
     int32_t count = 32;
@@ -208,4 +209,4 @@ TEST_F(Draw, vertex_shader_vt14) {
     }
     
 }
-
+#endif

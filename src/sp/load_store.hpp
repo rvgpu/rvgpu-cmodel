@@ -23,24 +23,17 @@
 
 #pragma once
 
-#include "common/message.h"
-#include "sp/stream_processor.hpp"
-#include "compute_unit.h"
+#include "inst_issue.hpp"
+#include "register_file.hpp"
 
-class sm {
+class load_store {
 public:
-    sm();
-    void run(message msg);
-    void run_vs(message msg);
+    load_store(register_file *regfile);
+
+    uint64_t run(inst_issue inst);
 
 private:
-    stream_processor *m_sp;
+    inst_issue proc_inst;
 
-    compute_unit *p;
-    std::vector<uint32_t> insts;
-
-    uint64_t pc;
-    uint64_t next_pc;
-    insn_fetch_t fetch;
-    uint32_t *sp;
+    register_file *m_reg;
 };

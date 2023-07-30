@@ -24,23 +24,33 @@
 #pragma once
 
 #include "common/message.h"
-#include "sp/stream_processor.hpp"
-#include "compute_unit.h"
 
-class sm {
+#include "warp.hpp"
+#include "register_file.hpp"
+#include "alu.hpp"
+#include "flu.hpp"
+#include "load_store.hpp"
+#include "decoder.hpp"
+
+// Stream Processor: A simt-x processor
+
+class stream_processor {
 public:
-    sm();
-    void run(message msg);
-    void run_vs(message msg);
+    stream_processor();
+    void setup(uint64_t shader, uint64_t argument, uint64_t globalid, uint32_t tcount);
+    void run(void);
 
 private:
-    stream_processor *m_sp;
+    warp            *m_warp;
+    dec             *m_dec;
+    register_file   *m_reg;
+    alu             *m_alu;
+    flu             *m_flu;
+    load_store      *m_ls;
 
-    compute_unit *p;
-    std::vector<uint32_t> insts;
+    uint64_t        stack_pointer;
+    uint64_t        pc;
 
-    uint64_t pc;
-    uint64_t next_pc;
-    insn_fetch_t fetch;
-    uint32_t *sp;
+    uint64_t execuator(inst_issue inst);
+    uint64_t branch(inst_issue inst);
 };
