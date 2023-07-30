@@ -8,6 +8,7 @@
 class ut_insns : public ::testing::Test {
 protected:
     void SetUp() override {
+        stack_pointer = (uint64_t)malloc(0x1000);
         m_sp = new stream_processor();
     }
     void TearDown() override {
@@ -24,10 +25,12 @@ protected:
 
     void ExecuateInst() {
         insts.push_back(0x00008067); // push ret
+        m_sp->m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(reg::sp), stack_pointer);
         m_sp->pc = (uint64_t)insts.data();
         m_sp->run();
     }
 
     stream_processor *m_sp;
     std::vector<uint32_t> insts;
+    uint64_t stack_pointer;
 };
