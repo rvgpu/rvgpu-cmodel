@@ -2,41 +2,42 @@
 
 #include "sp/stream_processor.hpp"
 
+enum class reg {
+    x0 = 0,
+    ra,
+    sp,
+    gp,
+    tp,
+    t0,
+    t1,
+    t2,
+    fp,
+    s1,
+    a0,
+    a1,
+    a2,
+    a3,
+    a4,
+    a5,
+    a6,
+    a7,
+    s2,
+    s3,
+    s4,
+    s5,
+    s6,
+    s7,
+    s8,
+    s9,
+    s10,
+    s11,
+    t3,
+    t4,
+    t5,
+    t6
+};
+
 #define STACK_SIZE  2000
-#define REG_x0  0
-#define REG_ra  1
-#define REG_sp  2
-#define REG_gp  3
-#define REG_tp  4
-#define REG_t0  5
-#define REG_t1  6
-#define REG_t2  7
-#define REG_fp  8
-#define REG_s1  9
-#define REG_a0  10
-#define REG_a1  11
-#define REG_a2  12
-#define REG_a3  13
-#define REG_a4  14
-#define REG_a5  15
-#define REG_a6  16
-#define REG_a7  17
-#define REG_s2  18
-#define REG_s3  19
-#define REG_s4  20
-#define REG_s5  21
-#define REG_s6  22
-#define REG_s7  23
-#define REG_s8  24
-#define REG_s9  25
-#define REG_s10 26
-#define REG_s11 27
-#define REG_t3  28
-#define REG_t4  29
-#define REG_t5  30
-#define REG_t6  31
-
-
 
 class ut_insns : public ::testing::Test {
 protected:
@@ -47,12 +48,12 @@ protected:
         delete m_sp;
     }
 
-    void SetIReg(uint32_t id, uint64_t data) {
-        m_sp->m_reg->write_ireg<uint64_t>(0, id, data);
+    void SetIReg(reg id, uint64_t data) {
+        m_sp->m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(id), data);
     }
 
-    uint64_t GetIReg(uint32_t id) {
-        return m_sp->m_reg->read_ireg(0, id);
+    uint64_t GetIReg(reg id) {
+        return m_sp->m_reg->read_ireg(0, static_cast<uint32_t>(id));
     }
 
     void ExecuateInst() {
