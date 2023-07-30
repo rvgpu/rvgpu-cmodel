@@ -58,7 +58,7 @@ protected:
 
     void ExecuateInst() {
         insts.push_back(0x00008067); // push ret
-        m_sp->setup((uint64_t)insts.data(), 0, 0, 0);
+        m_sp->pc = (uint64_t)insts.data();
         m_sp->run();
     }
 
