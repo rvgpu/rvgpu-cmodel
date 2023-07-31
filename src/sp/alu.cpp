@@ -129,8 +129,11 @@ uint64_t alu::mulw() {
     return ret;
 }
 uint64_t alu::sltu() {
-    uint64_t ret = 0;
-    printf("[EXEC.ALU.SLTU]\n");
+    int64_t ret = 0;
+    uint64_t rs1 = inst.rs1;
+    uint64_t rs2 = inst.rs2;
+    ret = (rs1 < rs2) ? 1 : 0;
+    printf("[EXEC.ALU.SLTU] r[%ld](0x%lx) = (0x%lx < 0x%lx) ? 1 : 0\n", inst.rd, ret, rs1, rs2);
     return ret;
 }
 uint64_t alu::slliw() {

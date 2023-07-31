@@ -1,6 +1,6 @@
 rvsim_unit_test(ut_sw)
 rvsim_unit_test(ut_sd)
-# rvsim_unit_test(ut_sltu)
+rvsim_unit_test(ut_sltu)
 rvsim_unit_test(ut_add)
 rvsim_unit_test(ut_addi)
 rvsim_unit_test(ut_addiw)
