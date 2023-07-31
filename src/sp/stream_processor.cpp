@@ -103,7 +103,11 @@ uint64_t stream_processor::branch(inst_issue inst) {
         case encoding::INST_BRANCH_JALR: {
             m_reg->write_ireg<uint64_t>(0, inst.rd, pc + 4);
             retpc = (inst.rs1 + inst.i_imm) & ~(uint64_t)(1);
+            break;
         }
+        default:
+            printf("BRANCH INST TODO!\n");
+            break;
     }
 
     return retpc;

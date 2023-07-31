@@ -23,6 +23,10 @@ protected:
         return m_sp->m_reg->read_ireg(0, static_cast<uint32_t>(id));
     }
 
+    uint64_t GetPC() {
+        return m_sp->pc;
+    }
+
     void ExecuateInst() {
         insts.push_back(0x00008067); // push ret
         m_sp->m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(reg::sp), stack_pointer);
