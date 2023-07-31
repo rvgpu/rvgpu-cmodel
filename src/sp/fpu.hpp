@@ -23,7 +23,23 @@
 
 #pragma once
 
+#include <cstdint>
+
+#include "inst_issue.hpp"
+
 class fpu {
 public:
     fpu();
+
+    uint64_t run(inst_issue instruction);
+private:
+    inst_issue inst;
+
+    float reg2f(uint64_t);
+    uint64_t f2reg(float);
+
+    uint64_t fadd_s();
+    uint64_t fmul_s();
+    uint64_t fdiv_s();
+    uint64_t fmadd_s();
 };

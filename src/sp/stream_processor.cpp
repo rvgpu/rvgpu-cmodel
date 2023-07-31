@@ -58,22 +58,37 @@ void stream_processor::setup(uint64_t shader, uint64_t argument, uint64_t global
 uint64_t stream_processor::execuator(inst_issue to_issue) {
     uint64_t result;
     uint64_t npc = 0;
-    to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
-    to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
-    to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
     switch (to_issue.type) {
         case encoding::INST_TYPE_ALU: {
+            to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
+            to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
+            to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
             result = m_alu->run(to_issue);
             npc = pc + 4;
             m_reg->write_ireg<uint64_t>(0, to_issue.rd, result);
             break;
         }
+        case encoding::INST_TYPE_FPU: {
+            to_issue.rs1 = m_reg->read_freg(0, to_issue.rs1_id);
+            to_issue.rs2 = m_reg->read_freg(0, to_issue.rs2_id);
+            to_issue.rs3 = m_reg->read_freg(0, to_issue.rs3_id);
+            result = m_fpu->run(to_issue);
+            m_reg->write_freg(0, to_issue.rd, result);
+            npc = pc + 4;
+            break;
+        }
         case encoding::INST_TYPE_LS: {
+            to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
+            to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
+            to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
             result = m_ls->run(to_issue);
             npc = pc + 4;
             break;
         }
         case encoding::INST_TYPE_BRANCH: {
+            to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
+            to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
+            to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
             npc = branch(to_issue);
             break;
         }

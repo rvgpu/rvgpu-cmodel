@@ -5,23 +5,19 @@
 
 #include "common/softfloat_types.h"
 
-TEST_F(ut_rv64_insns, decode_and_execute_rv64if_fmadd_s) {
+TEST_F(ut_insns, decode_and_execute_rv64if_fmadd_s) {
     // 0x0020f043 : fmadd.s ft0, ft1, ft2, ft0
     insts.push_back(0x0020f043);
-    LoadInst();
 
-    float a = 1.1;
-    float b = 2.1;
-    float c = 3.1;
-    float32_t a_u = { std::bit_cast<uint32_t>(a) };
-    float32_t b_u = { std::bit_cast<uint32_t>(b) };
-    float32_t c_u = { std::bit_cast<uint32_t>(c) };
-    WRITE_FREG(fetch.insn.rs1(), a_u);
-    WRITE_FREG(fetch.insn.rs2(), b_u);
-    WRITE_FREG(fetch.insn.rs3(), c_u);
+    float a = 1.1f;
+    float b = 2.1f;
+    float c = 3.1f;
+    SetFReg(fpreg::ft1, std::bit_cast<uint32_t>(a));
+    SetFReg(fpreg::ft2, std::bit_cast<uint32_t>(b));
+    SetFReg(fpreg::ft0, std::bit_cast<uint32_t>(c));
+
     ExecuateInst();
-    float32_t result = READ_FREG_F(fetch.insn.rd());
-    float result_float = std::bit_cast<float>(result.v);
-    
-    EXPECT_EQ(result_float, a * b + c);
+
+    uint32_t res = GetFReg(fpreg::ft0);
+    EXPECT_FLOAT_EQ(std::bit_cast<float>(res), a * b + c);
 }

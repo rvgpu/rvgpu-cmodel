@@ -15,6 +15,14 @@ protected:
         delete m_sp;
     }
 
+    void SetFReg(fpreg id, uint64_t data) {
+        m_sp->m_reg->write_freg(0, static_cast<uint32_t>(id), data);
+    }
+
+    uint64_t GetFReg(fpreg id) {
+        return m_sp->m_reg->read_freg(0, static_cast<uint32_t>(id));
+    }
+
     void SetIReg(reg id, uint64_t data) {
         m_sp->m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(id), data);
     }
