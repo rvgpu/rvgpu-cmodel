@@ -51,14 +51,14 @@ uint64_t load_store::run(inst_issue inst) {
         case encoding::INST_LS_LW: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint32_t data = *((uint32_t *)addr);
-            printf("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from 0x%lx\n", inst.rd, data, addr);
+            printf("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             m_reg->write_ireg<uint32_t>(0, inst.rd, data);
             break;
         }
         case encoding::INST_LS_LD: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint64_t data = *((uint64_t *)addr);
-            printf("[EXEC.LS.LD] load.i64: r[%ld] 0x%lx from 0x%lx\n", inst.rd, data, addr);
+            printf("[EXEC.LS.LD] load.i64: r[%ld] 0x%lx from mem[0x%lx]\n", inst.rd, data, addr);
             m_reg->write_ireg<uint64_t>(0, inst.rd, data);
             break;
         }

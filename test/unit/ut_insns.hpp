@@ -36,6 +36,10 @@ protected:
         return m_sp->pc;
     }
 
+    uint64_t GetStackPointer() {
+        return stack_pointer;
+    }
+
     void ExecuateInst() {
         m_sp->m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(reg::sp), stack_pointer);
         m_sp->pc = (uint64_t)insts.data();
