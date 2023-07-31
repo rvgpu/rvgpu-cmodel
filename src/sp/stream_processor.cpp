@@ -101,6 +101,27 @@ uint64_t stream_processor::branch(inst_issue inst) {
             retpc = pc + 4;
             break;
         }
+        case encoding::INST_BRANCH_BEQ: {
+            if (inst.rs1 == inst.rs2) {
+                retpc = pc + inst.sb_imm;
+            } else {
+                retpc = pc + 4;
+            }
+            printf("[EXEC.BRANCH.BEQ] jump to %lx, (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
+            break;
+        }
+        case encoding::INST_BRANCH_BGEU: {
+            printf("TODO BGEU\n");
+            break;
+        }
+        case encoding::INST_BRANCH_BLTU: {
+            printf("TODO BLTU\n");
+            break;
+        }
+        case encoding::INST_BRANCH_BNE: {
+            printf("TODO BNE\n");
+            break;
+        }
         case encoding::INST_BRANCH_JAL: {
             m_reg->write_ireg<uint64_t>(0, inst.rd, pc + 4);
             retpc = (pc + inst.uj_imm);

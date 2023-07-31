@@ -39,11 +39,6 @@ private:
     uint64_t addi();
     uint64_t addiw();
     uint64_t addw();
-    uint64_t auipc();
-    uint64_t beq();
-    uint64_t bgeu();
-    uint64_t bltu();
-    uint64_t bne();
     uint64_t mulw();
     uint64_t mul();
     uint64_t sltu();

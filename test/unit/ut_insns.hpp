@@ -28,7 +28,6 @@ protected:
     }
 
     void ExecuateInst() {
-        insts.push_back(0x00008067); // push ret
         m_sp->m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(reg::sp), stack_pointer);
         m_sp->pc = (uint64_t)insts.data();
 

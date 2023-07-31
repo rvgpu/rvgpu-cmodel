@@ -15,14 +15,30 @@
     } while(0)
 
 
-TEST_F(ut_rv64_insns, decode_and_execute_rv64i_beq) {
-    // 0xfa0506e3 : beqz a0, -84 (beq a0, 0, -84)
+TEST_F(ut_insns, decode_and_execute_rv64i_beq) {
+    // 0xfa0506e3 : beqz a0, -84 (beq a0, x0, -84)
     insts.push_back(0xfa0506e3);
-    LoadInst();
+    auto pc = (uint64_t)insts.data();
+    printf("start pc: %lx\n", pc);
 
-    CHECK_BRANCH(1);
-    CHECK_BRANCH(0);
-    CHECK_BRANCH(-1);
-    CHECK_BRANCH(12);
-    CHECK_BRANCH(-12);
+    SetIReg(reg::a0, 1);
+    ExecuateInst();
+    printf("pc: %lx\n", GetPC());
+    EXPECT_EQ(GetPC(), pc + 4);
+
+    SetIReg(reg::a0, 0);
+    ExecuateInst();
+    EXPECT_EQ(GetPC(), pc - 84);
+
+    SetIReg(reg::a0, -1);
+    ExecuateInst();
+    EXPECT_EQ(GetPC(), pc + 4);
+
+    SetIReg(reg::a0, 12);
+    ExecuateInst();
+    EXPECT_EQ(GetPC(), pc + 4);
+
+    SetIReg(reg::a0, -12);
+    ExecuateInst();
+    EXPECT_EQ(GetPC(), pc + 4);
 }

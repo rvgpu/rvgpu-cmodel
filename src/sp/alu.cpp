@@ -45,18 +45,6 @@ uint64_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_ADDW:
             ret = addw();
             break;
-        case encoding::INST_ALU_BEQ:
-            ret = beq();
-            break;
-        case encoding::INST_ALU_BGEU:
-            ret = bltu();
-            break;
-        case encoding::INST_ALU_BLTU:
-            ret = bltu();
-            break;
-        case encoding::INST_ALU_BNE:
-            ret = bne();
-            break;
         case encoding::INST_ALU_MUL:
             ret = mul();
             break;
@@ -119,26 +107,6 @@ uint64_t alu::addw() {
     return ret;
 }
 
-uint64_t alu::beq() {
-    uint64_t ret = 0;
-    printf("[EXEC.ALU.BEQ]\n");
-    return ret;
-}
-uint64_t alu::bgeu() {
-    uint64_t ret = 0;
-    printf("[EXEC.ALU.BGEU]\n");
-    return ret;
-}
-uint64_t alu::bltu() {
-    uint64_t ret = 0;
-    printf("[EXEC.ALU.BLTU]\n");
-    return ret;
-}
-uint64_t alu::bne() {
-    uint64_t ret = 0;
-    printf("[EXEC.ALU.BNE]\n");
-    return ret;
-}
 uint64_t alu::mul() {
     int64_t ret = 0;
     ret = int64_t(inst.rs1 * inst.rs2);
