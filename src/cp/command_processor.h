@@ -31,7 +31,7 @@ class rvgpu;
 class command_processor {
 public:
     command_processor();
-    void run(rvgpu_command cmdstream);
+    void run(uint64_t cmds, std::vector<message> &msg);
 
 private:
 };

@@ -31,22 +31,8 @@ rvgpu::rvgpu() {
 }
 
 void rvgpu::run(uint64_t cmds) {
-    rvgpu_command *cs = (rvgpu_command *)cmds;
     std::vector<message> msg;
-    if (cs->type == RVGPU_COMMAND_TYPE_VS) {
-        rvgpu_command_vs vs = cs->cmd.vs;
-
-        for (uint32_t i=0; i<vs.vertex_count; i++) {  // one vertex on one sm now
-            message tmsg = {};
-            tmsg.target = 0; // message send to sm[0]
-            tmsg.msg = CMD_MESSAGE_START_CU_VS;
-            tmsg.shader = vs.shader;
-            tmsg.start = i;
-            tmsg.count = 1;
-            tmsg.layout = vs.layout;
-            msg.push_back(std::move(tmsg));
-        }
-    }
+    m_cp->run(cmds, msg);
 
     for (auto m : msg) {
         m_sm->run(m);
