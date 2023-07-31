@@ -165,8 +165,9 @@ uint64_t alu::slli() {
     return ret;
 }
 uint64_t alu::slt() {
-    uint64_t ret = 0;
-    printf("[EXEC.ALU.SLT]\n");
+    int64_t ret = 0;
+    ret = int64_t(inst.rs1) < int64_t(inst.rs2);
+    printf("[EXEC.ALU.SLT] r[%ld](0x%lx) = 0x%lx < %ld\n", inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
     return ret;
 }
 uint64_t alu::andi() {
