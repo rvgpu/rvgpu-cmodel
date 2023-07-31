@@ -115,7 +115,12 @@ uint64_t stream_processor::branch(inst_issue inst) {
             break;
         }
         case encoding::INST_BRANCH_BLTU: {
-            printf("TODO BLTU\n");
+            if (inst.rs1< inst.rs2) {
+                retpc = pc + inst.sb_imm;
+            } else {
+                retpc = pc + 4;
+            }
+            printf("[EXEC.BRANCH.BLTU] jump to %lx, (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BNE: {
