@@ -102,8 +102,11 @@ uint64_t alu::addiw() {
     return ret;
 }
 uint64_t alu::addw() {
-    uint64_t ret = 0;
-    printf("[EXEC.ALU.ADDW]\n");
+    int64_t ret = 0;
+    int32_t rs1 = inst.rs1;
+    int32_t rs2 = inst.rs2;
+    ret = rs1 + rs2;
+    printf("[EXEC.ALU.ADDW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, ret, rs1, rs2);
     return ret;
 }
 
