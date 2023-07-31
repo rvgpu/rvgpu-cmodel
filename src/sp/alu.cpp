@@ -75,6 +75,9 @@ uint64_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_OR:
             ret = OR();
             break;
+        default:
+            printf("ALU Inst TODO\n");
+            break;
     }
 
     return ret;
