@@ -118,8 +118,11 @@ uint64_t alu::mul() {
 }
 
 uint64_t alu::mulw() {
-    uint64_t ret = 0;
-    printf("[EXEC.ALU.MULW]\n");
+    int64_t ret = 0;
+    int32_t rs1 = inst.rs1;
+    int32_t rs2 = inst.rs2;
+    ret = int64_t(rs1 * rs2);
+    printf("[EXEC.ALU.MULW] r[%ld](0x%lx) = 0x%x * %d\n", inst.rd, ret, rs1, rs2);
     return ret;
 }
 uint64_t alu::sltu() {
