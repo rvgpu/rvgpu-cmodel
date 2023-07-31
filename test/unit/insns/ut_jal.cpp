@@ -2,13 +2,14 @@
 #include "sm/compute_unit.h"
 #include "ut_insns.hpp"
 
-TEST_F(ut_rv64_insns, decode_and_execute_rv64i_pseudo_j) {
+TEST_F(ut_insns, decode_and_execute_rv64i_pseudo_j) {
     // 0x0380006f : j 56 (jal x0, 56)
     insts.push_back(0x0380006f);
-    LoadInst();
+
     ExecuateInst();
-    auto pc = Getpc();
-    auto next_pc = GetNextpc();
+
+    auto pc = (uint64_t)insts.data();
+    auto next_pc = GetPC();
 
     EXPECT_EQ(next_pc, pc + 56);
 }
