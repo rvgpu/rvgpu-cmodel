@@ -27,7 +27,11 @@ protected:
         insts.push_back(0x00008067); // push ret
         m_sp->m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(reg::sp), stack_pointer);
         m_sp->pc = (uint64_t)insts.data();
-        m_sp->run();
+
+        // Run Instruction
+        uint32_t instcode = *(uint32_t *)m_sp->pc;
+        inst_issue to_issue = m_sp->m_dec->decode_inst(instcode);
+        m_sp->pc = m_sp->execuator(to_issue);
     }
 
     stream_processor *m_sp;
