@@ -155,7 +155,8 @@ uint64_t alu::sltu() {
 }
 uint64_t alu::slliw() {
     uint64_t ret = 0;
-    printf("[EXEC.ALU.SLLIW]\n");
+    ret = int32_t(inst.rs1 << (inst.i_imm & 0x3F));
+    printf("[EXEC.ALU.SLLIW] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
     return ret;
 }
 uint64_t alu::slli() {
