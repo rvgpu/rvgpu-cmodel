@@ -23,8 +23,54 @@
 
 #include "decoder.hpp"
 
-#define IN_DECODER
-#include "encoding.hpp"
+using namespace encoding;
+
+struct instlist {
+    INST code;
+    uint32_t match;
+    uint32_t mask;
+};
+
+#define DECLARE_INSN_ALU(iname) {.code = INST_ALU_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
+#define DECLARE_INSN_FPU(iname) {.code = INST_FPU_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
+#define DECLARE_INSN_LS(iname)  {.code = INST_LS_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
+#define DECLARE_INSN_BRANCGH(iname)  {.code = INST_BRANCH_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
+
+std::vector<struct instlist> insts = {
+        DECLARE_INSN_ALU(ADD),
+        DECLARE_INSN_ALU(ADDI),
+        DECLARE_INSN_ALU(ADDIW),
+        DECLARE_INSN_ALU(ADDW),
+        DECLARE_INSN_ALU(AUIPC),
+        DECLARE_INSN_ALU(BEQ),
+        DECLARE_INSN_ALU(BGEU),
+        DECLARE_INSN_ALU(BLTU),
+        DECLARE_INSN_ALU(BNE),
+        DECLARE_INSN_FPU(FMUL_S),
+        DECLARE_INSN_LS(FLW),
+        DECLARE_INSN_FPU(FMADD_S),
+        DECLARE_INSN_FPU(FMUL_S),
+        DECLARE_INSN_FPU(FMUL_S),
+        DECLARE_INSN_LS(FSW),
+        DECLARE_INSN_LS(LD),
+        DECLARE_INSN_LS(LUI),
+        DECLARE_INSN_LS(LW),
+        DECLARE_INSN_LS(LWU),
+        // DECLARE_INSN_ALU(MUL),
+        DECLARE_INSN_ALU(MULW),
+        DECLARE_INSN_LS(SW),
+        DECLARE_INSN_ALU(SLTU),
+        DECLARE_INSN_ALU(SLLIW),
+        DECLARE_INSN_ALU(SLLI),
+        DECLARE_INSN_ALU(SLT),
+        DECLARE_INSN_BRANCGH(JAL),
+        DECLARE_INSN_BRANCGH(JALR),
+        DECLARE_INSN_LS(SD),
+        DECLARE_INSN_ALU(ANDI),
+        DECLARE_INSN_ALU(ORI),
+        DECLARE_INSN_ALU(XORI),
+        DECLARE_INSN_ALU(OR),
+};
 
 dec::dec() {
 
@@ -34,7 +80,7 @@ inst_issue dec::decode_inst(uint32_t instcode) {
     inst_issue to_issue;
 
     to_issue.bits = instcode;
-    to_issue.code = encoding::match(instcode);
+    to_issue.code = match(instcode);
     to_issue.type = to_issue.code & encoding::INST_TYPE_MASK;
 
     bits = instcode;
@@ -50,4 +96,14 @@ inst_issue dec::decode_inst(uint32_t instcode) {
     to_issue.uj_imm = (xget(21, 10) << 1) + (xget(20, 1) << 11) + (xget(12, 8) << 12) + (imm_sign() << 20);
 
     return to_issue;
+}
+
+encoding::INST dec::match(uint32_t instcode) {
+    for (auto iter : insts) {
+        if ((instcode & iter.mask) == iter.match) {
+            return iter.code;
+        }
+    }
+
+    return encoding::INST_ERROR_CODE;
 }

@@ -25,6 +25,7 @@
 
 #include <cstdint>
 
+#include "encoding.hpp"
 #include "inst_issue.hpp"
 
 class dec {
@@ -39,4 +40,6 @@ private:
     [[nodiscard]] uint64_t imm_sign() { return xsget(31, 1); }
 
     uint32_t bits;
+
+    encoding::INST match(uint32_t instcode);
 };
