@@ -96,6 +96,11 @@ void stream_processor::run() {
 uint64_t stream_processor::branch(inst_issue inst) {
     uint64_t retpc = pc + 4;
     switch (inst.code) {
+        case encoding::INST_BRANCH_AUIPC: {
+            m_reg->write_ireg<uint64_t>(0, inst.rd, (pc + inst.u_imm));
+            retpc = pc + 4;
+            break;
+        }
         case encoding::INST_BRANCH_JAL: {
             m_reg->write_ireg<uint64_t>(0, inst.rd, pc + 4);
             retpc = (pc + inst.uj_imm);

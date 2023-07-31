@@ -45,9 +45,6 @@ uint64_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_ADDW:
             ret = addw();
             break;
-        case encoding::INST_ALU_AUIPC:
-            ret = auipc();
-            break;
         case encoding::INST_ALU_BEQ:
             ret = beq();
             break;
@@ -121,11 +118,7 @@ uint64_t alu::addw() {
     printf("[EXEC.ALU.ADDW]\n");
     return ret;
 }
-uint64_t alu::auipc() {
-    uint64_t ret = 0;
-    printf("[EXEC.ALU.AUPIC]\n");
-    return ret;
-}
+
 uint64_t alu::beq() {
     uint64_t ret = 0;
     printf("[EXEC.ALU.BEQ]\n");

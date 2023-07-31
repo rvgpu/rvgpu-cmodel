@@ -100,7 +100,6 @@ typedef enum {
     INST_ALU_ADDI,
     INST_ALU_ADDIW,
     INST_ALU_ADDW,
-    INST_ALU_AUIPC,
     INST_ALU_BEQ,
     INST_ALU_BGEU,
     INST_ALU_BLTU,
@@ -133,6 +132,7 @@ typedef enum {
     INST_LS_FSW,
 
     INST_TYPE_BRANCH = 0x800,
+    INST_BRANCH_AUIPC,
     INST_BRANCH_JAL,
     INST_BRANCH_JALR,
 

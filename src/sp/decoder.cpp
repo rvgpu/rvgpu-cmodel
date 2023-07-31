@@ -34,14 +34,14 @@ struct instlist {
 #define DECLARE_INSN_ALU(iname) {.code = INST_ALU_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
 #define DECLARE_INSN_FPU(iname) {.code = INST_FPU_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
 #define DECLARE_INSN_LS(iname)  {.code = INST_LS_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
-#define DECLARE_INSN_BRANCGH(iname)  {.code = INST_BRANCH_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
+#define DECLARE_INSN_BRANCH(iname)  {.code = INST_BRANCH_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
 
 std::vector<struct instlist> insts = {
         DECLARE_INSN_ALU(ADD),
         DECLARE_INSN_ALU(ADDI),
         DECLARE_INSN_ALU(ADDIW),
         DECLARE_INSN_ALU(ADDW),
-        DECLARE_INSN_ALU(AUIPC),
+        DECLARE_INSN_BRANCH(AUIPC),
         DECLARE_INSN_ALU(BEQ),
         DECLARE_INSN_ALU(BGEU),
         DECLARE_INSN_ALU(BLTU),
@@ -63,8 +63,8 @@ std::vector<struct instlist> insts = {
         DECLARE_INSN_ALU(SLLIW),
         DECLARE_INSN_ALU(SLLI),
         DECLARE_INSN_ALU(SLT),
-        DECLARE_INSN_BRANCGH(JAL),
-        DECLARE_INSN_BRANCGH(JALR),
+        DECLARE_INSN_BRANCH(JAL),
+        DECLARE_INSN_BRANCH(JALR),
         DECLARE_INSN_LS(SD),
         DECLARE_INSN_ALU(ANDI),
         DECLARE_INSN_ALU(ORI),
