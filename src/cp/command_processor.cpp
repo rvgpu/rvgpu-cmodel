@@ -29,18 +29,33 @@ command_processor::command_processor() {
 
 void command_processor::run(uint64_t cmds, std::vector<message> &msg) {
     rvgpu_command *cs = (rvgpu_command *)cmds;
-    if (cs->type == RVGPU_COMMAND_TYPE_VS) {
-        rvgpu_command_vs vs = cs->cmd.vs;
-
-        for (uint32_t i=0; i<vs.vertex_count; i++) {  // one vertex on one sm now
-            message tmsg = {};
-            tmsg.target = 0; // message send to sm[0]
-            tmsg.msg = CMD_MESSAGE_START_CU_VS;
-            tmsg.shader = vs.shader;
-            tmsg.start = i;
-            tmsg.count = 1;
-            tmsg.layout = vs.layout;
-            msg.push_back(std::move(tmsg));
-        }
+    switch (cs->type) {
+        case RVGPU_COMMAND_TYPE_VS:
+            command_vs(cs, msg);
+            break;
+        case RVGPU_COMMAND_TYPE_FS:
+            command_fs(cs, msg);
+            break;
+        default:
+            printf("COMMAND TYPE TODO\n");
+            break;
     }
+}
+
+void command_processor::command_vs(rvgpu_command *cs, std::vector<message> &msg) {
+    rvgpu_command_vs vs = cs->cmd.vs;
+
+    for (uint32_t i=0; i<vs.vertex_count; i++) {  // one vertex on one sm now
+        message tmsg = {};
+        tmsg.target = 0; // message send to sm[0]
+        tmsg.msg = CMD_MESSAGE_START_CU_VS;
+        tmsg.shader = vs.shader;
+        tmsg.start = i;
+        tmsg.count = 1;
+        tmsg.layout = vs.layout;
+        msg.push_back(std::move(tmsg));
+    }
+}
+
+void command_processor::command_fs(rvgpu_command *cs, std::vector<message> &msg) {
 }

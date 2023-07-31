@@ -27,8 +27,8 @@
 
 typedef enum {
     RVGPU_COMMAND_TYPE_VS = 1,
-    RVGPU_COMMAND_TYPE_FS = 2,
-    RVGPU_COMMAND_TYPE_END = 3,
+    RVGPU_COMMAND_TYPE_FS,
+    RVGPU_COMMAND_TYPE_END,
 } rvgpu_command_type;
 
 typedef struct {
