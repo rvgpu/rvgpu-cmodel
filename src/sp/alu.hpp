@@ -45,6 +45,7 @@ private:
     uint64_t bltu();
     uint64_t bne();
     uint64_t mulw();
+    uint64_t mul();
     uint64_t sltu();
     uint64_t slliw();
     uint64_t slli();

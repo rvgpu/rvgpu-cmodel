@@ -105,6 +105,7 @@ typedef enum {
     INST_ALU_BGEU,
     INST_ALU_BLTU,
     INST_ALU_BNE,
+    INST_ALU_MUL,
     INST_ALU_MULW,
     INST_ALU_SLTU,
     INST_ALU_SLLIW,

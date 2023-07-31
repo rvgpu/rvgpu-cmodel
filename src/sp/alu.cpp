@@ -60,6 +60,9 @@ uint64_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_BNE:
             ret = bne();
             break;
+        case encoding::INST_ALU_MUL:
+            ret = mul();
+            break;
         case encoding::INST_ALU_MULW:
             ret = mulw();
             break;
@@ -143,6 +146,13 @@ uint64_t alu::bne() {
     printf("[EXEC.ALU.BNE]\n");
     return ret;
 }
+uint64_t alu::mul() {
+    int64_t ret = 0;
+    ret = int64_t(inst.rs1 * inst.rs2);
+    printf("[EXEC.ALU.MUL] r[%ld](0x%lx) = 0x%lx * %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
+    return ret;
+}
+
 uint64_t alu::mulw() {
     uint64_t ret = 0;
     printf("[EXEC.ALU.MULW]\n");
