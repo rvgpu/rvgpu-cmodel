@@ -28,7 +28,7 @@
 #include "warp.hpp"
 #include "register_file.hpp"
 #include "alu.hpp"
-#include "flu.hpp"
+#include "fpu.hpp"
 #include "load_store.hpp"
 #include "decoder.hpp"
 
@@ -46,7 +46,7 @@ private:
     dec             *m_dec;
     register_file   *m_reg;
     alu             *m_alu;
-    flu             *m_flu;
+    fpu             *m_fpu;
     load_store      *m_ls;
 
     uint64_t        stack_pointer;

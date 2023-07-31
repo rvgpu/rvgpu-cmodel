@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-#include "flu.hpp"
+#include "fpu.hpp"
 
-flu::flu() {
+fpu::fpu() {
 }

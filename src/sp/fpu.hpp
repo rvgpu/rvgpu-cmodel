@@ -23,7 +23,7 @@
 
 #pragma once
 
-class flu {
+class fpu {
 public:
-    flu();
+    fpu();
 };

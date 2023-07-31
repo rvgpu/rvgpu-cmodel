@@ -115,11 +115,11 @@ typedef enum {
     INST_ALU_XORI,
     INST_ALU_OR,
 
-    INST_TYPE_FLU = 0x200,
-    INST_FLU_FADD_S,
-    INST_FLU_FMADD_S,
-    INST_FLU_FMUL_S,
-    INST_FLU_DIV_S,
+    INST_TYPE_FPU = 0x200,
+    INST_FPU_FADD_S,
+    INST_FPU_FMADD_S,
+    INST_FPU_FMUL_S,
+    INST_FPU_DIV_S,
 
     INST_TYPE_LS = 0x400,
     INST_LS_LD,
@@ -147,7 +147,7 @@ typedef enum {
     };
 
     #define DECLARE_INSN_ALU(iname) {.code = INST_ALU_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
-    #define DECLARE_INSN_FLU(iname) {.code = INST_FLU_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
+    #define DECLARE_INSN_FPU(iname) {.code = INST_FPU_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
     #define DECLARE_INSN_LS(iname)  {.code = INST_LS_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
     #define DECLARE_INSN_BRANCGH(iname)  {.code = INST_BRANCH_##iname, .match = MATCH_##iname, .mask = MASK_##iname}
 
@@ -161,11 +161,11 @@ typedef enum {
         DECLARE_INSN_ALU(BGEU),
         DECLARE_INSN_ALU(BLTU),
         DECLARE_INSN_ALU(BNE),
-        DECLARE_INSN_FLU(FMUL_S),
+        DECLARE_INSN_FPU(FMUL_S),
         DECLARE_INSN_LS(FLW),
-        DECLARE_INSN_FLU(FMADD_S),
-        DECLARE_INSN_FLU(FMUL_S),
-        DECLARE_INSN_FLU(FMUL_S),
+        DECLARE_INSN_FPU(FMADD_S),
+        DECLARE_INSN_FPU(FMUL_S),
+        DECLARE_INSN_FPU(FMUL_S),
         DECLARE_INSN_LS(FSW),
         DECLARE_INSN_LS(LD),
         DECLARE_INSN_LS(LUI),

@@ -3,8 +3,8 @@ set(SP_FILES
     alu.hpp
     decoder.cpp
     decoder.hpp
-    flu.cpp
-    flu.hpp
+    fpu.cpp
+    fpu.hpp
     load_store.cpp
     load_store.hpp
     register_file.hpp

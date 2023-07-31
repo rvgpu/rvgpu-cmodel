@@ -32,7 +32,7 @@ stream_processor::stream_processor() {
     m_dec = new dec();
     m_reg = new register_file();
     m_alu = new alu();
-    m_flu = new flu();
+    m_fpu = new fpu();
     m_ls = new load_store(m_reg);
 
     stack_pointer = (uint64_t)malloc(0x4000 + 0x8000);
