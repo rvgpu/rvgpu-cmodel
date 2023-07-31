@@ -35,6 +35,7 @@ typedef struct {
     uint32_t vertex_count;
     uint64_t shader;
     uint64_t layout;
+    uint64_t stack_pointer;
 } rvgpu_command_vs;
 
 typedef struct {

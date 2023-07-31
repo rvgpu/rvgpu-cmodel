@@ -6,10 +6,13 @@
 
 #define IO_NUM 4
 #define SHADER_BINARY_SIZE 0x1000
+#define STACK_POINT_SIZE 0x4000
 
 class Draw : public ::testing::Test {
 protected:
     void SetUp() override {
+        stack_pointer = (uint64_t)malloc(STACK_POINT_SIZE + 0x1000);
+        stack_pointer += 0x1000;
         gpu = new rvgpu();
     }
 
@@ -22,6 +25,7 @@ protected:
         vs.vertex_count = vcount;
         vs.shader = binary;
         vs.layout = layout;
+        vs.stack_pointer = stack_pointer;
         commands.push_back(rvgpu_command {.type = RVGPU_COMMAND_TYPE_VS, .cmd = {vs}});
     }
 
@@ -40,6 +44,7 @@ protected:
 private:
     rvgpu *gpu;
     std::vector<rvgpu_command> commands;
+    uint64_t stack_pointer;
 };
 
 class Shader {

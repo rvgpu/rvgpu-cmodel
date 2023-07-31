@@ -8,7 +8,8 @@
 class ut_insns : public ::testing::Test {
 protected:
     void SetUp() override {
-        stack_pointer = (uint64_t)malloc(0x1000);
+        stack_pointer = (uint64_t)malloc(0x2000);
+        stack_pointer += 0x1000;
         m_sp = new stream_processor();
     }
     void TearDown() override {

@@ -34,25 +34,22 @@ stream_processor::stream_processor() {
     m_alu = new alu();
     m_fpu = new fpu();
     m_ls = new load_store(m_reg);
-
-    stack_pointer = (uint64_t)malloc(0x4000 + 0x8000);
-    stack_pointer += 0x4000;
 }
 
-void stream_processor::setup(uint64_t shader, uint64_t argument, uint64_t globalid, uint32_t tcount) {
-    pc = shader;
+void stream_processor::setup(message msg) {
+    pc = msg.shader;
     // m_warp->setup_shader(shader);
     // write stack_pointer to sp
     // m_reg->write_ireg(0, 2, stack_pointer);
     // write arg1 to a0
     printf("setup ra: 0x0\n");
-    printf("setup sp: 0x%lx\n", stack_pointer);
-    printf("setup a0: 0x%lx\n", argument);
-    printf("setup a1: 0x%lx\n", globalid);
+    printf("setup sp: 0x%lx\n", msg.stack_pointer);
+    printf("setup a0: 0x%lx\n", msg.layout);
+    printf("setup a1: 0x%x\n", msg.start);
     m_reg->write_ireg<uint64_t>(0, 1, 0);
-    m_reg->write_ireg<uint64_t>(0, 2, stack_pointer);
-    m_reg->write_ireg<uint64_t>(0, 10, argument);
-    m_reg->write_ireg<uint64_t>(0, 11, globalid);
+    m_reg->write_ireg<uint64_t>(0, 2, msg.stack_pointer);
+    m_reg->write_ireg<uint64_t>(0, 10, msg.layout);
+    m_reg->write_ireg<uint64_t>(0, 11, msg.start);
 }
 
 uint64_t stream_processor::execuator(inst_issue to_issue) {

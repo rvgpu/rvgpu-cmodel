@@ -38,8 +38,8 @@ class ut_insns;
 class stream_processor {
 public:
     stream_processor();
-    void setup(uint64_t shader, uint64_t argument, uint64_t globalid, uint32_t tcount);
-    void run(void);
+    void setup(message msg);
+    void run();
 
 private:
     warp            *m_warp;
@@ -49,7 +49,6 @@ private:
     fpu             *m_fpu;
     load_store      *m_ls;
 
-    uint64_t        stack_pointer;
     uint64_t        pc;
 
     uint64_t execuator(inst_issue inst);

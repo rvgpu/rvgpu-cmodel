@@ -36,7 +36,7 @@ sm::sm() {
 void sm::run_vs(message msg) {
     printf("[SM] receive message VS: %d %d\n", msg.start, msg.count);
 
-    m_sp->setup(msg.shader, msg.layout, msg.start, 1);
+    m_sp->setup(msg);
     m_sp->run();
 #if 0
     pc = msg.shader;

@@ -53,6 +53,7 @@ void command_processor::command_vs(rvgpu_command *cs, std::vector<message> &msg)
         tmsg.start = i;
         tmsg.count = 1;
         tmsg.layout = vs.layout;
+        tmsg.stack_pointer = vs.stack_pointer;
         msg.push_back(std::move(tmsg));
     }
 }
