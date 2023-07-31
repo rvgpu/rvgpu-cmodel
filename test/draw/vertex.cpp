@@ -89,7 +89,6 @@ TEST_F(Draw, vertex_shader_multi_array_mul) {
     }
 }
 
-#if 0
 TEST_F(Draw, vertex_shader_multi_array_muladd) {
     Shader shader;
     int32_t count = 32;
@@ -122,6 +121,7 @@ TEST_F(Draw, vertex_shader_multi_array_muladd) {
     }
 }
 
+#if 0
 TEST_F(Draw, vertex_shader_vt14) {
     Shader shader;
     int32_t count = 3;    
