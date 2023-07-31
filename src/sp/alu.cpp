@@ -181,7 +181,8 @@ uint64_t alu::ori() {
 }
 uint64_t alu::xori() {
     uint64_t ret = 0;
-    printf("[EXEC.ALU.XORI]\n");
+    ret = inst.i_imm ^ inst.rs1;
+    printf("[EXEC.ALU.XORI] r[%ld](0x%lx) = 0x%lx ^ %ld\n", inst.rd, ret, inst.i_imm, inst.rs1);
     return ret;
 }
 uint64_t alu::OR() {
