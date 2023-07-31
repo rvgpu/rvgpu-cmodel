@@ -8,7 +8,7 @@ TEST_F(ut_insns, decode_and_execute_rv64i_sw){
 
     auto sp = (uint64_t)malloc(32);
     SetIReg(reg::a0, sp);
-    SetIReg(reg::a2, 333);
+    SetIReg(reg::a2, -333);
     ExecuateInst();
-    EXPECT_EQ(*(uint32_t*)((uint64_t)sp + 16), 333);
+    EXPECT_EQ(*(int32_t*)((uint64_t)sp + 16), -333);
 }
