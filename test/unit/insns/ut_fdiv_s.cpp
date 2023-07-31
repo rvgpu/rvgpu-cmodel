@@ -5,20 +5,17 @@
 
 #include "common/softfloat_types.h"
 
-TEST_F(ut_rv64_insns, decode_and_execute_rv64if_fdiv_s) {
+TEST_F(ut_insns, decode_and_execute_rv64if_fdiv_s) {
     // 0x1820f0d3 : fdiv.s f1, f1, f2
     insts.push_back(0x1820f0d3);
-    LoadInst();
 
-    float a = 1.1;
-    float b = 2.1;
-    float32_t a_u = { std::bit_cast<uint32_t>(a) };
-    float32_t b_u = { std::bit_cast<uint32_t>(b) };
-    WRITE_FREG(fetch.insn.rs1(), a_u);
-    WRITE_FREG(fetch.insn.rs2(), b_u);
+    float a = 1.1f;
+    float b = 2.1f;
+    SetFReg(fpreg::f1, std::bit_cast<uint32_t>(a));
+    SetFReg(fpreg::f2, std::bit_cast<uint32_t>(b));
+
     ExecuateInst();
-    float32_t result = READ_FREG_F(fetch.insn.rd());
-    float result_float = std::bit_cast<float>(result.v);
-    
-    EXPECT_EQ(result_float, a / b);
+
+    uint32_t res = GetFReg(fpreg::f1);
+    EXPECT_FLOAT_EQ(std::bit_cast<float>(res), a / b);
 }

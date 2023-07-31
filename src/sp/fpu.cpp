@@ -41,7 +41,7 @@ uint64_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FMUL_S:
             ret = fmul_s();
             break;
-        case encoding::INST_FPU_DIV_S:
+        case encoding::INST_FPU_FDIV_S:
             ret = fdiv_s();
             break;
         case encoding::INST_FPU_FMADD_S:
@@ -65,18 +65,24 @@ uint64_t fpu::f2reg(float data) {
 }
 
 uint64_t fpu::fadd_s() {
-    printf("FINST TODO fadd_s\n");
-    return 0;
+    float res = 0.0f;
+    res = reg2f(inst.rs1) + reg2f(inst.rs2);
+    printf("[EXEC.FPU.FADD_S] r[%ld](%f) = %f + %f\n", inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
+    return f2reg(res);
 }
 
 uint64_t fpu::fmul_s() {
-    printf("FINST TODO fmul_s\n");
-    return 0;
+    float res = 0.0f;
+    res = reg2f(inst.rs1) * reg2f(inst.rs2);
+    printf("[EXEC.FPU.FMUL_S] r[%ld](%f) = %f * %f\n", inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
+    return f2reg(res);
 }
 
 uint64_t fpu::fdiv_s() {
-    printf("FINST TODO fdiv_s\n");
-    return 0;
+    float res = 0.0f;
+    res = reg2f(inst.rs1) / reg2f(inst.rs2);
+    printf("[EXEC.FPU.FDIV_S] r[%ld](%f) = %f / %f\n", inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
+    return f2reg(res);
 }
 
 uint64_t fpu::fmadd_s() {

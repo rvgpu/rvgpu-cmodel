@@ -115,7 +115,7 @@ typedef enum {
     INST_FPU_FADD_S,
     INST_FPU_FMADD_S,
     INST_FPU_FMUL_S,
-    INST_FPU_DIV_S,
+    INST_FPU_FDIV_S,
 
     INST_TYPE_LS = 0x400,
     INST_LS_LD,
