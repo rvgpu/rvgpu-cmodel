@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "sm/compute_unit.h"
-#include "ut_insns.hpp"
+#include "ut_branch.hpp"
 
 #define CHECK_BRANCH(a) do { \
         WRITE_REG(fetch.insn.rs1(), a); \
@@ -15,7 +15,7 @@
     } while(0)
 
 
-TEST_F(ut_insns, decode_and_execute_rv64i_beq) {
+TEST_F(ut_branch, decode_and_execute_rv64i_beq) {
     // 0xfa0506e3 : beqz a0, -84 (beq a0, x0, -84)
     insts.push_back(0xfa0506e3);
     auto pc = (uint64_t)insts.data();

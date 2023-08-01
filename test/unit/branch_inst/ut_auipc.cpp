@@ -1,9 +1,8 @@
 #include <gtest/gtest.h>
-#include "sm/compute_unit.h"
 
-#include "ut_insns.hpp"
+#include "ut_branch.hpp"
 
-TEST_F(ut_insns, decode_and_execute_rv64i_auipc) {
+TEST_F(ut_branch, decode_and_execute_rv64i_auipc) {
     //auipc bits: 0x97; auipc  ra, 0
     insts.push_back(0x97);
     ExecuateInst();

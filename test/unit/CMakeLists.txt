@@ -12,5 +12,6 @@ rvsim_unit_test(gtest_framework)
 
 add_subdirectory(alu)
 add_subdirectory(fpu)
+add_subdirectory(branch_inst)
 add_subdirectory(insns)
 # add_subdirectory(insns_gen)

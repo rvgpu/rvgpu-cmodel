@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "sm/compute_unit.h"
-#include "ut_insns.hpp"
+#include "ut_branch.hpp"
 
 #define CHECK_BRANCH(rs1, s1, rs2, s2) do { \
         SetIReg(rs1, s1);                   \
@@ -14,7 +14,7 @@
     } while(0)
 
 
-TEST_F(ut_insns, decode_and_execute_rv64i_bltu) {
+TEST_F(ut_branch, decode_and_execute_rv64i_bltu) {
     // 0x009ce463 : bltu s9, s1, 8
     insts.push_back(0x009ce463);
     uint64_t pc = (uint64_t)insts.data();

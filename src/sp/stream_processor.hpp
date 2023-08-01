@@ -33,6 +33,7 @@
 #include "decoder.hpp"
 
 class ut_insns;
+class ut_branch;
 // Stream Processor: A simt-x processor
 
 class stream_processor {
@@ -55,4 +56,5 @@ private:
     uint64_t branch(inst_issue inst);
 
     friend ut_insns;
+    friend ut_branch;
 };
