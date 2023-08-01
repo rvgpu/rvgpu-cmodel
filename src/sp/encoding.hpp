@@ -87,6 +87,8 @@ namespace encoding {
 #define MASK_SD 0x707f
 #define MATCH_SRLI 0x5013
 #define MASK_SRLI 0xfc00707f
+#define MATCH_SUB 0x40000033
+#define MASK_SUB 0xfe00707f
 #define MATCH_ANDI 0x7013
 #define MASK_ANDI 0x707f
 #define MATCH_ORI 0x6013
@@ -110,6 +112,7 @@ typedef enum {
     INST_ALU_SLLI,
     INST_ALU_SLT,
     INST_ALU_SRLI,
+    INST_ALU_SUB,
     INST_ALU_ANDI,
     INST_ALU_ORI,
     INST_ALU_XORI,

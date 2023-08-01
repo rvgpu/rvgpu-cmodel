@@ -72,6 +72,7 @@ std::vector<struct instlist> insts = {
         DECLARE_INSN_LS(SD),
         DECLARE_INSN_LS(SW),
         DECLARE_INSN_ALU(SRLI),
+        DECLARE_INSN_ALU(SUB),
 };
 
 dec::dec() {
