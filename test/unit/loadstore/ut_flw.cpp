@@ -5,20 +5,17 @@
 
 #include "common/softfloat_types.h"
 
-TEST_F(ut_loadstore, decode_and_execute_rv64if_fmul_s) {
-    // 0x00051007:   07 a0 05 00   flw ft0, 0(a1)
+TEST_F(ut_loadstore, decode_and_execute_rv64if_flw_s) {
     // 0x0045a007:   07 a0 45 00   flw ft0, 4(a1)
     insts.push_back(0x0045a007);
-    LoadInst();
 
-    float *addr = (float *)malloc(4 * sizeof(float));
-    addr[1] = 200.0f;
+    uint32_t *addr = (uint32_t *)(GetStackPointer() + 4);
+    *addr = std::bit_cast<uint32_t>(1.1f);
 
-    WRITE_REG(fetch.insn.rs1(), reinterpret_cast<uint64_t>(addr));
+    auto regr = fpreg::ft0;
+    uint32_t result = 0;
+    SetIReg(reg::a1, GetStackPointer());
     ExecuateInst();
-
-    float32_t result = READ_FREG_F(fetch.insn.rd());
-    float result_float = std::bit_cast<float>(result.v);
-    
-    EXPECT_EQ(result_float, addr[1]);
+    result = GetFReg(regr);
+    EXPECT_EQ(std::bit_cast<float>(result), 1.1f);
 }

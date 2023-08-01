@@ -35,6 +35,19 @@ uint64_t load_store::run(inst_issue inst) {
     uint64_t result = 0;
 
     switch (inst.code) {
+        case encoding::INST_LS_FSW: {
+            uint64_t addr = inst.rs1 + inst.s_imm;
+            printf("[EXEC.LS.FSW] store.i32: mem[0x%lx] = 0x%lx\n", addr, inst.rs2);
+            *((uint32_t *)addr) = (uint32_t)inst.rs2;
+            break;
+        }
+        case encoding::INST_LS_FLW: {
+            uint64_t addr = inst.rs1 + inst.i_imm;
+            uint32_t data = *((uint32_t *)addr);
+            printf("[EXEC.LS.FLW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
+            m_reg->write_freg(0, inst.rd, data);
+            break;
+        }
         case encoding::INST_LS_SW: {
             uint64_t addr = inst.rs1 + inst.s_imm;
             printf("[EXEC.LS.SW] store.i32: mem[0x%lx] = 0x%lx\n", addr, inst.rs2);

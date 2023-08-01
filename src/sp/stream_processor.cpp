@@ -63,7 +63,11 @@ uint64_t stream_processor::execuator(inst_issue to_issue) {
         }
         case encoding::INST_TYPE_LS: {
             to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
-            to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
+            if (to_issue.code == encoding::INST_LS_FSW) {
+                to_issue.rs2 = m_reg->read_freg(0, to_issue.rs2_id);
+            } else {
+                to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
+            }
             to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
             m_ls->run(to_issue);
             npc = pc + 4;
