@@ -24,6 +24,7 @@
 #include <cstdio>
 
 #include "warp.hpp"
+#include "common/regid.hpp"
 
 warp::warp(register_file *reg) {
     m_reg = reg;
@@ -40,10 +41,10 @@ void warp::setup(message msg) {
     printf("setup sp: 0x%lx\n", msg.stack_pointer);
     printf("setup a0: 0x%lx\n", msg.layout);
     printf("setup a1: 0x%x\n", msg.start);
-    m_reg->write_ireg<uint64_t>(0, 1, 0);
-    m_reg->write_ireg<uint64_t>(0, 2, msg.stack_pointer);
-    m_reg->write_ireg<uint64_t>(0, 10, msg.layout);
-    m_reg->write_ireg<uint64_t>(0, 11, msg.start);
+    m_reg->write_ireg<uint64_t>(0, uint64_t(reg::ra), 0);
+    m_reg->write_ireg<uint64_t>(0, uint64_t(reg::sp), msg.stack_pointer);
+    m_reg->write_ireg<uint64_t>(0, uint64_t(reg::a0), msg.layout);
+    m_reg->write_ireg<uint64_t>(0, uint64_t(reg::a1), msg.start);
 }
 
 inst_issue warp::schedule() {
