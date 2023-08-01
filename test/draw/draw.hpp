@@ -11,7 +11,7 @@
 class Draw : public ::testing::Test {
 protected:
     void SetUp() override {
-        stack_pointer = (uint64_t)malloc(STACK_POINT_SIZE + 0x1000);
+        stack_pointer = (uint64_t)malloc(STACK_POINT_SIZE * 128 + 0x1000);
         stack_pointer += 0x1000;
         gpu = new rvgpu();
     }

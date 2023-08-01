@@ -60,7 +60,7 @@ protected:
             to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
         }
         to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
-        npc = m_ls->run(to_issue);
+        npc = m_ls->run(to_issue, 0);
     }
 
     dec *m_dec;

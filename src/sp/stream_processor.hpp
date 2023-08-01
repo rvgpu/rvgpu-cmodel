@@ -49,5 +49,6 @@ private:
 
     uint64_t        pc;
 
-    uint64_t execuator(inst_issue inst);
+    void issue(inst_issue inst);
+    void issue_single(inst_issue inst, uint32_t tid);
 };

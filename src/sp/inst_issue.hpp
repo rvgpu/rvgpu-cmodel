@@ -3,6 +3,7 @@
 #include <cstdint>
 
 typedef struct {
+    uint64_t lanes;
     uint32_t bits;
     uint32_t code;
     uint32_t type;

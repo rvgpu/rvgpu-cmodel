@@ -30,7 +30,7 @@ load_store::load_store(register_file *regfile) {
     m_reg = regfile;
 }
 
-uint64_t load_store::run(inst_issue inst) {
+uint64_t load_store::run(inst_issue inst, uint32_t tid) {
     proc_inst = inst;
     uint64_t result = 0;
 
@@ -45,7 +45,7 @@ uint64_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint32_t data = *((uint32_t *)addr);
             printf("[EXEC.LS.FLW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
-            m_reg->write_freg(0, inst.rd, data);
+            m_reg->write_freg(tid, inst.rd, data);
             break;
         }
         case encoding::INST_LS_SW: {
@@ -64,21 +64,21 @@ uint64_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int32_t data = *((int32_t *)addr);
             printf("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
-            m_reg->write_ireg<int32_t>(0, inst.rd, data);
+            m_reg->write_ireg<int32_t>(tid, inst.rd, data);
             break;
         }
         case encoding::INST_LS_LWU: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint32_t data = *((uint32_t *)addr);
             printf("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
-            m_reg->write_ireg<uint32_t>(0, inst.rd, data);
+            m_reg->write_ireg<uint32_t>(tid, inst.rd, data);
             break;
         }
         case encoding::INST_LS_LD: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int64_t data = *((int64_t *)addr);
             printf("[EXEC.LS.LD] load.i64: r[%ld] 0x%lx from mem[0x%lx]\n", inst.rd, data, addr);
-            m_reg->write_ireg<int64_t>(0, inst.rd, data);
+            m_reg->write_ireg<int64_t>(tid, inst.rd, data);
             break;
         }
         default:

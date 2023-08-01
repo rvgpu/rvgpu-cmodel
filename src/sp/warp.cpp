@@ -34,9 +34,10 @@ warp::warp(register_file *reg) {
 
 void warp::setup(message msg) {
     pc = msg.shader;
+    startpc = msg.shader;
 
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
-        if (i > msg.count) {
+        if (i < msg.count) {
             lanes.set();
             stops.reset();
         } else {
@@ -51,21 +52,24 @@ void warp::setup(message msg) {
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
         if (lanes.test(i)) {
             printf("[SP][WARP0.%d] setup ra: 0x0\n", i);
-            printf("[SP][WARP0.%d] setup sp: 0x%lx\n", i, msg.stack_pointer);
+            printf("[SP][WARP0.%d] setup sp: 0x%lx\n", i, msg.stack_pointer + 0x1000 * i);
             printf("[SP][WARP0.%d] setup a0: 0x%lx\n", i, msg.layout);
             printf("[SP][WARP0.%d] setup a1: 0x%x\n", i, msg.start);
 
+            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::s0), 0);
             m_reg->write_ireg<uint64_t>(i, uint64_t(reg::ra), 0);
-            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::sp), msg.stack_pointer);
+            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::sp), msg.stack_pointer + 0x1000 * i);
             m_reg->write_ireg<uint64_t>(i, uint64_t(reg::a0), msg.layout);
-            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::a1), msg.start);
+            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::a1), msg.start + i);
         }
     }
 }
 
 inst_issue warp::schedule() {
+    printf("Fetch inst %lx\n", pc - startpc);
     uint32_t instcode = *((uint32_t *)pc);
     inst_issue to_issue = m_dec->decode_inst(instcode);
+    to_issue.lanes = lanes.to_ulong();
 
     if (to_issue.type == encoding::INST_TYPE_BRANCH) {
         FOREACH_WARP_THREAD {

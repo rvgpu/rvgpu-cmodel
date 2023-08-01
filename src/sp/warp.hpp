@@ -47,6 +47,7 @@ private:
     register_file *m_reg;
     dec *m_dec;
 
+    uint32_t startpc;
     uint64_t pc;
     uint64_t npc[WARP_THREAD_N];
     std::bitset<WARP_THREAD_N> lanes;

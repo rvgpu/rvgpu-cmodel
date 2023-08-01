@@ -22,6 +22,7 @@
  */
 
 #include "common/message.h"
+#include "common/configs.h"
 #include "command_processor.h"
 
 command_processor::command_processor() {
@@ -45,16 +46,25 @@ void command_processor::run(uint64_t cmds, std::vector<message> &msg) {
 void command_processor::command_vs(rvgpu_command *cs, std::vector<message> &msg) {
     rvgpu_command_vs vs = cs->cmd.vs;
 
-    for (uint32_t i=0; i<vs.vertex_count; i++) {  // one vertex on one sm now
+    uint32_t vcount = vs.vertex_count;
+    uint32_t start = 0;
+
+    while(vcount != 0) {
+        uint32_t issue_count = 0;
+        issue_count = ((vcount-1) >> WARP_THREAD_N_LOG2) ? (WARP_THREAD_N - 1) : ((vcount-1) & WARP_THREAD_N_MASK);
+
         message tmsg = {};
         tmsg.target = 0; // message send to sm[0]
         tmsg.msg = CMD_MESSAGE_START_CU_VS;
         tmsg.shader = vs.shader;
-        tmsg.start = i;
-        tmsg.count = 1;
+        tmsg.start = start;
+        tmsg.count = issue_count + 1;
         tmsg.layout = vs.layout;
         tmsg.stack_pointer = vs.stack_pointer;
         msg.push_back(std::move(tmsg));
+
+        start = start + issue_count + 1;
+        vcount = vcount - issue_count - 1;
     }
 }
 
