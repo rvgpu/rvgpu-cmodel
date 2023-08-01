@@ -143,24 +143,34 @@ uint64_t warp::branch(inst_issue inst, uint32_t tid) {
             } else {
                 retpc = pc + 4;
             }
-            printf("[EXEC.BRANCH.BEQ] jump to %lx, (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
+            printf("[EXEC.BRANCH.BEQ] jump to %lx, if (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BGEU: {
-            printf("TODO BGEU\n");
-            break;
-        }
-        case encoding::INST_BRANCH_BLTU: {
-            if (inst.rs1< inst.rs2) {
+            if (inst.rs1 >= inst.rs2) {
                 retpc = pc + inst.sb_imm;
             } else {
                 retpc = pc + 4;
             }
-            printf("[EXEC.BRANCH.BLTU] jump to %lx, (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
+            printf("[EXEC.BRANCH.BGEU] jump to %lx, if (%lx >= %lx)\n", retpc, inst.rs1, inst.rs2);
+            break;
+        }
+        case encoding::INST_BRANCH_BLTU: {
+            if (inst.rs1 < inst.rs2) {
+                retpc = pc + inst.sb_imm;
+            } else {
+                retpc = pc + 4;
+            }
+            printf("[EXEC.BRANCH.BLTU] jump to %lx, if (%lx < %lx)\n", retpc, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BNE: {
-            printf("TODO BNE\n");
+            if (inst.rs1 != inst.rs2) {
+                retpc = pc + inst.sb_imm;
+            } else {
+                retpc = pc + 4;
+            }
+            printf("[EXEC.BRANCH.BNE] jump to %lx, if (%lx != %lx)\n", retpc, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_JAL: {
