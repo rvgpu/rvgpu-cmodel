@@ -66,8 +66,8 @@ void warp::setup(message msg) {
 }
 
 inst_issue warp::schedule() {
-    printf("Fetch inst %lx\n", pc - startpc);
     uint32_t instcode = *((uint32_t *)pc);
+    printf("Fetch inst 0x%08x\n", instcode);
     inst_issue to_issue = m_dec->decode_inst(instcode);
     to_issue.lanes = lanes.to_ulong();
 
