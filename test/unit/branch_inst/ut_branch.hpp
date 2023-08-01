@@ -43,7 +43,7 @@ protected:
         to_issue.rs1 = m_warp->m_reg->read_ireg(0, to_issue.rs1_id);
         to_issue.rs2 = m_warp->m_reg->read_ireg(0, to_issue.rs2_id);
         to_issue.rs3 = m_warp->m_reg->read_ireg(0, to_issue.rs3_id);
-        npc = m_warp->branch(to_issue);
+        npc = m_warp->branch(to_issue, 0);
     }
 
     warp *m_warp;

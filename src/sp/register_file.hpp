@@ -24,6 +24,8 @@
 #pragma once
 #include <stdint.h>
 
+#include "common/configs.h"
+
 class register_file {
 public:
     register_file() {
@@ -31,28 +33,27 @@ public:
     };
 
     template<typename T>
-    void write_ireg(uint32_t warp, uint32_t id, T data) {
-        if (id != 0) {
-            uint64_t regaddr = (uint64_t) &(ireg[warp][id]);
+    void write_ireg(uint32_t tid, uint32_t rid, T data) {
+        if (rid != 0) {
+            uint64_t regaddr = (uint64_t) &(ireg[tid][rid]);
             *(T *) regaddr = data;
         }
     }
 
-    uint64_t read_ireg(uint32_t warp, uint32_t id) {
-        if (id > 32) { return 0; }
-        return ireg[warp][id];
+    uint64_t read_ireg(uint32_t tid, uint32_t rid) {
+        if (rid > 32) { return 0; }
+        return ireg[tid][rid];
     }
 
-    void write_freg(uint32_t warp, uint32_t id, uint64_t data) {
-        freg[warp][id] = data;
+    void write_freg(uint32_t tid, uint32_t rid, uint64_t data) {
+        freg[tid][rid] = data;
     }
 
-    uint64_t read_freg(uint32_t warp, uint32_t id) {
-        if (id > 32) { return 0; }
-        return freg[warp][id];
+    uint64_t read_freg(uint32_t tid, uint32_t rid) {
+        return freg[tid][rid];
     }
 
 private:
-    uint64_t ireg[1][32];
-    uint64_t freg[1][32];
+    uint64_t ireg[WARP_THREAD_N][32];
+    uint64_t freg[WARP_THREAD_N][32];
 };

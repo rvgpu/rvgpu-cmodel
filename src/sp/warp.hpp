@@ -23,9 +23,11 @@
 
 #pragma once
 
-#include <stdint.h>
+#include <cstdint>
+#include <bitset>
 
 #include "common/message.h"
+#include "common/configs.h"
 #include "inst_issue.hpp"
 #include "register_file.hpp"
 #include "decoder.hpp"
@@ -40,12 +42,17 @@ public:
     bool stop();
 
     inst_issue schedule();
+
 private:
     register_file *m_reg;
     dec *m_dec;
 
     uint64_t pc;
-    uint64_t branch(inst_issue to_issue);
+    uint64_t npc[WARP_THREAD_N];
+    std::bitset<WARP_THREAD_N> lanes;
+    std::bitset<WARP_THREAD_N> stops;
+    uint64_t branch(inst_issue to_issue, uint32_t tid);
+    uint64_t diverage();
 
     friend ut_branch;
 };

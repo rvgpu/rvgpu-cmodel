@@ -23,8 +23,9 @@
 
 #include <cstdio>
 
-#include "warp.hpp"
+#include "common/utils.hpp"
 #include "common/regid.hpp"
+#include "warp.hpp"
 
 warp::warp(register_file *reg) {
     m_reg = reg;
@@ -33,18 +34,33 @@ warp::warp(register_file *reg) {
 
 void warp::setup(message msg) {
     pc = msg.shader;
-    // m_warp->setup_shader(shader);
-    // write stack_pointer to sp
-    // m_reg->write_ireg(0, 2, stack_pointer);
-    // write arg1 to a0
-    printf("setup ra: 0x0\n");
-    printf("setup sp: 0x%lx\n", msg.stack_pointer);
-    printf("setup a0: 0x%lx\n", msg.layout);
-    printf("setup a1: 0x%x\n", msg.start);
-    m_reg->write_ireg<uint64_t>(0, uint64_t(reg::ra), 0);
-    m_reg->write_ireg<uint64_t>(0, uint64_t(reg::sp), msg.stack_pointer);
-    m_reg->write_ireg<uint64_t>(0, uint64_t(reg::a0), msg.layout);
-    m_reg->write_ireg<uint64_t>(0, uint64_t(reg::a1), msg.start);
+
+    for (uint32_t i=0; i<WARP_THREAD_N; i++) {
+        if (i > msg.count) {
+            lanes.set();
+            stops.reset();
+        } else {
+            lanes.reset();
+            stops.set();
+        }
+    }
+
+    printf("[WARP] start lanes: %lx\n", lanes.to_ulong());
+    printf("[WARP] start stops: %lx\n", stops.to_ulong());
+
+    for (uint32_t i=0; i<WARP_THREAD_N; i++) {
+        if (lanes.test(i)) {
+            printf("[SP][WARP0.%d] setup ra: 0x0\n", i);
+            printf("[SP][WARP0.%d] setup sp: 0x%lx\n", i, msg.stack_pointer);
+            printf("[SP][WARP0.%d] setup a0: 0x%lx\n", i, msg.layout);
+            printf("[SP][WARP0.%d] setup a1: 0x%x\n", i, msg.start);
+
+            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::ra), 0);
+            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::sp), msg.stack_pointer);
+            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::a0), msg.layout);
+            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::a1), msg.start);
+        }
+    }
 }
 
 inst_issue warp::schedule() {
@@ -52,11 +68,13 @@ inst_issue warp::schedule() {
     inst_issue to_issue = m_dec->decode_inst(instcode);
 
     if (to_issue.type == encoding::INST_TYPE_BRANCH) {
-        to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
-        to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
-        to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
+        FOREACH_WARP_THREAD {
+            if (lanes.test(thread)) {
+                npc[thread] = branch(to_issue, thread);
+            }
+        }
 
-        pc = branch(to_issue);
+        pc = diverage();
         to_issue.type = encoding::INST_TYPE_NOP;
     } else {
         pc = pc + 4;
@@ -65,11 +83,53 @@ inst_issue warp::schedule() {
     return to_issue;
 }
 
-uint64_t warp::branch(inst_issue inst) {
+uint64_t warp::diverage() {
+    uint64_t rpc;
+    bool notall = false;
+
+    uint64_t next = pc + 4;
+    uint64_t next_t = next;
+    FOREACH_WARP_THREAD {
+        if (lanes.test(thread)) {
+            if (next != npc[thread]) {
+                next_t = npc[thread];
+            } else {
+                notall = true;
+            }
+        }
+    }
+
+    if (next_t == next) {  // all thread jump to next instruction
+        rpc = next;
+    } else if (next_t == 0) {  // some thread will stop
+        FOREACH_WARP_THREAD {
+            if (lanes.test(thread)) {
+                lanes.reset(thread);
+                stops.set(thread);
+            }
+        }
+
+        rpc = stops.all() ? 0: next;
+    } else if (notall) {
+        rpc = next;
+    } else {
+        rpc = next_t;
+    }
+
+    printf("diverge lanes: %lx\n", lanes.to_ulong());
+    printf("diverge stops: %lx\n", stops.to_ulong());
+    return rpc;
+}
+
+uint64_t warp::branch(inst_issue inst, uint32_t tid) {
     uint64_t retpc = pc + 4;
+    inst.rs1 = m_reg->read_ireg(tid, inst.rs1_id);
+    inst.rs2 = m_reg->read_ireg(tid, inst.rs2_id);
+    inst.rs3 = m_reg->read_ireg(tid, inst.rs3_id);
+
     switch (inst.code) {
         case encoding::INST_BRANCH_AUIPC: {
-            m_reg->write_ireg<uint64_t>(0, inst.rd, (pc + inst.u_imm));
+            m_reg->write_ireg<uint64_t>(tid, inst.rd, (pc + inst.u_imm));
             retpc = pc + 4;
             break;
         }
@@ -100,13 +160,13 @@ uint64_t warp::branch(inst_issue inst) {
             break;
         }
         case encoding::INST_BRANCH_JAL: {
-            m_reg->write_ireg<uint64_t>(0, inst.rd, pc + 4);
+            m_reg->write_ireg<uint64_t>(tid, inst.rd, pc + 4);
             retpc = (pc + inst.uj_imm);
             printf("[EXEC.BRANCH.JAL] jump to %lx\n", retpc);
             break;
         }
         case encoding::INST_BRANCH_JALR: {
-            m_reg->write_ireg<uint64_t>(0, inst.rd, pc + 4);
+            m_reg->write_ireg<uint64_t>(tid, inst.rd, pc + 4);
             retpc = (inst.rs1 + inst.i_imm) & ~(uint64_t)(1);
             printf("[EXEC.BRANCH.JALR] jump to %lx\n", retpc);
             break;
