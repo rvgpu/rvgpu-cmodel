@@ -32,8 +32,6 @@
 #include "load_store.hpp"
 #include "decoder.hpp"
 
-class ut_loadstore;
-class ut_branch;
 // Stream Processor: A simt-x processor
 
 class stream_processor {
@@ -44,7 +42,6 @@ public:
 
 private:
     warp            *m_warp;
-    dec             *m_dec;
     register_file   *m_reg;
     alu             *m_alu;
     fpu             *m_fpu;
@@ -53,8 +50,4 @@ private:
     uint64_t        pc;
 
     uint64_t execuator(inst_issue inst);
-    uint64_t branch(inst_issue inst);
-
-    friend ut_loadstore;
-    friend ut_branch;
 };

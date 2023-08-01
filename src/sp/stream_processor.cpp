@@ -28,28 +28,15 @@
 #include "encoding.hpp"
 
 stream_processor::stream_processor() {
-    m_warp = new warp();
-    m_dec = new dec();
     m_reg = new register_file();
     m_alu = new alu();
     m_fpu = new fpu();
+    m_warp = new warp(m_reg);
     m_ls = new load_store(m_reg);
 }
 
 void stream_processor::setup(message msg) {
-    pc = msg.shader;
-    // m_warp->setup_shader(shader);
-    // write stack_pointer to sp
-    // m_reg->write_ireg(0, 2, stack_pointer);
-    // write arg1 to a0
-    printf("setup ra: 0x0\n");
-    printf("setup sp: 0x%lx\n", msg.stack_pointer);
-    printf("setup a0: 0x%lx\n", msg.layout);
-    printf("setup a1: 0x%x\n", msg.start);
-    m_reg->write_ireg<uint64_t>(0, 1, 0);
-    m_reg->write_ireg<uint64_t>(0, 2, msg.stack_pointer);
-    m_reg->write_ireg<uint64_t>(0, 10, msg.layout);
-    m_reg->write_ireg<uint64_t>(0, 11, msg.start);
+    m_warp->setup(msg);
 }
 
 uint64_t stream_processor::execuator(inst_issue to_issue) {
@@ -78,15 +65,12 @@ uint64_t stream_processor::execuator(inst_issue to_issue) {
             to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
             to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
             to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
-            result = m_ls->run(to_issue);
+            m_ls->run(to_issue);
             npc = pc + 4;
             break;
         }
-        case encoding::INST_TYPE_BRANCH: {
-            to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
-            to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
-            to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
-            npc = branch(to_issue);
+        case encoding::INST_TYPE_NOP: {
+            printf("Instruction NOP\n");
             break;
         }
         default:
@@ -97,64 +81,9 @@ uint64_t stream_processor::execuator(inst_issue to_issue) {
 }
 
 void stream_processor::run() {
-    while (pc != 0) {
-        uint32_t instcode = *(uint32_t *)pc;
-        inst_issue to_issue = m_dec->decode_inst(instcode);
+    while (m_warp->stop()) {
+        inst_issue to_issue = m_warp->schedule();
 
         pc = execuator(to_issue);
     }
-}
-
-uint64_t stream_processor::branch(inst_issue inst) {
-    uint64_t retpc = pc + 4;
-    switch (inst.code) {
-        case encoding::INST_BRANCH_AUIPC: {
-            m_reg->write_ireg<uint64_t>(0, inst.rd, (pc + inst.u_imm));
-            retpc = pc + 4;
-            break;
-        }
-        case encoding::INST_BRANCH_BEQ: {
-            if (inst.rs1 == inst.rs2) {
-                retpc = pc + inst.sb_imm;
-            } else {
-                retpc = pc + 4;
-            }
-            printf("[EXEC.BRANCH.BEQ] jump to %lx, (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
-            break;
-        }
-        case encoding::INST_BRANCH_BGEU: {
-            printf("TODO BGEU\n");
-            break;
-        }
-        case encoding::INST_BRANCH_BLTU: {
-            if (inst.rs1< inst.rs2) {
-                retpc = pc + inst.sb_imm;
-            } else {
-                retpc = pc + 4;
-            }
-            printf("[EXEC.BRANCH.BLTU] jump to %lx, (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
-            break;
-        }
-        case encoding::INST_BRANCH_BNE: {
-            printf("TODO BNE\n");
-            break;
-        }
-        case encoding::INST_BRANCH_JAL: {
-            m_reg->write_ireg<uint64_t>(0, inst.rd, pc + 4);
-            retpc = (pc + inst.uj_imm);
-            printf("[EXEC.BRANCH.JAL] jump to %lx\n", retpc);
-            break;
-        }
-        case encoding::INST_BRANCH_JALR: {
-            m_reg->write_ireg<uint64_t>(0, inst.rd, pc + 4);
-            retpc = (inst.rs1 + inst.i_imm) & ~(uint64_t)(1);
-            printf("[EXEC.BRANCH.JALR] jump to %lx\n", retpc);
-            break;
-        }
-        default:
-            printf("BRANCH INST TODO!\n");
-            break;
-    }
-
-    return retpc;
 }

@@ -138,5 +138,6 @@ typedef enum {
 
     INST_TYPE_MASK = 0xF00,
     INST_ERROR_CODE = 0xFFF,
+    INST_TYPE_NOP = 0x1000,
 } INST;
 } // endof namespace

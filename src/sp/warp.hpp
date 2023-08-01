@@ -21,20 +21,31 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef RVGSIM_WARP_SCHEDULE_H
-#define RVGSIM_WARP_SCHEDULE_H
+#pragma once
 
 #include <stdint.h>
 
+#include "common/message.h"
+#include "inst_issue.hpp"
+#include "register_file.hpp"
+#include "decoder.hpp"
+
+class ut_branch;
+
 class warp {
 public:
-    warp ();
+    warp (register_file *reg);
 
-    void setup_shader(uint64_t shader);
+    void setup(message msg);
     bool stop();
 
+    inst_issue schedule();
 private:
-    uint64_t m_pc;
-};
+    register_file *m_reg;
+    dec *m_dec;
 
-#endif //RVGSIM_WARP_SCHEDULE_H
+    uint64_t pc;
+    uint64_t branch(inst_issue to_issue);
+
+    friend ut_branch;
+};
