@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 #include <bit>
 #include "sm/compute_unit.h"
-#include "ut_insns.hpp"
+#include "ut_fpu.hpp"
 
 #include "common/softfloat_types.h"
 
-TEST_F(ut_insns, decode_and_execute_rv64if_fdiv_s) {
+TEST_F(ut_fpu, decode_and_execute_rv64if_fdiv_s) {
     // 0x1820f0d3 : fdiv.s f1, f1, f2
     insts.push_back(0x1820f0d3);
 

@@ -1,0 +1,12 @@
+function(rvsim_ut_fpu testname)
+    set(testcase rvsim_ut_fpu_${testname})
+    add_executable(${testcase} ut_${testname}.cpp)
+    target_link_libraries(${testcase} rvgsim gtest gtest_main)
+    target_include_directories(${testcase} PRIVATE ${project_top_path}/src)
+    add_test(NAME ${testcase} COMMAND ${testcase})
+endfunction()
+
+rvsim_ut_fpu(fadd_s)
+rvsim_ut_fpu(fdiv_s)
+rvsim_ut_fpu(fmadd_s)
+rvsim_ut_fpu(fmul_s)
