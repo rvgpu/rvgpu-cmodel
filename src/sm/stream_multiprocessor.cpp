@@ -38,24 +38,13 @@ void sm::run_vs(message msg) {
 
     m_sp->setup(msg);
     m_sp->run();
-#if 0
-    pc = msg.shader;
-    p->init_register(2, (uint64_t)sp);
-    p->init_register(10, msg.layout);
-    p->init_register(11, msg.start);
-
-    printf("Run Instruction:\n");
-    while(pc != 0) {
-        fetch = p->load_insn(pc);
-        next_pc = p->execute_insn(pc, fetch);
-        pc = next_pc;
-    };
-#endif
 }
 
 void sm::run(message msg) {
     switch(msg.msg) {
-        case CMD_MESSAGE_START_CU_VS:  run_vs(msg);
+        case CMD_MESSAGE_START_CU_VS:
+            run_vs(msg);
+            break;
         default:
             break;
     }
