@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 #include <bit>
 #include "sm/compute_unit.h"
-#include "ut_insns.hpp"
+#include "ut_loadstore.hpp"
 
 #include "common/softfloat_types.h"
 
-TEST_F(ut_rv64_insns, decode_and_execute_rv64if_fmul_s) {
+TEST_F(ut_loadstore, decode_and_execute_rv64if_fmul_s) {
     // 0x00052a27: 27 2a 05 00   fsw ft0, 20(a0)
     insts.push_back(0x00052a27);
     LoadInst();

@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include "sm/compute_unit.h"
 
-#include "ut_insns.hpp"
+#include "ut_loadstore.hpp"
 
-TEST_F(ut_insns, decode_and_execute_rv64i_lwu) {
+TEST_F(ut_loadstore, decode_and_execute_rv64i_lwu) {
     // 0x01456603 : lwu a2, 20(a0)
     insts.push_back(0x01456603);
 

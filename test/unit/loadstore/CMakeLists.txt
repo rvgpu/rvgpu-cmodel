@@ -1,0 +1,16 @@
+function(rvsim_ut_ls testname)
+    set(testcase rvsim_ut_ls_${testname})
+    add_executable(${testcase} ut_${testname}.cpp)
+    target_link_libraries(${testcase} rvgsim gtest gtest_main)
+    target_include_directories(${testcase} PRIVATE ${project_top_path}/src)
+    add_test(NAME ${testcase} COMMAND ${testcase})
+endfunction()
+
+rvsim_ut_ls(sw)
+rvsim_ut_ls(sd)
+# rvsim_ut_ls(flw)
+# rvsim_ut_ls(fsw)
+rvsim_ut_ls(ld)
+rvsim_ut_ls(lw)
+rvsim_ut_ls(lwu)
+

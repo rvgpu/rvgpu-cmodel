@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include "sm/compute_unit.h"
-#include "ut_insns.hpp"
+#include "ut_loadstore.hpp"
 
-TEST_F(ut_insns, decode_and_execute_rv64i_sd) {
+TEST_F(ut_loadstore, decode_and_execute_rv64i_sd) {
     //bits: 0x00a13c23   sd  a0, 24(sp)
     insts.push_back(0x00a13c23);
     SetIReg(reg::a0, 0x1000100010001000);

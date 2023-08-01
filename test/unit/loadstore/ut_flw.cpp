@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 #include <bit>
 #include "sm/compute_unit.h"
-#include "ut_insns.hpp"
+#include "ut_loadstore.hpp"
 
 #include "common/softfloat_types.h"
 
-TEST_F(ut_rv64_insns, decode_and_execute_rv64if_fmul_s) {
+TEST_F(ut_loadstore, decode_and_execute_rv64if_fmul_s) {
     // 0x00051007:   07 a0 05 00   flw ft0, 0(a1)
     // 0x0045a007:   07 a0 45 00   flw ft0, 4(a1)
     insts.push_back(0x0045a007);

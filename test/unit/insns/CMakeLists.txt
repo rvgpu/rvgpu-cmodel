@@ -1,9 +1,0 @@
-rvsim_unit_test(ut_sw)
-rvsim_unit_test(ut_sd)
-# rvsim_unit_test(ut_flw)
-# rvsim_unit_test(ut_fsw)
-rvsim_unit_test(ut_ld)
-rvsim_unit_test(ut_li)
-rvsim_unit_test(ut_lw)
-rvsim_unit_test(ut_lwu)
-

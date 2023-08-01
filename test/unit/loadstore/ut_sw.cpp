@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 #include "sm/compute_unit.h"
-#include "ut_insns.hpp"
+#include "ut_loadstore.hpp"
 
-TEST_F(ut_insns, decode_and_execute_rv64i_sw){
+TEST_F(ut_loadstore, decode_and_execute_rv64i_sw){
     //sw bits: 0x00c52823 # sw  a2, 16(a0)
     insts.push_back(0x00c52823);
 
