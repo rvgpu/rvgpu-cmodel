@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include "sm/compute_unit.h"
 
-#include "ut_insns.hpp"
+#include "ut_alu.hpp"
 
-TEST_F(ut_insns, decode_and_execute_rv64i_lui) {
+TEST_F(ut_alu, decode_and_execute_rv64i_lui) {
     // 0x02000e93 : lui x29, 2
     insts.push_back(0x00002eb7);    
     auto regr = reg::x29;
