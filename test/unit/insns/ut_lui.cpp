@@ -3,22 +3,13 @@
 
 #include "ut_insns.hpp"
 
-TEST_F(ut_rv64_insns, decode_and_execute_rv64i_lui) {
+TEST_F(ut_insns, decode_and_execute_rv64i_lui) {
     // 0x02000e93 : lui x29, 2
-    insts.push_back(0x00002eb7);
-    LoadInst();
+    insts.push_back(0x00002eb7);    
+    auto regr = reg::x29;
+
+    uint64_t result = 0;
     ExecuateInst();
-    uint64_t res = READ_REG(fetch.insn.rd());
-
-    EXPECT_EQ(res, 0x2000);
-}
-
-TEST_F(ut_rv32_insns, decode_and_execute_rv32i_lui) {
-    // 0x02000e93 : lui x29, 2
-    insts.push_back(0x00002eb7);
-    LoadInst();
-    ExecuateInst();
-    uint32_t res = READ_REG(fetch.insn.rd());
-
-    EXPECT_EQ(res, 0x2000);
+    result = GetIReg(regr);
+    EXPECT_EQ(result, 0x2000);
 }

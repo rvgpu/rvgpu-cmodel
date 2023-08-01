@@ -100,6 +100,7 @@ typedef enum {
     INST_ALU_ADDI,
     INST_ALU_ADDIW,
     INST_ALU_ADDW,
+    INST_ALU_LUI,
     INST_ALU_MUL,
     INST_ALU_MULW,
     INST_ALU_SLTU,
@@ -119,11 +120,10 @@ typedef enum {
 
     INST_TYPE_LS = 0x400,
     INST_LS_LD,
-    INST_LS_LUI,
     INST_LS_LW,
     INST_LS_LWU,
-    INST_LS_SW,
     INST_LS_SD,
+    INST_LS_SW,    
     INST_LS_FLW,
     INST_LS_FSW,
 

@@ -45,6 +45,9 @@ uint64_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_ADDW:
             ret = addw();
             break;
+        case encoding::INST_ALU_LUI:
+            ret = lui();
+            break;
         case encoding::INST_ALU_MUL:
             ret = mul();
             break;
@@ -110,6 +113,11 @@ uint64_t alu::addw() {
     int32_t rs2 = inst.rs2;
     ret = rs1 + rs2;
     printf("[EXEC.ALU.ADDW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, ret, rs1, rs2);
+    return ret;
+}
+uint64_t alu::lui() {
+    uint64_t ret = inst.u_imm;
+    printf("[EXEC.ALU.LUI] r[%ld](0x%lx) = 0x%lx\n", inst.rd, ret, inst.u_imm);
     return ret;
 }
 

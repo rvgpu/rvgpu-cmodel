@@ -39,6 +39,7 @@ private:
     uint64_t addi();
     uint64_t addiw();
     uint64_t addw();
+    uint64_t lui();
     uint64_t mulw();
     uint64_t mul();
     uint64_t sltu();
