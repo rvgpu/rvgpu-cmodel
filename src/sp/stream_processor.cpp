@@ -74,6 +74,7 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
             break;
         }
         default:
+            printf("Instruction ERROR\n");
             break;
     }
 }

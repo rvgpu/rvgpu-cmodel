@@ -46,6 +46,7 @@ private:
     uint64_t slliw();
     uint64_t slli();
     uint64_t slt();
+    uint64_t srli();
     uint64_t andi();
     uint64_t ori();
     uint64_t xori();
