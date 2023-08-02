@@ -26,7 +26,16 @@ protected:
         vs.shader = binary;
         vs.layout = layout;
         vs.stack_pointer = stack_pointer;
-        commands.push_back(rvgpu_command {.type = RVGPU_COMMAND_TYPE_VS, .cmd = {vs}});
+        commands.push_back(rvgpu_command {.type = RVGPU_COMMAND_TYPE_VS, .cmd = {.vs = vs}});
+    }
+
+    void fragment_command(uint32_t vcount, uint32_t primtive, uint64_t binary, uint64_t layout) {
+        rvgpu_command_fs fs = {};
+        fs.vertex_count = vcount;
+        fs.primitive_type = primtive;
+        fs.shader = binary;
+        fs.layout = layout;
+        commands.push_back(rvgpu_command {.type = RVGPU_COMMAND_TYPE_VS, .cmd = {.fs = fs}});
     }
 
     void end_command() {
