@@ -98,7 +98,6 @@ TEST_F(Draw, branch_ifif) {
     }
 }
 
-#if 0
 TEST_F(Draw, branch_for) {
     Shader shader;
     int32_t count = 32;
@@ -129,4 +128,3 @@ TEST_F(Draw, branch_for) {
         EXPECT_EQ(out[i], expect_out);
     }
 }
-#endif

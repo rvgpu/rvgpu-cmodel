@@ -35,11 +35,9 @@ public:
         }
     };
 
-    template<typename T>
-    void write_ireg(uint32_t tid, uint32_t rid, T data) {
+    void write_ireg(uint32_t tid, uint32_t rid, uint64_t data) {
         if (rid != 0) {
-            uint64_t regaddr = (uint64_t) &(ireg[tid][rid]);
-            *(T *) regaddr = data;
+            ireg[tid][rid] = data;
         }
     }
 

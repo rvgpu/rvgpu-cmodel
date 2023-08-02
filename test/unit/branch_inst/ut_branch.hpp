@@ -20,7 +20,7 @@ protected:
     }
 
     void SetIReg(reg id, uint64_t data) {
-        m_warp->m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(id), data);
+        m_warp->m_reg->write_ireg(0, static_cast<uint32_t>(id), data);
     }
 
     uint64_t GetIReg(reg id) {
@@ -32,8 +32,8 @@ protected:
     }
 
     void ExecuateInst() {
-        m_warp->m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(reg::sp), stack_pointer);
-        m_warp->m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(reg::zero), 0);
+        m_warp->m_reg->write_ireg(0, static_cast<uint32_t>(reg::sp), stack_pointer);
+        m_warp->m_reg->write_ireg(0, static_cast<uint32_t>(reg::zero), 0);
         // Run Instruction
         uint32_t instcode = insts.front();
         m_warp->pc = (uint64_t)insts.data();

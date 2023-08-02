@@ -57,11 +57,11 @@ void warp::setup(message msg) {
             printf("[SP][WARP0.%d] setup a0: 0x%lx\n", i, msg.layout);
             printf("[SP][WARP0.%d] setup a1: 0x%x\n", i, msg.start + i);
 
-            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::s0), 0);
-            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::ra), 0);
-            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::sp), msg.stack_pointer + 0x1000 * i);
-            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::a0), msg.layout);
-            m_reg->write_ireg<uint64_t>(i, uint64_t(reg::a1), msg.start + i);
+            m_reg->write_ireg(i, uint64_t(reg::s0), 0);
+            m_reg->write_ireg(i, uint64_t(reg::ra), 0);
+            m_reg->write_ireg(i, uint64_t(reg::sp), msg.stack_pointer + 0x1000 * i);
+            m_reg->write_ireg(i, uint64_t(reg::a0), msg.layout);
+            m_reg->write_ireg(i, uint64_t(reg::a1), msg.start + i);
         }
     }
 }
@@ -165,7 +165,7 @@ uint64_t warp::branch(inst_issue inst, uint32_t tid) {
 
     switch (inst.code) {
         case encoding::INST_BRANCH_AUIPC: {
-            m_reg->write_ireg<uint64_t>(tid, inst.rd, (pc + inst.u_imm));
+            m_reg->write_ireg(tid, inst.rd, (pc + inst.u_imm));
             retpc = pc + 4;
             break;
         }
@@ -215,13 +215,13 @@ uint64_t warp::branch(inst_issue inst, uint32_t tid) {
             break;
         }
         case encoding::INST_BRANCH_JAL: {
-            m_reg->write_ireg<uint64_t>(tid, inst.rd, pc + 4);
+            m_reg->write_ireg(tid, inst.rd, pc + 4);
             retpc = (pc + inst.uj_imm);
             printf("[EXEC.BRANCH.JAL] jump to %lx\n", retpc);
             break;
         }
         case encoding::INST_BRANCH_JALR: {
-            m_reg->write_ireg<uint64_t>(tid, inst.rd, pc + 4);
+            m_reg->write_ireg(tid, inst.rd, pc + 4);
             retpc = (inst.rs1 + inst.i_imm) & ~(uint64_t)(1);
             printf("[EXEC.BRANCH.JALR] jump to %lx\n", retpc);
             break;

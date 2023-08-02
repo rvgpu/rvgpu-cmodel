@@ -47,7 +47,7 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
             to_issue.rs2 = m_reg->read_ireg(tid, to_issue.rs2_id);
             to_issue.rs3 = m_reg->read_ireg(tid, to_issue.rs3_id);
             result = m_alu->run(to_issue);
-            m_reg->write_ireg<uint64_t>(tid, to_issue.rd, result);
+            m_reg->write_ireg(tid, to_issue.rd, result);
             break;
         }
         case encoding::INST_TYPE_FPU: {

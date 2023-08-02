@@ -22,7 +22,7 @@ protected:
     }
 
     void SetIReg(reg id, uint64_t data) {
-        m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(id), data);
+        m_reg->write_ireg(0, static_cast<uint32_t>(id), data);
     }
 
     uint64_t GetIReg(reg id) {
@@ -30,7 +30,7 @@ protected:
     }
 
     void ExecuateInst() {
-        m_reg->write_ireg<uint64_t>(0, static_cast<uint32_t>(reg::sp), stack_pointer);
+        m_reg->write_ireg(0, static_cast<uint32_t>(reg::sp), stack_pointer);
 
         // Run Instruction
         uint32_t instcode = insts.front();
@@ -40,7 +40,7 @@ protected:
             to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
             to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
             uint64_t res = m_alu->run(to_issue);
-            m_reg->write_ireg<uint64_t>(0, to_issue.rd, res);
+            m_reg->write_ireg(0, to_issue.rd, res);
         } else {
             printf("NOT A ALU Instruction\n");
         }
