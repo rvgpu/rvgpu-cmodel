@@ -39,11 +39,11 @@ void warp::setup(message msg) {
 
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
         if (i < msg.count) {
-            lanes.set();
-            stops.reset();
+            lanes.set(i);
+            stops.reset(i);
         } else {
-            lanes.reset();
-            stops.set();
+            lanes.reset(i);
+            stops.set(i);
         }
     }
 
