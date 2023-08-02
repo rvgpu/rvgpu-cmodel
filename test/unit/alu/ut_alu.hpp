@@ -12,7 +12,7 @@ protected:
         stack_pointer += 0x1000;
 
         m_dec = new dec();
-        m_alu = new alu();
+        m_alu = new alu(0);
         m_reg = new register_file();
     }
     void TearDown() override {

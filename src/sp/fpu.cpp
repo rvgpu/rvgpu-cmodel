@@ -27,7 +27,8 @@
 #include "fpu.hpp"
 #include "encoding.hpp"
 
-fpu::fpu() {
+fpu::fpu(uint32_t id) {
+    m_id = id;
 }
 
 uint64_t fpu::run(inst_issue instruction) {
@@ -67,27 +68,27 @@ uint64_t fpu::f2reg(float data) {
 uint64_t fpu::fadd_s() {
     float res = 0.0f;
     res = reg2f(inst.rs1) + reg2f(inst.rs2);
-    printf("[EXEC.FPU.FADD_S] r[%ld](%f) = %f + %f\n", inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
+    printf("[FPU.%d][FADD_S] r[%ld](%f) = %f + %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
     return f2reg(res);
 }
 
 uint64_t fpu::fmul_s() {
     float res = 0.0f;
     res = reg2f(inst.rs1) * reg2f(inst.rs2);
-    printf("[EXEC.FPU.FMUL_S] r[%ld](%f) = %f * %f\n", inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
+    printf("[FPU.%d][FMUL_S] r[%ld](%f) = %f * %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
     return f2reg(res);
 }
 
 uint64_t fpu::fdiv_s() {
     float res = 0.0f;
     res = reg2f(inst.rs1) / reg2f(inst.rs2);
-    printf("[EXEC.FPU.FDIV_S] r[%ld](%f) = %f / %f\n", inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
+    printf("[FPU.%d][FDIV_S] r[%ld](%f) = %f / %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
     return f2reg(res);
 }
 
 uint64_t fpu::fmadd_s() {
     float res = 0.0f;
     res = reg2f(inst.rs1) * reg2f(inst.rs2) + reg2f(inst.rs3);
-    printf("[EXEC.FPU.FMADD_S] r[%ld](%f) = %f * %f + %f\n", inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2), reg2f(inst.rs3));
+    printf("[FPU.%d][FMADD_S] r[%ld](%f) = %f * %f + %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2), reg2f(inst.rs3));
     return f2reg(res);
 }

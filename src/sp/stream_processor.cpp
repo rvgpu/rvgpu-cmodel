@@ -29,10 +29,12 @@
 
 stream_processor::stream_processor() {
     m_reg = new register_file();
-    m_alu = new alu();
-    m_fpu = new fpu();
     m_warp = new warp(m_reg);
     m_ls = new load_store(m_reg);
+    for (uint32_t i=0; i<WARP_THREAD_N; i++) {
+        m_alu[i] = new alu(i);
+        m_fpu[i] = new fpu(i);
+    }
 }
 
 void stream_processor::setup(message msg) {
@@ -46,7 +48,7 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
             to_issue.rs1 = m_reg->read_ireg(tid, to_issue.rs1_id);
             to_issue.rs2 = m_reg->read_ireg(tid, to_issue.rs2_id);
             to_issue.rs3 = m_reg->read_ireg(tid, to_issue.rs3_id);
-            result = m_alu->run(to_issue);
+            result = m_alu[tid]->run(to_issue);
             m_reg->write_ireg(tid, to_issue.rd, result);
             break;
         }
@@ -54,7 +56,7 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
             to_issue.rs1 = m_reg->read_freg(tid, to_issue.rs1_id);
             to_issue.rs2 = m_reg->read_freg(tid, to_issue.rs2_id);
             to_issue.rs3 = m_reg->read_freg(tid, to_issue.rs3_id);
-            result = m_fpu->run(to_issue);
+            result = m_fpu[tid]->run(to_issue);
             m_reg->write_freg(tid, to_issue.rd, result);
             break;
         }

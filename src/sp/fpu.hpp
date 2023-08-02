@@ -29,10 +29,11 @@
 
 class fpu {
 public:
-    fpu();
+    fpu(uint32_t id);
 
     uint64_t run(inst_issue instruction);
 private:
+    uint32_t m_id;
     inst_issue inst;
 
     float reg2f(uint64_t);

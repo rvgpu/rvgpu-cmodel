@@ -28,11 +28,12 @@
 
 class alu {
 public:
-    alu();
+    alu(uint32_t id);
 
     uint64_t run(inst_issue instruction);
 
 private:
+    uint32_t m_id;
     inst_issue inst;
 
     uint64_t add();

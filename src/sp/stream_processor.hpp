@@ -43,8 +43,8 @@ public:
 private:
     warp            *m_warp;
     register_file   *m_reg;
-    alu             *m_alu;
-    fpu             *m_fpu;
+    alu             *m_alu[WARP_THREAD_N];
+    fpu             *m_fpu[WARP_THREAD_N];
     load_store      *m_ls;
 
     uint64_t        pc;
