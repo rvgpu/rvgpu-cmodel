@@ -178,6 +178,15 @@ uint64_t warp::branch(inst_issue inst, uint32_t tid) {
             printf("[EXEC.BRANCH.BEQ] jump to %lx, if (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
             break;
         }
+        case encoding::INST_BRANCH_BGE: {
+            if (int64_t(inst.rs1) >= int64_t(inst.rs2)) {
+                retpc = pc + inst.sb_imm;
+            } else {
+                retpc = pc + 4;
+            }
+            printf("[EXEC.BRANCH.BGE] jump to %lx, if (%ld >= %ld)\n", retpc, inst.rs1, inst.rs2);
+            break;
+        }
         case encoding::INST_BRANCH_BGEU: {
             if (inst.rs1 >= inst.rs2) {
                 retpc = pc + inst.sb_imm;

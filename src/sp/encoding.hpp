@@ -39,6 +39,8 @@ namespace encoding {
 #define MASK_AUIPC 0x7f
 #define MATCH_BEQ 0x63
 #define MASK_BEQ 0x707f
+#define MATCH_BGE 0x5063
+#define MASK_BGE 0x707f
 #define MATCH_BGEU 0x7063
 #define MASK_BGEU 0x707f
 #define MATCH_BLTU 0x6063
@@ -135,6 +137,7 @@ typedef enum {
 
     INST_TYPE_BRANCH = 0x800,
     INST_BRANCH_BEQ,
+    INST_BRANCH_BGE,
     INST_BRANCH_BGEU,
     INST_BRANCH_BLTU,
     INST_BRANCH_BNE,

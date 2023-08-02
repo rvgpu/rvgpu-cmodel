@@ -9,6 +9,7 @@ endfunction()
 
 rvsim_ut_branch(auipc)
 rvsim_ut_branch(beq)
+rvsim_ut_branch(bge)
 rvsim_ut_branch(bgeu)
 rvsim_ut_branch(bltu)
 rvsim_ut_branch(bne)

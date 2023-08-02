@@ -54,6 +54,7 @@ std::vector<struct instlist> insts = {
         DECLARE_INSN_ALU(OR),
         DECLARE_INSN_BRANCH(AUIPC),
         DECLARE_INSN_BRANCH(BEQ),
+        DECLARE_INSN_BRANCH(BGE),
         DECLARE_INSN_BRANCH(BGEU),
         DECLARE_INSN_BRANCH(BLTU),
         DECLARE_INSN_BRANCH(BNE),
