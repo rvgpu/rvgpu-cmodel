@@ -25,11 +25,14 @@
 #include <stdint.h>
 
 #include "common/configs.h"
+#include "common/utils.hpp"
 
 class register_file {
 public:
     register_file() {
-        ireg[0][0] = 0;
+        FOREACH_WARP_THREAD {
+            ireg[thread][0] = 0;
+        }
     };
 
     template<typename T>

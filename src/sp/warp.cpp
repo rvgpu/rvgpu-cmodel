@@ -22,6 +22,7 @@
  */
 
 #include <cstdio>
+#include <cassert>
 
 #include "common/utils.hpp"
 #include "common/regid.hpp"
@@ -54,7 +55,7 @@ void warp::setup(message msg) {
             printf("[SP][WARP0.%d] setup ra: 0x0\n", i);
             printf("[SP][WARP0.%d] setup sp: 0x%lx\n", i, msg.stack_pointer + 0x1000 * i);
             printf("[SP][WARP0.%d] setup a0: 0x%lx\n", i, msg.layout);
-            printf("[SP][WARP0.%d] setup a1: 0x%x\n", i, msg.start);
+            printf("[SP][WARP0.%d] setup a1: 0x%x\n", i, msg.start + i);
 
             m_reg->write_ireg<uint64_t>(i, uint64_t(reg::s0), 0);
             m_reg->write_ireg<uint64_t>(i, uint64_t(reg::ra), 0);
@@ -78,8 +79,11 @@ inst_issue warp::schedule() {
             }
         }
 
-        pc = diverage();
+        struct warpstore torun = diverage();
+        lanes = torun.lanes;
+        pc = torun.pc;
         to_issue.type = encoding::INST_TYPE_NOP;
+        to_issue.lanes = lanes.to_ulong();
     } else {
         pc = pc + 4;
     }
@@ -87,42 +91,70 @@ inst_issue warp::schedule() {
     return to_issue;
 }
 
-uint64_t warp::diverage() {
-    uint64_t rpc;
-    bool notall = false;
+warpstore warp::diverage() {
+    warpstore split0 = {0};
+    warpstore split1 = {0};
+    warpstore pop = {0};
 
-    uint64_t next = pc + 4;
-    uint64_t next_t = next;
     FOREACH_WARP_THREAD {
         if (lanes.test(thread)) {
-            if (next != npc[thread]) {
-                next_t = npc[thread];
+            if ((pc + 4) != npc[thread]) {
+                split1.pc = npc[thread];
+                split1.lanes.set(thread);
             } else {
-                notall = true;
+                split0.pc = npc[thread];
+                split0.lanes.set(thread);
             }
         }
     }
 
-    if (next_t == next) {  // all thread jump to next instruction
-        rpc = next;
-    } else if (next_t == 0) {  // some thread will stop
-        FOREACH_WARP_THREAD {
-            if (lanes.test(thread)) {
-                lanes.reset(thread);
-                stops.set(thread);
-            }
-        }
+    if (!warpstack.empty()) {
+        pop = warpstack.top();
+        warpstack.pop();
+    }
 
-        rpc = stops.all() ? 0: next;
-    } else if (notall) {
-        rpc = next;
+    if (merge_lanes(split0, split1)) {
+        if (merge_lanes(split0, pop)) {
+            return split0;
+        } else {
+            warpstack.push(pop);
+            return split0;
+        }
+    } else if (merge_lanes(split0, pop)) {
+        warpstack.push(split1);
+        return split0;
+    } else if (merge_lanes(split1, pop)) {
+        warpstack.push(split0);
+        return split1;
     } else {
-        rpc = next_t;
+        warpstack.push(pop);
+        warpstack.push(split1);
+        return split0;
+    }
+}
+
+bool warp::merge_lanes(struct warpstore &w0, struct warpstore &w1) {
+    auto stopflip = stops;
+    stopflip.flip();
+
+    if (w0.lanes.none()) {
+        w0.lanes = w1.lanes;
+        w0.pc = w1.pc;
+
+        return true;
     }
 
-    printf("diverge lanes: %lx\n", lanes.to_ulong());
-    printf("diverge stops: %lx\n", stops.to_ulong());
-    return rpc;
+    if (w1.lanes.none()) {
+        return true;
+    }
+
+    if (w0.pc == w1.pc) {
+        w0.lanes = w0.lanes.operator|=(w1.lanes);
+        w0.lanes = w0.lanes.operator&=(stopflip);
+        return true;
+    } else {
+        return false;
+    }
 }
 
 uint64_t warp::branch(inst_issue inst, uint32_t tid) {
@@ -194,5 +226,21 @@ uint64_t warp::branch(inst_issue inst, uint32_t tid) {
 }
 
 bool warp::stop() {
-    return pc != 0;
+    if (stops.all()) {
+        return true;
+    }
+
+    if (pc == 0) {
+        if (warpstack.empty()) {
+            return true;
+        } else {
+            warpstore torun = warpstack.top();
+            warpstack.pop();
+            lanes = torun.lanes;
+            pc = torun.pc;
+            return false;
+        }
+    }
+
+    return false;
 }

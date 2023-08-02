@@ -166,7 +166,7 @@ uint64_t alu::slli() {
 uint64_t alu::srli() {
     int64_t ret = 0;
     ret = (uint64_t(inst.rs1) >> (inst.i_imm & 0x3F));
-    printf("[EXEC.ALU.SRLI] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
+    printf("[EXEC.ALU.SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
     return ret;
 }
 

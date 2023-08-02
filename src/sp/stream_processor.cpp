@@ -81,14 +81,14 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
 
 void stream_processor::issue(inst_issue to_issue) {
     FOREACH_WARP_THREAD {
-        if (to_issue.lanes >> thread) {
+        if (to_issue.lanes & (1 << thread)) {
             issue_single(to_issue, thread);
         }
     }
 }
 
 void stream_processor::run() {
-    while (m_warp->stop()) {
+    while (!m_warp->stop()) {
         inst_issue to_issue = m_warp->schedule();
 
         issue(to_issue);

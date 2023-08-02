@@ -25,6 +25,7 @@
 
 #include <cstdint>
 #include <bitset>
+#include <stack>
 
 #include "common/message.h"
 #include "common/configs.h"
@@ -33,6 +34,11 @@
 #include "decoder.hpp"
 
 class ut_branch;
+
+struct warpstore {
+    uint64_t pc;
+    std::bitset<WARP_THREAD_N> lanes;
+};
 
 class warp {
 public:
@@ -50,10 +56,13 @@ private:
     uint32_t startpc;
     uint64_t pc;
     uint64_t npc[WARP_THREAD_N];
+    std::stack<struct warpstore> warpstack;
     std::bitset<WARP_THREAD_N> lanes;
     std::bitset<WARP_THREAD_N> stops;
+
     uint64_t branch(inst_issue to_issue, uint32_t tid);
-    uint64_t diverage();
+    warpstore diverage();
+    bool merge_lanes(struct warpstore &w0, struct warpstore &w1);
 
     friend ut_branch;
 };
