@@ -57,10 +57,11 @@ void command_processor::command_vs(rvgpu_command *cs, std::vector<message> &msg)
         tmsg.target = 0; // message send to sm[0]
         tmsg.msg = CMD_MESSAGE_START_CU_VS;
         tmsg.shader.shader = vs.shader;
+        tmsg.shader.stack_pointer = vs.stack_pointer;
         tmsg.shader.start = start;
         tmsg.shader.count = issue_count + 1;
-        tmsg.shader.layout = vs.layout;
-        tmsg.shader.stack_pointer = vs.stack_pointer;
+        tmsg.shader.argcount = 2;
+        tmsg.shader.args[0] = vs.layout;
         msg.push_back(std::move(tmsg));
 
         start = start + issue_count + 1;
@@ -69,4 +70,17 @@ void command_processor::command_vs(rvgpu_command *cs, std::vector<message> &msg)
 }
 
 void command_processor::command_fs(rvgpu_command *cs, std::vector<message> &msg) {
+    rvgpu_command_fs fs = cs->cmd.fs;
+    message tmsg = {};
+    tmsg.target = 0; // message send to sm[0]
+    tmsg.msg = CMD_MESSAGE_START_CU_VS;
+    tmsg.shader.shader = fs.shader;
+    tmsg.shader.stack_pointer = fs.stack_pointer;
+    tmsg.shader.argcount = 2;
+    tmsg.shader.args[0] = fs.layout;
+    tmsg.tile.x = 0;
+    tmsg.tile.y = 0;
+    tmsg.tile.w = 800;
+    tmsg.tile.h = 600;
+    msg.push_back(std::move(tmsg));
 }

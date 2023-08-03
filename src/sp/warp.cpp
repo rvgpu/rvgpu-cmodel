@@ -49,19 +49,18 @@ void warp::setup(message_shader shader) {
 
     printf("[WARP] start lanes: %lx\n", lanes.to_ulong());
     printf("[WARP] start stops: %lx\n", stops.to_ulong());
-
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
         if (lanes.test(i)) {
             printf("[SP][WARP0.%d] setup ra: 0x0\n", i);
             printf("[SP][WARP0.%d] setup sp: 0x%lx\n", i, shader.stack_pointer + 0x1000 * i);
-            printf("[SP][WARP0.%d] setup a0: 0x%lx\n", i, shader.layout);
+            printf("[SP][WARP0.%d] setup a0: 0x%lx\n", i, shader.args[0]);
             printf("[SP][WARP0.%d] setup a1: 0x%x\n", i, shader.start + i);
 
             m_reg->write_ireg(i, uint64_t(reg::s0), 0);
             m_reg->write_ireg(i, uint64_t(reg::ra), 0);
             m_reg->write_ireg(i, uint64_t(reg::sp), shader.stack_pointer + 0x1000 * i);
-            m_reg->write_ireg(i, uint64_t(reg::a0), shader.layout);
-            m_reg->write_ireg(i, uint64_t(reg::a1), shader.start + i);
+            m_reg->write_ireg(i, uint64_t(reg::a0), shader.args[0]);
+            m_reg->write_ireg(i, uint64_t(reg::a1), shader.start + i); // args[1]
         }
     }
 }

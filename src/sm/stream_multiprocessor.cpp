@@ -40,10 +40,32 @@ void sm::run_vs(message msg) {
     m_sp->run();
 }
 
+void sm::run_fs(message msg) {
+    message_tile tile = msg.tile;
+    for (uint32_t x=tile.x; x<tile.w; x+=4) {
+        for (uint32_t y=tile.y; y<tile.h; y+=4) {
+            message_shader shader = msg.shader;
+            shader.start = (uint64_t(y) << 32) + x;
+            shader.count = 16;
+            shader.xstride = 2;
+            shader.argcount = 3;
+            // shader.args[0]
+            // shader.args[1] =     xy
+            shader.args[2] = (1UL << 32) + 0; // v1v0
+            shader.args[3] = 2;
+            m_sp->setup(shader);
+            m_sp->run();
+        }
+    }
+}
+
 void sm::run(message msg) {
     switch(msg.msg) {
         case CMD_MESSAGE_START_CU_VS:
             run_vs(msg);
+            break;
+        case CMD_MESSAGE_START_FS:
+            run_fs(msg);
             break;
         default:
             break;

@@ -31,10 +31,12 @@ class sm {
 public:
     sm();
     void run(message msg);
-    void run_vs(message msg);
 
 private:
     stream_processor *m_sp;
+
+    void run_vs(message msg);
+    void run_fs(message msg);
 
     compute_unit *p;
     std::vector<uint32_t> insts;
