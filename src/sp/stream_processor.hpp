@@ -37,7 +37,7 @@
 class stream_processor {
 public:
     stream_processor();
-    void setup(message msg);
+    void setup(message_shader message_shader);
     void run();
 
 private:

@@ -44,7 +44,7 @@ class warp {
 public:
     warp (register_file *reg);
 
-    void setup(message msg);
+    void setup(message_shader shader);
     bool stop();
 
     inst_issue schedule();

@@ -34,9 +34,9 @@ sm::sm() {
 }
 
 void sm::run_vs(message msg) {
-    printf("[SM] receive message VS: %d %d\n", msg.start, msg.count);
+    printf("[SM] receive message VS: %d %d\n", msg.shader.start, msg.shader.count);
 
-    m_sp->setup(msg);
+    m_sp->setup(msg.shader);
     m_sp->run();
 }
 

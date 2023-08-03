@@ -37,8 +37,8 @@ stream_processor::stream_processor() {
     }
 }
 
-void stream_processor::setup(message msg) {
-    m_warp->setup(msg);
+void stream_processor::setup(message_shader shader) {
+    m_warp->setup(shader);
 }
 
 void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {

@@ -56,11 +56,11 @@ void command_processor::command_vs(rvgpu_command *cs, std::vector<message> &msg)
         message tmsg = {};
         tmsg.target = 0; // message send to sm[0]
         tmsg.msg = CMD_MESSAGE_START_CU_VS;
-        tmsg.shader = vs.shader;
-        tmsg.start = start;
-        tmsg.count = issue_count + 1;
-        tmsg.layout = vs.layout;
-        tmsg.stack_pointer = vs.stack_pointer;
+        tmsg.shader.shader = vs.shader;
+        tmsg.shader.start = start;
+        tmsg.shader.count = issue_count + 1;
+        tmsg.shader.layout = vs.layout;
+        tmsg.shader.stack_pointer = vs.stack_pointer;
         msg.push_back(std::move(tmsg));
 
         start = start + issue_count + 1;
