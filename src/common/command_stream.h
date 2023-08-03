@@ -44,6 +44,10 @@ typedef struct {
     uint64_t shader;
     uint64_t layout;
     uint64_t stack_pointer;
+    uint32_t fb_x;
+    uint32_t fb_y;
+    uint32_t fb_w;
+    uint32_t fb_h;
 } rvgpu_command_fs;
 
 typedef struct {

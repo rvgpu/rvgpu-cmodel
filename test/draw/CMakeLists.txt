@@ -11,3 +11,4 @@ endfunction()
 
 rvsim_test_draw(vertex)
 rvsim_test_draw(branch)
+rvsim_test_draw(triangle)

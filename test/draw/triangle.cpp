@@ -45,16 +45,6 @@ TEST_F(Draw, triangle) {
 
     vshader.SetupShaderBinary("vertex_shader_vt14.vs");
     vertex_command(count, (uint64_t)vshader.binary, (uint64_t)vsio);
-
-    // VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST = 3,
-    fs_io *fsio = (fs_io *) malloc(sizeof(fs_io));
-    fsio->in_position = vsio->out_position;
-    fsio->in_color = vsio->out_color;
-    fshader.SetupShaderBinary("fragment_shader_vt14.vs");
-    fragment_command(count, 3, (uint64_t)NULL, (uint64_t)fsio);
-
-    end_command();
-
     run();
 
     // Test
@@ -85,8 +75,8 @@ TEST_F(Draw, triangle) {
         fx = my_vp->x + fx * (my_vp->w);
         fy = my_vp->y + fy * (my_vp->h);
 
-        float *gl_Position = reinterpret_cast<float *>(my_io->out_position);
-        float *fragColor = reinterpret_cast<float *>(my_io->out_color);
+        float *gl_Position = reinterpret_cast<float *>(vsio->out_position);
+        float *fragColor = reinterpret_cast<float *>(vsio->out_color);
 
         EXPECT_EQ(gl_Position[i * 7 + 0], fx);
         EXPECT_EQ(gl_Position[i * 7 + 1], fy);
@@ -97,5 +87,13 @@ TEST_F(Draw, triangle) {
         EXPECT_EQ(fragColor[i * 7 + 5], fg);
         EXPECT_EQ(fragColor[i * 7 + 6], fb);
     }
-    
+
+    // VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST = 3,
+    fs_io *fsio = (fs_io *) malloc(sizeof(fs_io));
+    fsio->in_position = vsio->out_position;
+    fsio->in_color = vsio->out_color;
+    fshader.SetupShaderBinary("fragment_shader_vt14.vs");
+    fragment_command(count, 3, (uint64_t)NULL, (uint64_t)fsio);
+
+    end_command();
 }

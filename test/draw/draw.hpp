@@ -31,10 +31,13 @@ protected:
 
     void fragment_command(uint32_t vcount, uint32_t primtive, uint64_t binary, uint64_t layout) {
         rvgpu_command_fs fs = {};
-        fs.vertex_count = vcount;
         fs.primitive_type = primtive;
         fs.shader = binary;
         fs.layout = layout;
+        fs.fb_x = 0;
+        fs.fb_y = 0;
+        fs.fb_w = 800;
+        fs.fb_h = 600;
         commands.push_back(rvgpu_command {.type = RVGPU_COMMAND_TYPE_VS, .cmd = {.fs = fs}});
     }
 
