@@ -199,12 +199,7 @@ TEST_F(Draw, vertex_shader_vt14) {
 
         EXPECT_EQ(fragColor[i * 7 + 4], fr);
         EXPECT_EQ(fragColor[i * 7 + 5], fg);
-        EXPECT_EQ(fragColor[i * 7 + 6], fb);        
-
-        EXPECT_EQ(fx, fx);
-        EXPECT_EQ(fy, fy);
-        EXPECT_EQ(fz, fz);
-        EXPECT_EQ(fw, fw);
+        EXPECT_EQ(fragColor[i * 7 + 6], fb);
     }
     
 }
