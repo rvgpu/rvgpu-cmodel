@@ -32,7 +32,7 @@ enum message_type {
 
 typedef struct {
     uint64_t shader;
-    uint32_t start;
+    uint64_t start;
     uint32_t count;
     uint32_t xstride;
     uint64_t stack_pointer;

@@ -34,7 +34,7 @@ sm::sm() {
 }
 
 void sm::run_vs(message msg) {
-    printf("[SM] receive message VS: %d %d\n", msg.shader.start, msg.shader.count);
+    printf("[SM] receive message VS: %ld %d\n", msg.shader.start, msg.shader.count);
 
     m_sp->setup(msg.shader);
     m_sp->run();
@@ -42,8 +42,9 @@ void sm::run_vs(message msg) {
 
 void sm::run_fs(message msg) {
     message_tile tile = msg.tile;
-    for (uint32_t x=tile.x; x<tile.w; x+=4) {
-        for (uint32_t y=tile.y; y<tile.h; y+=4) {
+    for (uint32_t x=tile.x; x<tile.w; x+=16) {
+        for (uint32_t y=tile.y; y<tile.h; y+=1) {
+            printf("xy: (%d, %d)\n", x, y);
             message_shader shader = msg.shader;
             shader.start = (uint64_t(y) << 32) + x;
             shader.count = 16;
