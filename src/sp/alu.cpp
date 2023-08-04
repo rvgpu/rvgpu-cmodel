@@ -73,6 +73,9 @@ uint64_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_SUB:
             ret = sub();
             break;
+        case encoding::INST_ALU_SUBW:
+            ret = subw();
+            break;
         case encoding::INST_ALU_ANDI:
             ret = andi();
             break;
@@ -182,6 +185,13 @@ uint64_t alu::sub() {
     int64_t ret = 0;
     ret = int64_t(inst.rs1 - inst.rs2);
     printf("[ALU.%d][SUB] r[%ld](0x%lx) = 0x%lx - %ld\n", m_id, inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
+    return ret;
+}
+
+uint64_t alu::subw() {
+    int64_t ret = 0;
+    ret = int64_t(int32_t(inst.rs1 - inst.rs2));
+    printf("[ALU.%d][SUBW] r[%ld](0x%lx) = 0x%lx - %ld\n", m_id, inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
     return ret;
 }
 
