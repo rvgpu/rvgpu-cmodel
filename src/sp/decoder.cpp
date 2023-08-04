@@ -66,6 +66,7 @@ std::vector<struct instlist> insts = {
         DECLARE_INSN_FPU(FMADD_S),
         DECLARE_INSN_FPU(FMUL_S),
         DECLARE_INSN_FPU(FMSUB_S),
+        DECLARE_INSN_FPU(FSUB_S),
         DECLARE_INSN_LS(FLW),
         DECLARE_INSN_LS(FSW),
         DECLARE_INSN_LS(LD),
