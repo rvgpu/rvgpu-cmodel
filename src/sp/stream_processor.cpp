@@ -45,29 +45,16 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
     uint64_t result;
     switch (to_issue.type) {
         case encoding::INST_TYPE_ALU: {
-            to_issue.rs1 = m_reg->read_ireg(tid, to_issue.rs1_id);
-            to_issue.rs2 = m_reg->read_ireg(tid, to_issue.rs2_id);
-            to_issue.rs3 = m_reg->read_ireg(tid, to_issue.rs3_id);
             result = m_alu[tid]->run(to_issue);
             m_reg->write_ireg(tid, to_issue.rd, result);
             break;
         }
         case encoding::INST_TYPE_FPU: {
-            to_issue.rs1 = m_reg->read_freg(tid, to_issue.rs1_id);
-            to_issue.rs2 = m_reg->read_freg(tid, to_issue.rs2_id);
-            to_issue.rs3 = m_reg->read_freg(tid, to_issue.rs3_id);
             result = m_fpu[tid]->run(to_issue);
             m_reg->write_freg(tid, to_issue.rd, result);
             break;
         }
         case encoding::INST_TYPE_LS: {
-            to_issue.rs1 = m_reg->read_ireg(tid, to_issue.rs1_id);
-            if (to_issue.code == encoding::INST_LS_FSW) {
-                to_issue.rs2 = m_reg->read_freg(tid, to_issue.rs2_id);
-            } else {
-                to_issue.rs2 = m_reg->read_ireg(tid, to_issue.rs2_id);
-            }
-            to_issue.rs3 = m_reg->read_ireg(tid, to_issue.rs3_id);
             m_ls->run(to_issue, tid);
             break;
         }
@@ -84,6 +71,12 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
 void stream_processor::issue(inst_issue to_issue) {
     FOREACH_WARP_THREAD {
         if (to_issue.lanes & (1 << thread)) {
+            to_issue.rs1 = m_reg->read_ireg(thread, to_issue.rs1_id);
+            to_issue.rs2 = m_reg->read_ireg(thread, to_issue.rs2_id);
+            to_issue.rs3 = m_reg->read_ireg(thread, to_issue.rs3_id);
+            to_issue.frs1 = m_reg->read_freg(thread, to_issue.rs1_id);
+            to_issue.frs2 = m_reg->read_freg(thread, to_issue.rs2_id);
+            to_issue.frs3 = m_reg->read_freg(thread, to_issue.rs3_id);
             issue_single(to_issue, thread);
         }
     }

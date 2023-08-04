@@ -37,8 +37,8 @@ uint64_t load_store::run(inst_issue inst, uint32_t tid) {
     switch (inst.code) {
         case encoding::INST_LS_FSW: {
             uint64_t addr = inst.rs1 + inst.s_imm;
-            printf("[EXEC.LS.FSW] store.i32: mem[0x%lx] = 0x%lx\n", addr, inst.rs2);
-            *((uint32_t *)addr) = (uint32_t)inst.rs2;
+            printf("[EXEC.LS.FSW] store.i32: mem[0x%lx] = 0x%lx\n", addr, inst.frs2);
+            *((uint32_t *)addr) = (uint32_t)inst.frs2;
             break;
         }
         case encoding::INST_LS_FLW: {

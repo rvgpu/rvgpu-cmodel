@@ -16,6 +16,9 @@ typedef struct {
     uint64_t rs1;
     uint64_t rs2;
     uint64_t rs3;
+    uint64_t frs1;
+    uint64_t frs2;
+    uint64_t frs3;
 
     int64_t u_imm;
     int64_t i_imm;

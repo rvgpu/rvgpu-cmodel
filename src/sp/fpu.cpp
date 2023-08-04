@@ -73,42 +73,42 @@ uint64_t fpu::f2reg(float data) {
 
 uint64_t fpu::fadd_s() {
     float res = 0.0f;
-    res = reg2f(inst.rs1) + reg2f(inst.rs2);
-    printf("[FPU.%d][FADD_S] r[%ld](%f) = %f + %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
+    res = reg2f(inst.frs1) + reg2f(inst.frs2);
+    printf("[FPU.%d][FADD_S] r[%ld](%f) = %f + %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return f2reg(res);
 }
 
 uint64_t fpu::fmul_s() {
     float res = 0.0f;
-    res = reg2f(inst.rs1) * reg2f(inst.rs2);
-    printf("[FPU.%d][FMUL_S] r[%ld](%f) = %f * %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
+    res = reg2f(inst.frs1) * reg2f(inst.frs2);
+    printf("[FPU.%d][FMUL_S] r[%ld](%f) = %f * %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return f2reg(res);
 }
 
 uint64_t fpu::fdiv_s() {
     float res = 0.0f;
-    res = reg2f(inst.rs1) / reg2f(inst.rs2);
-    printf("[FPU.%d][FDIV_S] r[%ld](%f) = %f / %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
+    res = reg2f(inst.frs1) / reg2f(inst.frs2);
+    printf("[FPU.%d][FDIV_S] r[%ld](%f) = %f / %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return f2reg(res);
 }
 
 uint64_t fpu::fmadd_s() {
     float res = 0.0f;
-    res = reg2f(inst.rs1) * reg2f(inst.rs2) + reg2f(inst.rs3);
-    printf("[FPU.%d][FMADD_S] r[%ld](%f) = %f * %f + %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2), reg2f(inst.rs3));
+    res = reg2f(inst.frs1) * reg2f(inst.frs2) + reg2f(inst.frs3);
+    printf("[FPU.%d][FMADD_S] r[%ld](%f) = %f * %f + %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
     return f2reg(res);
 }
 
 uint64_t fpu::fmsub_s() {
     float res = 0.0f;
-    res = reg2f(inst.rs1) * reg2f(inst.rs2) - reg2f(inst.rs3);
-    printf("[FPU.%d][FMSUB_S] r[%ld](%f) = %f * %f - %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2), reg2f(inst.rs3));
+    res = reg2f(inst.frs1) * reg2f(inst.frs2) - reg2f(inst.frs3);
+    printf("[FPU.%d][FMSUB_S] r[%ld](%f) = %f * %f - %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
     return f2reg(res);
 }
 
 uint64_t fpu::fsub_s() {
     float res = 0.0f;
-    res = reg2f(inst.rs1) - reg2f(inst.rs2);
-    printf("[FPU.%d][FSUB_S] r[%ld](%f) = %f + %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2));
+    res = reg2f(inst.frs1) - reg2f(inst.frs2);
+    printf("[FPU.%d][FSUB_S] r[%ld](%f) = %f + %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return f2reg(res);
 }
