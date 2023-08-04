@@ -73,7 +73,7 @@ void command_processor::command_fs(rvgpu_command *cs, std::vector<message> &msg)
     rvgpu_command_fs fs = cs->cmd.fs;
     message tmsg = {};
     tmsg.target = 0; // message send to sm[0]
-    tmsg.msg = CMD_MESSAGE_START_CU_VS;
+    tmsg.msg = CMD_MESSAGE_START_FS;
     tmsg.shader.shader = fs.shader;
     tmsg.shader.stack_pointer = fs.stack_pointer;
     tmsg.shader.argcount = 2;

@@ -31,6 +31,7 @@ protected:
 
     void fragment_command(uint32_t vcount, uint32_t primtive, uint64_t binary, uint64_t layout) {
         rvgpu_command_fs fs = {};
+        fs.stack_pointer = stack_pointer;
         fs.primitive_type = primtive;
         fs.shader = binary;
         fs.layout = layout;
@@ -38,7 +39,7 @@ protected:
         fs.fb_y = 0;
         fs.fb_w = 800;
         fs.fb_h = 600;
-        commands.push_back(rvgpu_command {.type = RVGPU_COMMAND_TYPE_VS, .cmd = {.fs = fs}});
+        commands.push_back(rvgpu_command {.type = RVGPU_COMMAND_TYPE_FS, .cmd = {.fs = fs}});
     }
 
     void end_command() {
@@ -47,6 +48,7 @@ protected:
 
     void run() {
         gpu->run((uint64_t)commands.data());
+        commands.clear();
     }
 
     void load_shader(const char *fname, uint32_t *binary) {

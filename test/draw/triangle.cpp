@@ -35,10 +35,10 @@ TEST_F(Draw, triangle) {
     my_vp->w = 400.0f;
     my_vp->h = 300.0f;
 
-    float *my_position = (float *) malloc(count * 7 * sizeof(float));
-    float *my_color = (float *) malloc(count * 7 * sizeof(float));
+    float *my_position = (float *)malloc(count * 7 * sizeof(float));
+    float *my_color = (float *)malloc(count * 7 * sizeof(float));
 
-    vs_io *vsio = (vs_io *) malloc(sizeof(vs_io));
+    vs_io *vsio = (vs_io *)malloc(sizeof(vs_io));
     vsio->vp = reinterpret_cast<unsigned long>(my_vp);
     vsio->out_position = reinterpret_cast<unsigned long>(my_position);
     vsio->out_color = reinterpret_cast<unsigned long>(my_color);
@@ -90,10 +90,20 @@ TEST_F(Draw, triangle) {
 
     // VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST = 3,
     fs_io *fsio = (fs_io *) malloc(sizeof(fs_io));
+    fsio->out_color = (unsigned long)malloc(800 * 600 * 4);
     fsio->in_position = vsio->out_position;
     fsio->in_color = vsio->out_color;
     fshader.SetupShaderBinary("fragment_shader_vt14.vs");
-    fragment_command(count, 3, (uint64_t)NULL, (uint64_t)fsio);
+    fragment_command(count, 3, (uint64_t)fshader.binary, (uint64_t)fsio);
 
+    printf("XXXXXXX FS\n");
     end_command();
+    // run();
+
+    uint32_t *out = (uint32_t *)fsio->out_color;
+    for (uint32_t x=0; x<800; x++) {
+        for (uint32_t y=0; y<600; y++) {
+            printf("%x\n", out[y * 800 + x]);
+        }
+    }
 }
