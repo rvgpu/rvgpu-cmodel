@@ -55,6 +55,8 @@ namespace encoding {
 #define MASK_FMADD_S 0x0600007f
 #define MATCH_FMUL_S 0x10000053
 #define MASK_FMUL_S 0xfe00007f
+#define MATCH_FMSUB_S 0x47
+#define MASK_FMSUB_S 0x600007f
 #define MATCH_FDIV_S 0x18000053
 #define MASK_FDIV_S 0xfe00007f
 #define MATCH_FSW 0x2027
@@ -128,6 +130,7 @@ typedef enum {
     INST_FPU_FMADD_S,
     INST_FPU_FMUL_S,
     INST_FPU_FDIV_S,
+    INST_FPU_FMSUB_S,
 
     INST_TYPE_LS = 0x400,
     INST_LS_LD,

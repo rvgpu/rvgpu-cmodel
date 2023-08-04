@@ -48,6 +48,9 @@ uint64_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FMADD_S:
             ret = fmadd_s();
             break;
+        case encoding::INST_FPU_FMSUB_S:
+            ret = fmsub_s();
+            break;
         default:
             printf("FPU Inst TODO\n");
             break;
@@ -90,5 +93,12 @@ uint64_t fpu::fmadd_s() {
     float res = 0.0f;
     res = reg2f(inst.rs1) * reg2f(inst.rs2) + reg2f(inst.rs3);
     printf("[FPU.%d][FMADD_S] r[%ld](%f) = %f * %f + %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2), reg2f(inst.rs3));
+    return f2reg(res);
+}
+
+uint64_t fpu::fmsub_s() {
+    float res = 0.0f;
+    res = reg2f(inst.rs1) * reg2f(inst.rs2) - reg2f(inst.rs3);
+    printf("[FPU.%d][FMSUB_S] r[%ld](%f) = %f * %f - %f\n", m_id, inst.rd, res, reg2f(inst.rs1), reg2f(inst.rs2), reg2f(inst.rs3));
     return f2reg(res);
 }

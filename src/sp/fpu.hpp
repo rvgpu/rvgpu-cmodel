@@ -43,4 +43,5 @@ private:
     uint64_t fmul_s();
     uint64_t fdiv_s();
     uint64_t fmadd_s();
+    uint64_t fmsub_s();
 };
