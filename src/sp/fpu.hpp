@@ -38,6 +38,7 @@ private:
 
     float reg2f(uint64_t);
     uint64_t f2reg(float);
+    float ui32_to_f32(uint32_t data);
 
     uint64_t fadd_s();
     uint64_t fmul_s();
@@ -45,4 +46,5 @@ private:
     uint64_t fmadd_s();
     uint64_t fmsub_s();
     uint64_t fsub_s();
+    uint64_t fcvt_s_wu();
 };

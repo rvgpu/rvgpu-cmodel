@@ -44,6 +44,9 @@ protected:
         uint32_t instcode = insts.front();
         inst_issue to_issue = m_dec->decode_inst(instcode);
         if (to_issue.type == encoding::INST_TYPE_FPU) {
+            to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
+            to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
+            to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
             to_issue.frs1 = m_reg->read_freg(0, to_issue.rs1_id);
             to_issue.frs2 = m_reg->read_freg(0, to_issue.rs2_id);
             to_issue.frs3 = m_reg->read_freg(0, to_issue.rs3_id);

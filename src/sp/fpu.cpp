@@ -54,6 +54,9 @@ uint64_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FSUB_S:
             ret = fsub_s();
             break;
+        case encoding::INST_FPU_FCVT_S_WU:
+            ret = fcvt_s_wu();
+            break;
         default:
             printf("FPU Inst TODO\n");
             break;
@@ -69,6 +72,10 @@ float fpu::reg2f(uint64_t data) {
 
 uint64_t fpu::f2reg(float data) {
     return uint64_t(std::bit_cast<uint32_t>(data));
+}
+
+float fpu::ui32_to_f32(uint32_t data) {
+    return (float)data;
 }
 
 uint64_t fpu::fadd_s() {
@@ -112,3 +119,10 @@ uint64_t fpu::fsub_s() {
     printf("[FPU.%d][FSUB_S] r[%ld](%f) = %f + %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return f2reg(res);
 }
+
+uint64_t fpu::fcvt_s_wu() {
+    float res = ui32_to_f32((uint32_t)inst.rs1);
+    printf("[FPU.%d][FCVT_S_WU] r[%lx](%f) = ui32_to_f32(%lx)\n", m_id, inst.rd, res, inst.rs1);
+    return f2reg(res);
+}
+
