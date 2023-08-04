@@ -36,10 +36,6 @@ private:
     uint32_t m_id;
     inst_issue inst;
 
-    float reg2f(uint64_t);
-    uint64_t f2reg(float);
-    float ui32_to_f32(uint32_t data);
-
     uint64_t fadd_s();
     uint64_t fmul_s();
     uint64_t fdiv_s();

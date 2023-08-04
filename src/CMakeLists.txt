@@ -15,7 +15,8 @@ add_library(rvgsim SHARED
         $<TARGET_OBJECTS:sm>
         $<TARGET_OBJECTS:sp>
         $<TARGET_OBJECTS:cp>
-        $<TARGET_OBJECTS:top>)
+        $<TARGET_OBJECTS:top>
+        $<TARGET_OBJECTS:utils>)
 
 set_target_properties(rvgsim PROPERTIES VERSION 0.0.1)
 install(TARGETS rvgsim LIBRARY DESTINATION lib)

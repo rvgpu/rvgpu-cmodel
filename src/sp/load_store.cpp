@@ -23,6 +23,7 @@
 
 #include <cstdio>
 
+#include "common/utils.hpp"
 #include "load_store.hpp"
 #include "encoding.hpp"
 
@@ -37,7 +38,7 @@ uint64_t load_store::run(inst_issue inst, uint32_t tid) {
     switch (inst.code) {
         case encoding::INST_LS_FSW: {
             uint64_t addr = inst.rs1 + inst.s_imm;
-            printf("[EXEC.LS.FSW] store.i32: mem[0x%lx] = 0x%lx\n", addr, inst.frs2);
+            printf("[EXEC.LS.FSW] store.i32: mem[0x%lx] = 0x%lx (%f)\n", addr, inst.frs2, utils::reg2f(inst.frs2));
             *((uint32_t *)addr) = (uint32_t)inst.frs2;
             break;
         }

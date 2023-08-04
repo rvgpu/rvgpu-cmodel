@@ -22,10 +22,12 @@
  */
 
 #include <cstdio>
-#include <bit>
 
+#include "common/utils.hpp"
 #include "fpu.hpp"
 #include "encoding.hpp"
+
+using namespace utils;
 
 fpu::fpu(uint32_t id) {
     m_id = id;
@@ -63,19 +65,6 @@ uint64_t fpu::run(inst_issue instruction) {
     }
 
     return ret;
-}
-
-float fpu::reg2f(uint64_t data) {
-    uint32_t data32 = data;
-    return std::bit_cast<float>(data32);
-}
-
-uint64_t fpu::f2reg(float data) {
-    return uint64_t(std::bit_cast<uint32_t>(data));
-}
-
-float fpu::ui32_to_f32(uint32_t data) {
-    return (float)data;
 }
 
 uint64_t fpu::fadd_s() {

@@ -1,4 +1,13 @@
 #pragma once
 
+#include <bit>
+#include <cstdint>
+
 #define FOREACH_WARP_THREAD \
     for (uint32_t thread=0; thread<WARP_THREAD_N; thread++)
+
+namespace utils {
+    float reg2f(uint64_t data);
+    uint64_t f2reg(float data);
+    float ui32_to_f32(uint32_t data);
+}
