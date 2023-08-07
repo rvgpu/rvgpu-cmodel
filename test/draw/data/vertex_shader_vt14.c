@@ -43,8 +43,8 @@ long vs_main(long layout, long vid)
     struct viewport *vp;
     vp = (struct viewport *)(desc->vp);
 
-    fx = vp->x + fx * (vp->w);
-    fy = vp->y + fy * (vp->h);
+    fx = vp->w + fx * (vp->w);
+    fy = vp->h + fy * (vp->h);
 
     // output
     gl_Position[vid * 7 + 0] = fx;
