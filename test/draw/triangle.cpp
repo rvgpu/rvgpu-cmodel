@@ -72,8 +72,8 @@ TEST_F(Draw, triangle) {
         fg = colors[i][1];
         fb = colors[i][2];
 
-        fx = my_vp->x + fx * (my_vp->w);
-        fy = my_vp->y + fy * (my_vp->h);
+        fx = my_vp->w + fx * (my_vp->w);
+        fy = my_vp->h + fy * (my_vp->h);
 
         float *gl_Position = reinterpret_cast<float *>(vsio->out_position);
         float *fragColor = reinterpret_cast<float *>(vsio->out_color);
