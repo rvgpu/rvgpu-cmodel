@@ -1,9 +1,4 @@
 
-test.o:	file format elf64-littleriscv
-
-Disassembly of section .text:
-
-0000000000000000 <vs_main>:
        0: 13 01 01 f6  	addi	sp, sp, -160
        4: 23 3c 11 08  	sd	ra, 152(sp)
        8: 23 38 81 08  	sd	s0, 144(sp)
