@@ -1,25 +1,12 @@
-typedef struct {
-    unsigned long input;
-    unsigned long output;
-} io;
-
-long vs_main(long layout, long vid)
+long gpumain(long tid, int *input, int *output)
 {
-    int *input;
-    int *output;
-
-    // Global pointer 
-    io *desc = (io *)layout;
-    input = (int *)desc->input;
-    output = (int *)desc->output;
-
-    int a = input[vid];
+    int a = input[tid];
     int out = a;
-    for (int i=0; i<vid; i++) {
+    for (int i=0; i<tid; i++) {
         out += i;
     }
 
-    output[vid] = out;
+    output[tid] = out;
 
     return 0;
 }

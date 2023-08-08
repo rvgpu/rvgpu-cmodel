@@ -1,29 +1,22 @@
-#include <gtest/gtest.h>
+#include "gpu_execuator.hpp"
 
-#include "top/rvgpu.h"
-
-#include "draw.hpp"
-
-TEST_F(Draw, branch_if) {
-    Shader shader;
+TEST_F(GPUExecuator, branch_if) {
     int32_t count = 32;
     int i = 0;
     uint32_t *in = (uint32_t *)malloc(count * sizeof(int));
     uint32_t *out = (uint32_t *)malloc(count * sizeof(int));
 
-    shader.SetupShaderBinary("branch_if.vs");
-    shader.SetupIO(0, (uint64_t)in);
-    shader.SetupIO(1, (uint64_t)out);
+    LoadELF("branch_if");
+    PushParam(0);
+    PushParam((uint64_t)in);
+    PushParam((uint64_t)out);
 
     for (i=0; i<count; i++) {
         in[i] = i * 100;
         out[i] = 5678;   // test of array[i] + 100;
     }
 
-    vertex_command(count, (uint64_t)shader.binary, (uint64_t)shader.layout);
-    end_command();
-
-    run();
+    run1d(count);
 
     for (i=0; i<count; i++) {
         if (i%2 == 0) {
@@ -34,26 +27,23 @@ TEST_F(Draw, branch_if) {
     }
 }
 
-TEST_F(Draw, branch_ifelse) {
-    Shader shader;
+TEST_F(GPUExecuator, branch_ifelse) {
     int32_t count = 32;
     int i = 0;
     uint32_t *in = (uint32_t *)malloc(count * sizeof(int));
     uint32_t *out = (uint32_t *)malloc(count * sizeof(int));
 
-    shader.SetupShaderBinary("branch_ifelse.vs");
-    shader.SetupIO(0, (uint64_t)in);
-    shader.SetupIO(1, (uint64_t)out);
+    LoadELF("branch_ifelse");
+    PushParam(0);
+    PushParam((uint64_t)in);
+    PushParam((uint64_t)out);
 
     for (i=0; i<count; i++) {
         in[i] = i * 100;
         out[i] = 5678;   // test of array[i] + 100;
     }
 
-    vertex_command(count, (uint64_t)shader.binary, (uint64_t)shader.layout);
-    end_command();
-
-    run();
+    run1d(count);
 
     for (i=0; i<count; i++) {
         if (i%2 == 0) {
@@ -64,26 +54,23 @@ TEST_F(Draw, branch_ifelse) {
     }
 }
 
-TEST_F(Draw, branch_ifif) {
-    Shader shader;
+TEST_F(GPUExecuator, branch_ifif) {
     int32_t count = 32;
     int i = 0;
     uint32_t *in = (uint32_t *)malloc(count * sizeof(int));
     uint32_t *out = (uint32_t *)malloc(count * sizeof(int));
 
-    shader.SetupShaderBinary("branch_ifif.vs");
-    shader.SetupIO(0, (uint64_t)in);
-    shader.SetupIO(1, (uint64_t)out);
+    LoadELF("branch_ifif");
+    PushParam(0);
+    PushParam((uint64_t)in);
+    PushParam((uint64_t)out);
 
     for (i=0; i<count; i++) {
         in[i] = i * 100;
         out[i] = 5678;   // test of array[i] + 100;
     }
 
-    vertex_command(count, (uint64_t)shader.binary, (uint64_t)shader.layout);
-    end_command();
-
-    run();
+    run1d(count);
 
     for (i=0; i<count; i++) {
         if (i%2 == 0) {
@@ -98,26 +85,23 @@ TEST_F(Draw, branch_ifif) {
     }
 }
 
-TEST_F(Draw, branch_for) {
-    Shader shader;
+TEST_F(GPUExecuator, branch_for) {
     int32_t count = 32;
     int i = 0;
     uint32_t *in = (uint32_t *)malloc(count * sizeof(int));
     uint32_t *out = (uint32_t *)malloc(count * sizeof(int));
 
-    shader.SetupShaderBinary("branch_for.vs");
-    shader.SetupIO(0, (uint64_t)in);
-    shader.SetupIO(1, (uint64_t)out);
+    LoadELF("branch_for");
+    PushParam(0);
+    PushParam((uint64_t)in);
+    PushParam((uint64_t)out);
 
     for (i=0; i<count; i++) {
         in[i] = i * 100;
         out[i] = 5678;   // test of array[i] + 100;
     }
 
-    vertex_command(count, (uint64_t)shader.binary, (uint64_t)shader.layout);
-    end_command();
-
-    run();
+    run1d(count);
 
     for (i=0; i<count; i++) {
         uint32_t expect_out = in[i];

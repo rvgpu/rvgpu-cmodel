@@ -1,22 +1,9 @@
-typedef struct {
-    unsigned long input;
-    unsigned long output;
-} io;
-
-long vs_main(long layout, long vid)
+long gpumain(long tid, int *input, int *output)
 {
-    int *input;
-    int *output;
-
-    // Global pointer 
-    io *desc = (io *)layout;
-    input = (int *)desc->input;
-    output = (int *)desc->output;
-
-    int a = input[vid];
+    int a = input[tid];
     int out = a;
-    if (vid % 2 == 0) {
-        if (vid %4 == 0) {
+    if (tid % 2 == 0) {
+        if (tid %4 == 0) {
             out = out + 400;
         } else {
             out = out + 200;
@@ -25,7 +12,7 @@ long vs_main(long layout, long vid)
         out = out + 100;
     }
 
-    output[vid] = out;
+    output[tid] = out;
 
     return 0;
 }
