@@ -39,8 +39,9 @@ void warp::setup(message msg) {
     lanes.reset();
     stops.set();
 
+    printf("WARP Start from %d to %d\n", msg.start, msg.start + msg.count);
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
-        if (msg.start + i <= msg.count) {
+        if (i < msg.count) {
             lanes.set(i);
             stops.reset(i);
 

@@ -58,6 +58,7 @@ void command_processor::command_split_1d(rvgpu_command *cs, std::vector<message>
             msg.count = tcount;
         }
 
+        start += 16;
         tcount = tcount - msg.count;
 
         msgs.push_back(std::move(msg));

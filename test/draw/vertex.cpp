@@ -4,7 +4,7 @@
 #include "common/command_stream.h"
 
 #include "gpu_execuator.hpp"
-
+#if 0
 TEST_F(GPUExecuator, vertex_shader_array_add) {
     int32_t count = 16;
     int i = 0;
@@ -28,20 +28,20 @@ TEST_F(GPUExecuator, vertex_shader_array_add) {
         EXPECT_EQ(out[i], in[i] + 100);
     }
 }
-
-#if 0
-TEST_F(Draw, vertex_shader_multi_array_add) {
-    Shader shader;
+#endif
+TEST_F(GPUExecuator, vertex_shader_multi_array_add) {
     int32_t count = 32;
-    int i = 0;
+    int32_t i = 0;
     uint32_t *in1 = (uint32_t *)malloc(count * 4);
     uint32_t *in2 = (uint32_t *)malloc(count * 4);
     uint32_t *out = (uint32_t *)malloc(count * 4);
 
-    shader.SetupShaderBinary("multi_array_add.vs");
-    shader.SetupIO(0, (uint64_t)in1);
-    shader.SetupIO(1, (uint64_t)in2);
-    shader.SetupIO(2, (uint64_t)out);
+    LoadELF("multi_array_add");
+    // long vs_main(long tid, int *input1, int *input2, int *output)
+    PushParam(0);
+    PushParam((uint64_t)in1);
+    PushParam((uint64_t)in2);
+    PushParam((uint64_t)out);
 
     for (i=0; i<count; i++) {
         in1[i] = i * 100;
@@ -49,16 +49,14 @@ TEST_F(Draw, vertex_shader_multi_array_add) {
         out[i] = 5678;   // test of array[i] + array[i];
     }
 
-    vertex_command(count, (uint64_t)shader.binary, (uint64_t)shader.layout);
-    end_command();
-
-    run();
+    run1d(count);
 
     for (i=0; i<count; i++) {
         EXPECT_EQ(out[i], in1[i] + in2[i]);
     }
 }
 
+#if 0
 TEST_F(Draw, vertex_shader_multi_array_mul) {
     Shader shader;
     int32_t count = 32;
