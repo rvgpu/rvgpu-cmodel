@@ -114,6 +114,37 @@ TEST_F(GPUExecuator, vertex_shader_multi_array_muladd) {
     }
 }
 
+TEST_F(GPUExecuator, vertex_shader_multi_array_fmuladd) {
+    int32_t count = 32;
+    int i = 0;
+    float *in1 = (float *)malloc(count * 4);
+    float *in2 = (float *)malloc(count * 4);
+    float *in3 = (float *)malloc(count * 4);
+    float *out = (float *)malloc(count * 4);
+
+    LoadELF("multi_array_fmuladd");
+    // long gpumain(long tid, int *input1, int *input2, int *output)
+    PushParam(0);
+    PushParam((uint64_t)in1);
+    PushParam((uint64_t)in2);
+    PushParam((uint64_t)in3);
+    PushParam((uint64_t)out);
+
+
+    for (i=0; i<count; i++) {
+        in1[i] = i * 100;
+        in2[i] = i + 34;
+        in3[i] = i * 4;
+        out[i] = 5678;
+    }
+
+    run1d(count);
+
+    for (i=0; i<count; i++) {
+        EXPECT_EQ(out[i], in1[i] * in2[i] + in3[i]);
+    }
+}
+
 #if 0
 TEST_F(Draw, vertex_shader_vt14) {
     Shader shader;
