@@ -9,6 +9,7 @@ function(rvsim_test_draw testname)
     add_test(NAME ${testcase} COMMAND ${testcase})
 endfunction()
 
-rvsim_test_draw(vertex)
+rvsim_test_draw(array)
+# rvsim_test_draw(vertex)
 # rvsim_test_draw(branch)
 # rvsim_test_draw(triangle)
