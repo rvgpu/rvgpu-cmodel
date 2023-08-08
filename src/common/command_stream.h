@@ -26,34 +26,37 @@
 #include  <stdint.h>
 
 typedef enum {
-    RVGPU_COMMAND_TYPE_VS = 1,
-    RVGPU_COMMAND_TYPE_FS,
+    RVGPU_COMMAND_TYPE_1D = 1,
+    RVGPU_COMMAND_TYPE_2D,
     RVGPU_COMMAND_TYPE_END,
 } rvgpu_command_type;
 
 typedef struct {
-    uint32_t vertex_count;
-    uint64_t shader;
-    uint64_t layout;
+    uint64_t pointer;
     uint64_t stack_pointer;
-} rvgpu_command_vs;
-
-typedef struct {
-    uint32_t vertex_count;
-    uint32_t primitive_type;
-    uint64_t shader;
-    uint64_t layout;
-    uint64_t stack_pointer;
-    uint32_t fb_x;
-    uint32_t fb_y;
-    uint32_t fb_w;
-    uint32_t fb_h;
-} rvgpu_command_fs;
+    uint32_t argsize;
+    uint64_t args[8];
+} shader_t;
 
 typedef struct {
     rvgpu_command_type type;
-    union {
-        rvgpu_command_vs vs;
-        rvgpu_command_fs fs;
-    } cmd;
+    shader_t shader;
+
+    struct {
+        uint32_t x;
+        uint32_t y;
+        uint32_t z;
+        uint32_t w;
+        uint32_t h;
+        uint32_t d;
+    } range;
 } rvgpu_command;
+
+
+
+typedef struct {
+    uint32_t target;
+    uint32_t start;
+    uint32_t count;
+    shader_t shader;
+} message;

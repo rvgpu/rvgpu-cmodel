@@ -24,6 +24,7 @@
 #pragma once
 
 #include "common/message.h"
+#include "common/command_stream.h"
 #include "sp/stream_processor.hpp"
 #include "compute_unit.h"
 
@@ -34,15 +35,4 @@ public:
 
 private:
     stream_processor *m_sp;
-
-    void run_vs(message msg);
-    void run_fs(message msg);
-
-    compute_unit *p;
-    std::vector<uint32_t> insts;
-
-    uint64_t pc;
-    uint64_t next_pc;
-    insn_fetch_t fetch;
-    uint32_t *sp;
 };

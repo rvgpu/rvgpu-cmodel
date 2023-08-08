@@ -28,6 +28,7 @@
 #include <stack>
 
 #include "common/message.h"
+#include "common/command_stream.h"
 #include "common/configs.h"
 #include "inst_issue.hpp"
 #include "register_file.hpp"
@@ -44,7 +45,7 @@ class warp {
 public:
     warp (register_file *reg);
 
-    void setup(message_shader shader);
+    void setup(message msg);
     bool stop();
 
     inst_issue schedule();

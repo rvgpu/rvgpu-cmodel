@@ -6,7 +6,7 @@ typedef struct {
     unsigned long out_color_buffer;
 } io;
 
-long fs_main(long layout, long pixel, long v01, long v2)
+long gpumain(uint32_t x, uint32_t y, float *in_position, uint32_t v0, uint32_t v1, uint32_t v2)
 {
     /* Global Pointer */
     io *desc = (io *)layout;

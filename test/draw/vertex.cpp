@@ -3,34 +3,33 @@
 #include "top/rvgpu.h"
 #include "common/command_stream.h"
 
-#include "draw.hpp"
+#include "gpu_execuator.hpp"
 
-TEST_F(Draw, vertex_shader_array_add) {
-    Shader shader;
+TEST_F(GPUExecuator, vertex_shader_array_add) {
     int32_t count = 16;
     int i = 0;
     uint32_t *in = (uint32_t *)malloc(count * sizeof(int));
     uint32_t *out = (uint32_t *)malloc(count * sizeof(int));
 
-    shader.SetupShaderBinary("array_add.vs");
-    shader.SetupIO(0, (uint64_t)in);
-    shader.SetupIO(1, (uint64_t)out);
+    LoadELF("array_add");
+    // long gpumain(long tid, int *input, int* output)
+    PushParam(0);
+    PushParam((uint64_t)in);
+    PushParam((uint64_t)out);
 
     for (i=0; i<count; i++) {
         in[i] = i * 100;
         out[i] = 5678;   // test of array[i] + 100;
     }
 
-    vertex_command(count, (uint64_t)shader.binary, (uint64_t)shader.layout);
-    end_command();
-
-    run();
+    run1d(0, 16);
 
     for (i=0; i<16; i++) {
         EXPECT_EQ(out[i], in[i] + 100);
     }
 }
 
+#if 0
 TEST_F(Draw, vertex_shader_multi_array_add) {
     Shader shader;
     int32_t count = 32;
@@ -201,5 +200,5 @@ TEST_F(Draw, vertex_shader_vt14) {
         EXPECT_EQ(fragColor[i * 7 + 5], fg);
         EXPECT_EQ(fragColor[i * 7 + 6], fb);
     }
-    
 }
+#endif

@@ -31,11 +31,11 @@ command_processor::command_processor() {
 void command_processor::run(uint64_t cmds, std::vector<message> &msg) {
     rvgpu_command *cs = (rvgpu_command *)cmds;
     switch (cs->type) {
-        case RVGPU_COMMAND_TYPE_VS:
-            command_vs(cs, msg);
+        case RVGPU_COMMAND_TYPE_1D:
+            command_split_1d(cs, msg);
             break;
-        case RVGPU_COMMAND_TYPE_FS:
-            command_fs(cs, msg);
+        case RVGPU_COMMAND_TYPE_2D:
+            // command_split_2d(cs, msg);
             break;
         default:
             printf("COMMAND TYPE TODO\n");
@@ -43,44 +43,23 @@ void command_processor::run(uint64_t cmds, std::vector<message> &msg) {
     }
 }
 
-void command_processor::command_vs(rvgpu_command *cs, std::vector<message> &msg) {
-    rvgpu_command_vs vs = cs->cmd.vs;
+void command_processor::command_split_1d(rvgpu_command *cs, std::vector<message> &msgs) {
+    int32_t tcount = cs->range.w - cs->range.x;
+    uint32_t start = cs->range.x;
 
-    uint32_t vcount = vs.vertex_count;
-    uint32_t start = 0;
+    while (tcount > 0) {
+        message msg = {};
+        msg.target = 0;
+        msg.shader = cs->shader;
+        msg.start = start;
+        if (tcount > 16) {
+            msg.count = 16;
+        } else {
+            msg.count = tcount;
+        }
 
-    while(vcount != 0) {
-        uint32_t issue_count = 0;
-        issue_count = ((vcount-1) >> WARP_THREAD_N_LOG2) ? (WARP_THREAD_N - 1) : ((vcount-1) & WARP_THREAD_N_MASK);
+        tcount = tcount - msg.count;
 
-        message tmsg = {};
-        tmsg.target = 0; // message send to sm[0]
-        tmsg.msg = CMD_MESSAGE_START_CU_VS;
-        tmsg.shader.shader = vs.shader;
-        tmsg.shader.stack_pointer = vs.stack_pointer;
-        tmsg.shader.start = start;
-        tmsg.shader.count = issue_count + 1;
-        tmsg.shader.argcount = 2;
-        tmsg.shader.args[0] = vs.layout;
-        msg.push_back(std::move(tmsg));
-
-        start = start + issue_count + 1;
-        vcount = vcount - issue_count - 1;
+        msgs.push_back(std::move(msg));
     }
-}
-
-void command_processor::command_fs(rvgpu_command *cs, std::vector<message> &msg) {
-    rvgpu_command_fs fs = cs->cmd.fs;
-    message tmsg = {};
-    tmsg.target = 0; // message send to sm[0]
-    tmsg.msg = CMD_MESSAGE_START_FS;
-    tmsg.shader.shader = fs.shader;
-    tmsg.shader.stack_pointer = fs.stack_pointer;
-    tmsg.shader.argcount = 2;
-    tmsg.shader.args[0] = fs.layout;
-    tmsg.tile.x = 0;
-    tmsg.tile.y = 0;
-    tmsg.tile.w = 800;
-    tmsg.tile.h = 600;
-    msg.push_back(std::move(tmsg));
 }

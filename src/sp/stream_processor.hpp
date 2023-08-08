@@ -24,6 +24,7 @@
 #pragma once
 
 #include "common/message.h"
+#include "common/command_stream.h"
 
 #include "warp.hpp"
 #include "register_file.hpp"
@@ -37,7 +38,7 @@
 class stream_processor {
 public:
     stream_processor();
-    void setup(message_shader message_shader);
+    void setup(message msg);
     void run();
 
 private:

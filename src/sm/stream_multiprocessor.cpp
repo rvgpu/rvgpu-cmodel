@@ -26,49 +26,10 @@
 #include "stream_multiprocessor.h"
 
 sm::sm() {
-    auto isa_parser = new isa_parser_t("RV64IMAFD");
     m_sp = new stream_processor();
-    p = new compute_unit(isa_parser);
-    sp = (uint32_t*) malloc(5000 * sizeof (uint32_t));
-    sp = sp + 2000;
-}
-
-void sm::run_vs(message msg) {
-    printf("[SM] receive message VS: %ld %d\n", msg.shader.start, msg.shader.count);
-
-    m_sp->setup(msg.shader);
-    m_sp->run();
-}
-
-void sm::run_fs(message msg) {
-    message_tile tile = msg.tile;
-    for (uint32_t x=tile.x; x<tile.w; x+=16) {
-        for (uint32_t y=tile.y; y<tile.h; y+=1) {
-            printf("xy: (%d, %d)\n", x, y);
-            message_shader shader = msg.shader;
-            shader.start = (uint64_t(y) << 32) + x;
-            shader.count = 16;
-            shader.xstride = 2;
-            shader.argcount = 3;
-            // shader.args[0]
-            // shader.args[1] =     xy
-            shader.args[2] = (1UL << 32) + 0; // v1v0
-            shader.args[3] = 2;
-            m_sp->setup(shader);
-            m_sp->run();
-        }
-    }
 }
 
 void sm::run(message msg) {
-    switch(msg.msg) {
-        case CMD_MESSAGE_START_CU_VS:
-            run_vs(msg);
-            break;
-        case CMD_MESSAGE_START_FS:
-            run_fs(msg);
-            break;
-        default:
-            break;
-    }
+    m_sp->setup(msg);
+    m_sp->run();
 }

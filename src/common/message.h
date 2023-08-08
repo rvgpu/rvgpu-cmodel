@@ -22,34 +22,3 @@
  */
 
 #pragma once
-
-#include <cstdint>
-
-enum message_type {
-    CMD_MESSAGE_START_CU_VS = 1,
-    CMD_MESSAGE_START_FS,
-};
-
-typedef struct {
-    uint64_t shader;
-    uint64_t start;
-    uint32_t count;
-    uint32_t xstride;
-    uint64_t stack_pointer;
-    uint32_t argcount;
-    uint64_t args[8];
-} message_shader;
-
-typedef struct {
-    uint32_t x;
-    uint32_t y;
-    uint32_t w;
-    uint32_t h;
-} message_tile;
-
-typedef struct {
-    uint32_t target;
-    enum message_type msg;
-    message_shader shader;
-    message_tile tile;
-} message;

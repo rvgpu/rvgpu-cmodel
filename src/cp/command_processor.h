@@ -34,6 +34,5 @@ public:
     void run(uint64_t cmds, std::vector<message> &msg);
 
 private:
-    void command_vs(rvgpu_command *cs, std::vector<message> &msg);
-    void command_fs(rvgpu_command *cs, std::vector<message> &msg);
+    void command_split_1d(rvgpu_command *cs, std::vector<message> &msg);
 };

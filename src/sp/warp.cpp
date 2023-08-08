@@ -33,42 +33,34 @@ warp::warp(register_file *reg) {
     m_dec = new dec();
 }
 
-void warp::setup(message_shader shader) {
-    pc = shader.shader;
-    startpc = shader.shader;
+void warp::setup(message msg) {
+    pc = msg.shader.pointer;
+    startpc = msg.shader.pointer;
+    lanes.reset();
+    stops.set();
 
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
-        if (i < shader.count) {
+        if (msg.start + i <= msg.count) {
             lanes.set(i);
             stops.reset(i);
-        } else {
-            lanes.reset(i);
-            stops.set(i);
-        }
-    }
-
-    printf("start: %lx\n", shader.start);
-    printf("[WARP] start lanes: %lx\n", lanes.to_ulong());
-    printf("[WARP] start stops: %lx\n", stops.to_ulong());
-    for (uint32_t i=0; i<WARP_THREAD_N; i++) {
-        if (lanes.test(i)) {
-            printf("[SP][WARP0.%d] setup ra: 0x0\n", i);
-            printf("[SP][WARP0.%d] setup sp: 0x%lx\n", i, shader.stack_pointer + 0x1000 * i);
-            printf("[SP][WARP0.%d] setup a0: 0x%lx\n", i, shader.args[0]);
-            printf("[SP][WARP0.%d] setup a1: 0x%lx\n", i, shader.start + i);
-            printf("[SP][WARP0.%d] setup a2: 0x%lx\n", i, shader.args[2]);
-            printf("[SP][WARP0.%d] setup a3: 0x%lx\n", i, shader.args[3]);
-
 
             m_reg->write_ireg(i, uint64_t(reg::s0), 0);
             m_reg->write_ireg(i, uint64_t(reg::ra), 0);
-            m_reg->write_ireg(i, uint64_t(reg::sp), shader.stack_pointer + 0x1000 * i);
-            m_reg->write_ireg(i, uint64_t(reg::a0), shader.args[0]);
-            m_reg->write_ireg(i, uint64_t(reg::a1), shader.start + i); // args[1]
-            m_reg->write_ireg(i, uint64_t(reg::a2), shader.args[2]); // args[1]
-            m_reg->write_ireg(i, uint64_t(reg::a3), shader.args[3]); // args[1]
+
+            printf("[SP][WARP0.%d] setup sp: 0x%lx\n", i, msg.shader.stack_pointer + 0x1000 * i);
+            m_reg->write_ireg(i, uint64_t(reg::sp), msg.shader.stack_pointer + 0x1000 * i);
+
+            printf("[SP][WARP0.%d] setup a0(tid): 0x%x\n", i, msg.start + i);
+            m_reg->write_ireg(i, uint64_t(reg::a0), msg.start + i);
+            for (uint32_t argi=1; argi<msg.shader.argsize; argi++) {
+                printf("[SP][WARP0.%d] setup a%d(arg[%d]): 0x%lx\n", i, argi, argi, msg.shader.args[argi]);
+                m_reg->write_ireg(i, uint64_t(reg::a0) + argi, msg.shader.args[argi]);
+            }
         }
     }
+
+    printf("[SP][WARP0] setup lanes: %lx\n", lanes.to_ulong());
+    printf("[SP][WARP0] setup stops: %lx\n", stops.to_ulong());
 }
 
 inst_issue warp::schedule() {
