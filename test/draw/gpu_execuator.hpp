@@ -27,10 +27,10 @@ protected:
 
     }
 
-    void run1d (uint32_t start, uint32_t count) {
+    void run1d (uint32_t count) {
         rvgpu_command cmd;
         cmd.type = RVGPU_COMMAND_TYPE_1D;
-        cmd.range = {.x= start, .y = 0, .z = 0, .w = count, .h = 0, .d = 0};
+        cmd.range = {.x= count, .y = 0, .z = 0};
         cmd.shader.pointer = pc;
         cmd.shader.stack_pointer = stack_pointer;
         cmd.shader.argsize = params.size();

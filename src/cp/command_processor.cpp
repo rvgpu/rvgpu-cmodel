@@ -44,8 +44,8 @@ void command_processor::run(uint64_t cmds, std::vector<message> &msg) {
 }
 
 void command_processor::command_split_1d(rvgpu_command *cs, std::vector<message> &msgs) {
-    int32_t tcount = cs->range.w - cs->range.x;
-    uint32_t start = cs->range.x;
+    int32_t tcount = cs->range.x;
+    uint32_t start = 0;
 
     while (tcount > 0) {
         message msg = {};

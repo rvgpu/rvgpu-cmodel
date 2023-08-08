@@ -22,7 +22,7 @@ TEST_F(GPUExecuator, vertex_shader_array_add) {
         out[i] = 5678;   // test of array[i] + 100;
     }
 
-    run1d(0, 16);
+    run1d(count);
 
     for (i=0; i<16; i++) {
         EXPECT_EQ(out[i], in[i] + 100);
