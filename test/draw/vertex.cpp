@@ -4,7 +4,7 @@
 #include "common/command_stream.h"
 
 #include "gpu_execuator.hpp"
-#if 0
+
 TEST_F(GPUExecuator, vertex_shader_array_add) {
     int32_t count = 16;
     int i = 0;
@@ -28,7 +28,7 @@ TEST_F(GPUExecuator, vertex_shader_array_add) {
         EXPECT_EQ(out[i], in[i] + 100);
     }
 }
-#endif
+
 TEST_F(GPUExecuator, vertex_shader_multi_array_add) {
     int32_t count = 32;
     int32_t i = 0;
