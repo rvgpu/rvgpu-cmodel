@@ -34,16 +34,17 @@ TEST_F(GPUExecuator, triangle) {
     PushParam(0); // v0_id
     PushParam(1); // v1_id
     PushParam(2); // v2_id
-    // run1d(800 * 600);
+    run1d(800 * 600);
 
 
     for (uint32_t i=0; i<800*600; i++) {
         uint32_t index = i;
         gpumain(index, vsout_position, vsout_color, testfb, 0, 1, 2);
-        // EXPECT_EQ(testfb[index * 4 + 0], fb[index * 4 + 0]);// EXPECT_EQ(testfb[index * 4 + 1], fb[index * 4 + 1]);
-        // EXPECT_EQ(testfb[index * 4 + 2], fb[index * 4 + 2]);
-        // EXPECT_EQ(testfb[index * 4 + 3], fb[index * 4 + 3]);
+        EXPECT_EQ(testfb[index * 4 + 0], fb[index * 4 + 0]);
+        EXPECT_EQ(testfb[index * 4 + 1], fb[index * 4 + 1]);
+        EXPECT_EQ(testfb[index * 4 + 2], fb[index * 4 + 2]);
+        EXPECT_EQ(testfb[index * 4 + 3], fb[index * 4 + 3]);
     }
 
-    WritePPM("triangle", 800, 600, testfb);
+    WritePPM("triangle", 800, 600, fb);
 }
