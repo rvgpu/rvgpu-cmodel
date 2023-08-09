@@ -5,56 +5,39 @@ struct viewport {
     float h;
 };
 
-typedef struct {
-    unsigned long vp;
-    unsigned long out_position;
-    unsigned long out_color;
-} io;
-
-long vs_main(long layout, long vid)
-{
-    /* Global Pointer */
-    io *desc = (io *)layout;
-    float *gl_Position = (float *)desc->out_position;
-    float *fragColor = (float *)desc->out_color;
-
-    // main block
-    float position[3][2] = {
+// main block
+float position[3][2] = {
         {-0.5, 0.5},
         {0.5, 0.5},
         {0, -0.5}
-    };
+};
 
-    float colors[3][3] = {
+float colors[3][3] = {
         {0.0, 0.0, 1.0},
         {0.0, 1.0, 0.0},
         {1.0, 0.0, 0.0},
-    };
+};
 
+void gpumain(long vid, float *out_position, float *out_color, struct viewport *vp)
+{
     float fx = position[vid][0];
     float fy = position[vid][1];
     float fz = 0.0f;
     float fw = 1.0f;
-    float fr = colors[vid][0];
-    float fg = colors[vid][1];
-    float fb = colors[vid][2];
 
     // viewport
-    struct viewport *vp;
-    vp = (struct viewport *)(desc->vp);
-
     fx = vp->w + fx * (vp->w);
     fy = vp->h + fy * (vp->h);
 
     // output
-    gl_Position[vid * 7 + 0] = fx;
-    gl_Position[vid * 7 + 1] = fy;
-    gl_Position[vid * 7 + 2] = fz;
-    gl_Position[vid * 7 + 3] = fw;
+    out_position[vid * 4 + 0] = fx;
+    out_position[vid * 4 + 1] = fy;
+    out_position[vid * 4 + 2] = fz;
+    out_position[vid * 4 + 3] = fw;
 
-    fragColor[vid * 7 + 4] = fr;
-    fragColor[vid * 7 + 5] = fg;
-    fragColor[vid * 7 + 6] = fb;
+    out_color[vid * 3 + 0] = colors[vid][0];
+    out_color[vid * 3 + 1] = colors[vid][1];
+    out_color[vid * 3 + 2] = colors[vid][2];
 
-    return 0;
+    return;
 }

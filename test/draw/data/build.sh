@@ -9,7 +9,7 @@ fname=`echo "${1%.*}"`
 # ~/git/rvgpu/install/bin/llvm-objdump -d test.o > ${fname}.vs
 
 echo "### Clang"
-~/git/rvgpu/install/bin/clang -c $1 -target riscv64 -mcpu="rvgpu" -v -mcmodel=medany
+~/git/rvgpu/install/bin/clang -c $1 -target riscv64 -mcpu="rvgpu" -mcmodel=medany
 
 echo "### ld.lld"
 ~/git/rvgpu/install/bin/ld.lld $fname.o -o ${fname}  -egpumain

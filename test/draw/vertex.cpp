@@ -1,85 +1,38 @@
 #include "gpu_execuator.hpp"
 
-#if 0
-TEST_F(Draw, vertex_shader_vt14) {
-    Shader shader;
-    int32_t count = 3;    
+#include "data/vertex_shader_vt14.c"
 
-    struct viewport {
-        float x;
-        float y;
-        float w;
-        float h;
-    };
+TEST_F(GPUExecuator, vertex_shader_vt14) {
+    int32_t count = 3;
 
-    typedef struct {
-        unsigned long vp;
-        unsigned long out_position;
-        unsigned long out_color;
-    } io;
+    struct viewport *vp = (struct viewport *) malloc(sizeof(struct viewport));
+    vp->x = 0.0f;
+    vp->y = 0.0f;
+    vp->w = 400.0f;
+    vp->h = 300.0f;
 
-    struct viewport *my_vp = (struct viewport *) malloc(sizeof(struct viewport));
-    my_vp->x = 0.0f;
-    my_vp->y = 0.0f;
-    my_vp->w = 400.0f;
-    my_vp->h = 300.0f;
+    float *out_position = (float *) malloc(count * 12 * sizeof(float));
+    float *out_color = (float *) malloc(count * 12 * sizeof(float));
 
-    float *my_position = (float *) malloc(count * 7 * sizeof(float));
-    float *my_color = (float *) malloc(count * 7 * sizeof(float));
+    LoadELF("vertex_shader_vt14");
+    PushParam(0); // vid
+    PushParam((uint64_t)out_position);
+    PushParam((uint64_t)out_color);
+    PushParam((uint64_t)vp);
+    run1d(count);
 
-    io *my_io = (io *) malloc(sizeof(io));
+    float *myposition = (float *) malloc(count * 12 * sizeof(float));
+    float *mycolor = (float *) malloc(count * 12 * sizeof(float));
+    for (int32_t i=0; i<count; i++) {
+        gpumain(i, myposition, mycolor, vp);
 
-    my_io->vp = reinterpret_cast<unsigned long>(my_vp);
-    my_io->out_position = reinterpret_cast<unsigned long>(my_position);
-    my_io->out_color = reinterpret_cast<unsigned long>(my_color);
+        EXPECT_EQ(out_position[i * 4 + 0], myposition[i * 4 + 0]);
+        EXPECT_EQ(out_position[i * 4 + 1], myposition[i * 4 + 1]);
+        EXPECT_EQ(out_position[i * 4 + 2], myposition[i * 4 + 2]);
+        EXPECT_EQ(out_position[i * 4 + 3], myposition[i * 4 + 3]);
 
-    shader.SetupShaderBinary("vertex_shader_vt14.vs");
-
-    vertex_command(count, (uint64_t)shader.binary, (uint64_t)my_io);
-
-    end_command();
-
-    run();
-
-    // Test
-    float position[3][2] = {
-        {-0.5, 0.5},
-        {0.5, 0.5},
-        {0, -0.5}
-    };
-
-    float colors[3][3] = {
-        {0.0, 0.0, 1.0},
-        {0.0, 1.0, 0.0},
-        {1.0, 0.0, 0.0},
-    };
-
-    float fx, fy, fz, fw, fr, fg, fb;
-    int i;
-
-    for (i = 0; i < count; i++) {
-        fx = position[i][0];
-        fy = position[i][1];
-        fz = 0.0f;
-        fw = 1.0f;
-        fr = colors[i][0];
-        fg = colors[i][1];
-        fb = colors[i][2];
-
-        fx = my_vp->w + fx * (my_vp->w);
-        fy = my_vp->h + fy * (my_vp->h);
-
-        float *gl_Position = reinterpret_cast<float *>(my_io->out_position);
-        float *fragColor = reinterpret_cast<float *>(my_io->out_color);
-
-        EXPECT_EQ(gl_Position[i * 7 + 0], fx);
-        EXPECT_EQ(gl_Position[i * 7 + 1], fy);
-        EXPECT_EQ(gl_Position[i * 7 + 2], fz);
-        EXPECT_EQ(gl_Position[i * 7 + 3], fw);
-
-        EXPECT_EQ(fragColor[i * 7 + 4], fr);
-        EXPECT_EQ(fragColor[i * 7 + 5], fg);
-        EXPECT_EQ(fragColor[i * 7 + 6], fb);
+        EXPECT_EQ(out_color[i * 3 + 0], mycolor[i * 3 + 0]);
+        EXPECT_EQ(out_color[i * 3 + 1], mycolor[i * 3 + 1]);
+        EXPECT_EQ(out_color[i * 3 + 2], mycolor[i * 3 + 2]);
     }
 }
-#endif
