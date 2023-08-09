@@ -44,4 +44,5 @@ private:
     uint64_t fsub_s();
     uint64_t fcvt_s_wu();
     uint64_t fle_s();
+    uint64_t fmv_w_x();
 };

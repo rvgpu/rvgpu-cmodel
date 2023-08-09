@@ -63,6 +63,9 @@ uint64_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FLE_S:
             ret = fle_s();
             break;
+        case encoding::INST_FPU_FMV_W_X:
+            ret = fmv_w_x();
+            break;
         default:
             printf("FPU Inst TODO\n");
             break;
@@ -126,3 +129,8 @@ uint64_t fpu::fle_s() {
     return res;
 }
 
+uint64_t fpu::fmv_w_x() {
+    float res = reg2f(inst.rs1);
+    printf("[FPU.%d][FMV_W_X] r[%lx](%f) = %f\n", m_id, inst.rd, res, reg2f(inst.rs1));
+    return f2reg(res);
+}
