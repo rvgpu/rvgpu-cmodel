@@ -125,7 +125,7 @@ uint64_t fpu::fcvt_s_wu() {
 uint64_t fpu::fle_s() {
     uint64_t res;
     res = f32_le(uint32_t(inst.frs1), uint32_t(inst.frs2));
-    printf("[FPU.%d][FCVT_S_WU] r[%lx](%ld) = (%f <= %f)\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
+    printf("[FPU.%d][FLE_S] r[%lx](%ld) = (%f <= %f)\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return res;
 }
 
