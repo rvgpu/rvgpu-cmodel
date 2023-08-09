@@ -36,11 +36,11 @@ typedef struct {
     uint64_t stack_pointer;
     uint32_t argsize;
     uint64_t args[8];
-} shader_t;
+} program_t;
 
 typedef struct {
     rvgpu_command_type type;
-    shader_t shader;
+    program_t shader;
 
     struct {
         uint32_t x;
@@ -49,11 +49,9 @@ typedef struct {
     } range;
 } rvgpu_command;
 
-
-
 typedef struct {
     uint32_t target;
     uint32_t start;
     uint32_t count;
-    shader_t shader;
+    program_t shader;
 } message;
