@@ -10,4 +10,5 @@ namespace utils {
     float reg2f(uint64_t data);
     uint64_t f2reg(float data);
     float ui32_to_f32(uint32_t data);
+    uint64_t f32_to_ui64(float data);
 }

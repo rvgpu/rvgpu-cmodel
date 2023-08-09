@@ -60,6 +60,9 @@ uint64_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FCVT_S_WU:
             ret = fcvt_s_wu();
             break;
+        case encoding::INST_FPU_FCVT_LU_S:
+            ret = fcvt_lu_s();
+            break;
         case encoding::INST_FPU_FLE_S:
             ret = fle_s();
             break;
@@ -120,6 +123,12 @@ uint64_t fpu::fcvt_s_wu() {
     float res = ui32_to_f32((uint32_t)inst.rs1);
     printf("[FPU.%d][FCVT_S_WU] r[%lx](%f) = ui32_to_f32(%lx)\n", m_id, inst.rd, res, inst.rs1);
     return f2reg(res);
+}
+
+uint64_t fpu::fcvt_lu_s() {
+    uint64_t res = f32_to_ui64(reg2f(inst.frs1));
+    printf("[FPU.%d][FCVT_LU_S] r[%lx](%lx) = f32_to_ui64(%f)\n", m_id, inst.rd, res, reg2f(inst.frs1));
+    return res;
 }
 
 uint64_t fpu::fle_s() {

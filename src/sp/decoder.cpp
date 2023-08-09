@@ -69,6 +69,7 @@ std::vector<struct instlist> insts = {
         DECLARE_INSN_FPU(FMSUB_S),
         DECLARE_INSN_FPU(FSUB_S),
         DECLARE_INSN_FPU(FCVT_S_WU),
+        DECLARE_INSN_FPU(FCVT_LU_S),
         DECLARE_INSN_FPU(FLE_S),
         DECLARE_INSN_FPU(FMV_W_X),
         DECLARE_INSN_LS(FLW),
@@ -108,6 +109,9 @@ inst_issue dec::decode_inst(uint32_t instcode) {
     to_issue.uj_imm = (xget(21, 10) << 1) + (xget(20, 1) << 11) + (xget(12, 8) << 12) + (imm_sign() << 20);
 
     if (to_issue.code == INST_FPU_FLE_S) {
+        to_issue.rd = to_issue.rd + 32;
+    }
+    if (to_issue.code == INST_FPU_FCVT_LU_S) {
         to_issue.rd = to_issue.rd + 32;
     }
     return to_issue;

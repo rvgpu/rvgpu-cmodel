@@ -63,6 +63,8 @@ namespace encoding {
 #define MASK_FSUB_S 0xfe00007f
 #define MATCH_FCVT_S_WU 0xd0100053
 #define MASK_FCVT_S_WU 0xfff0007f
+#define MATCH_FCVT_LU_S 0xc0300053
+#define MASK_FCVT_LU_S 0xfff0007f
 #define MATCH_FSW 0x2027
 #define MASK_FSW 0x707f
 #define MATCH_FLE_S 0xa0000053
@@ -146,6 +148,7 @@ typedef enum {
     INST_FPU_FMSUB_S,
     INST_FPU_FSUB_S,
     INST_FPU_FCVT_S_WU,
+    INST_FPU_FCVT_LU_S,
     INST_FPU_FLE_S,
     INST_FPU_FMV_W_X,
 

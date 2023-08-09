@@ -13,3 +13,7 @@ uint64_t utils::f2reg(float data) {
 float utils::ui32_to_f32(uint32_t data) {
     return (float)data;
 }
+
+uint64_t utils::f32_to_ui64(float data) {
+    return uint64_t(int64_t(data));
+}
