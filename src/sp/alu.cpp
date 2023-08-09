@@ -121,14 +121,14 @@ uint64_t alu::run(inst_issue instruction) {
 
 uint64_t alu::add() {
     int64_t ret = inst.rs1 + inst.rs2;
-    printf("[ALU.%d][ADD] r[%ld](0x%lx) = 0x%lx + %ld\n", m_id, inst.rd, ret, inst.rs1, inst.rs2);
+    ALU_INFO("[ADD] r[%ld](0x%lx) = 0x%lx + %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
     return ret;
 }
 
 uint64_t alu::addi() {
     uint64_t ret  = 0;
     ret = inst.rs1 + inst.i_imm;
-    printf("[ALU.%d][ADDI] r[%ld](0x%lx) = 0x%lx + %ld\n", m_id, inst.rd, ret, inst.rs1, inst.i_imm);
+    ALU_INFO("[ADDI] r[%ld](0x%lx) = 0x%lx + %ld\n", inst.rd, ret, inst.rs1, inst.i_imm);
 
     return ret;
 }
@@ -137,7 +137,7 @@ uint64_t alu::addiw() {
     int32_t rs1 = inst.rs1;
     int32_t imm = inst.i_imm;
     ret = rs1 + imm;
-    printf("[ALU.%d][ADDIW] r[%ld](0x%lx) = 0x%x + %d\n", m_id, inst.rd, ret, rs1, imm);
+    ALU_INFO("[ADDIW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, ret, rs1, imm);
     return ret;
 }
 uint64_t alu::addw() {
@@ -145,19 +145,19 @@ uint64_t alu::addw() {
     int32_t rs1 = inst.rs1;
     int32_t rs2 = inst.rs2;
     ret = rs1 + rs2;
-    printf("[ALU.%d][ADDW] r[%ld](0x%lx) = 0x%x + %d\n", m_id, inst.rd, ret, rs1, rs2);
+    ALU_INFO("[ADDW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, ret, rs1, rs2);
     return ret;
 }
 uint64_t alu::lui() {
     uint64_t ret = inst.u_imm;
-    printf("[ALU.%d]LUI] r[%ld](0x%lx) = 0x%lx\n", m_id, inst.rd, ret, inst.u_imm);
+    ALU_INFO("[LUI] r[%ld](0x%lx) = 0x%lx\n", inst.rd, ret, inst.u_imm);
     return ret;
 }
 
 uint64_t alu::mul() {
     int64_t ret = 0;
     ret = int64_t(inst.rs1 * inst.rs2);
-    printf("[ALU.%d][MUL] r[%ld](0x%lx) = 0x%lx * %ld\n", m_id, inst.rd, ret, inst.rs1, inst.rs2);
+    ALU_INFO("[MUL] r[%ld](0x%lx) = 0x%lx * %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
     return ret;
 }
 
@@ -166,7 +166,7 @@ uint64_t alu::mulw() {
     int32_t rs1 = inst.rs1;
     int32_t rs2 = inst.rs2;
     ret = int64_t(rs1 * rs2);
-    printf("[ALU.%d][MULW] r[%ld](0x%lx) = 0x%x * %d\n", m_id, inst.rd, ret, rs1, rs2);
+    ALU_INFO("[MULW] r[%ld](0x%lx) = 0x%x * %d\n", inst.rd, ret, rs1, rs2);
     return ret;
 }
 
@@ -177,7 +177,7 @@ uint64_t alu::mulh() {
     int negate = (a < 0) != (b < 0);
     uint64_t res = util_mulhu(a < 0 ? -a : a, b < 0 ? -b : b);
     ret =  negate ? ~res + (a * b == 0) : res;
-    printf("[ALU.%d][MULH] r[%ld](0x%lx) = 0x%ld * %ld\n", m_id, inst.rd, ret, inst.rs1, inst.rs2);
+    ALU_INFO("[MULH] r[%ld](0x%lx) = 0x%ld * %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
     return ret;
 }
 
@@ -186,71 +186,71 @@ uint64_t alu::sltu() {
     uint64_t rs1 = inst.rs1;
     uint64_t rs2 = inst.rs2;
     ret = (rs1 < rs2) ? 1 : 0;
-    printf("[ALU.%d][SLTU] r[%ld](0x%lx) = (0x%lx < 0x%lx) ? 1 : 0\n", m_id, inst.rd, ret, rs1, rs2);
+    ALU_INFO("[SLTU] r[%ld](0x%lx) = (0x%lx < 0x%lx) ? 1 : 0\n", inst.rd, ret, rs1, rs2);
     return ret;
 }
 uint64_t alu::slliw() {
     uint64_t ret = 0;
     ret = int32_t(inst.rs1 << (inst.i_imm & 0x3F));
-    printf("[EXEC.ALU.SLLIW] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
+    ALU_INFO("[SLLIW] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
     return ret;
 }
 uint64_t alu::slli() {
     int64_t ret = 0;
     ret = (inst.rs1 << (inst.i_imm & 0x3F));
-    printf("[ALU.%d][SLLI] r[%ld](0x%lx) = 0x%lx << %ld\n", m_id, inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
+    ALU_INFO("[SLLI] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
     return ret;
 }
 
 uint64_t alu::srli() {
     int64_t ret = 0;
     ret = (uint64_t(inst.rs1) >> (inst.i_imm & 0x3F));
-    printf("[ALU.%d][SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", m_id, inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
+    ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
     return ret;
 }
 
 uint64_t alu::slt() {
     int64_t ret = 0;
     ret = int64_t(inst.rs1) < int64_t(inst.rs2);
-    printf("[ALU.%d][SLT] r[%ld](0x%lx) = 0x%lx < %ld\n", m_id, inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
+    ALU_INFO("[SLT] r[%ld](0x%lx) = 0x%lx < %ld\n", inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
     return ret;
 }
 
 uint64_t alu::sub() {
     int64_t ret = 0;
     ret = int64_t(inst.rs1 - inst.rs2);
-    printf("[ALU.%d][SUB] r[%ld](0x%lx) = 0x%lx - %ld\n", m_id, inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
+    ALU_INFO("[SUB] r[%ld](0x%lx) = 0x%lx - %ld\n", inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
     return ret;
 }
 
 uint64_t alu::subw() {
     int64_t ret = 0;
     ret = int64_t(int32_t(inst.rs1 - inst.rs2));
-    printf("[ALU.%d][SUBW] r[%ld](0x%lx) = 0x%lx - %ld\n", m_id, inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
+    ALU_INFO("[SUBW] r[%ld](0x%lx) = 0x%lx - %ld\n", inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
     return ret;
 }
 
 uint64_t alu::andi() {
     uint64_t ret = 0;
     ret = inst.i_imm & inst.rs1;
-    printf("[ALU.%d]ANDI] r[%ld](0x%lx) = 0x%lx & %ld\n", m_id, inst.rd, ret, inst.i_imm, inst.rs1);
+    ALU_INFO("[ANDI] r[%ld](0x%lx) = 0x%lx & %ld\n", inst.rd, ret, inst.i_imm, inst.rs1);
     return ret;
 }
 uint64_t alu::ori() {
     uint64_t ret = 0;
     ret = inst.i_imm | inst.rs1;
-    printf("[ALU.%d][ORI] r[%ld](0x%lx) = 0x%lx | %ld\n", m_id, inst.rd, ret, inst.i_imm, inst.rs1);
+    ALU_INFO("[ORI] r[%ld](0x%lx) = 0x%lx | %ld\n", inst.rd, ret, inst.i_imm, inst.rs1);
     return ret;
 }
 uint64_t alu::xori() {
     uint64_t ret = 0;
     ret = inst.i_imm ^ inst.rs1;
-    printf("[ALU.%d][XORI] r[%ld](0x%lx) = 0x%lx ^ %ld\n", m_id, inst.rd, ret, inst.i_imm, inst.rs1);
+    ALU_INFO("[XORI] r[%ld](0x%lx) = 0x%lx ^ %ld\n", inst.rd, ret, inst.i_imm, inst.rs1);
     return ret;
 }
 uint64_t alu::OR() {
     uint64_t ret = 0;
     ret = inst.rs1 | inst.rs2;
-    printf("[ALU.%d][OR] r[%ld](0x%lx) = 0x%lx | %ld\n", m_id, inst.rd, ret, inst.rs1, inst.rs2);
+    ALU_INFO("[OR] r[%ld](0x%lx) = 0x%lx | %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
     return ret;
 }

@@ -23,6 +23,7 @@
 
 #include <cstdio>
 
+#include "common/debug.hpp"
 #include "common/utils.hpp"
 #include "common/softfloat.hpp"
 #include "fpu.hpp"
@@ -80,66 +81,66 @@ uint64_t fpu::run(inst_issue instruction) {
 uint64_t fpu::fadd_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) + reg2f(inst.frs2);
-    printf("[FPU.%d][FADD_S] r[%ld](%f) = %f + %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FADD_S] r[%ld](%f) = %f + %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return f2reg(res);
 }
 
 uint64_t fpu::fmul_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) * reg2f(inst.frs2);
-    printf("[FPU.%d][FMUL_S] r[%ld](%f) = %f * %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FMUL_S] r[%ld](%f) = %f * %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return f2reg(res);
 }
 
 uint64_t fpu::fdiv_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) / reg2f(inst.frs2);
-    printf("[FPU.%d][FDIV_S] r[%ld](%f) = %f / %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FDIV_S] r[%ld](%f) = %f / %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return f2reg(res);
 }
 
 uint64_t fpu::fmadd_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) * reg2f(inst.frs2) + reg2f(inst.frs3);
-    printf("[FPU.%d][FMADD_S] r[%ld](%f) = %f * %f + %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
+    FPU_INFO("[FMADD_S] r[%ld](%f) = %f * %f + %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
     return f2reg(res);
 }
 
 uint64_t fpu::fmsub_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) * reg2f(inst.frs2) - reg2f(inst.frs3);
-    printf("[FPU.%d][FMSUB_S] r[%ld](%f) = %f * %f - %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
+    FPU_INFO("[FMSUB_S] r[%ld](%f) = %f * %f - %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
     return f2reg(res);
 }
 
 uint64_t fpu::fsub_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) - reg2f(inst.frs2);
-    printf("[FPU.%d][FSUB_S] r[%ld](%f) = %f + %f\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FSUB_S] r[%ld](%f) = %f + %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return f2reg(res);
 }
 
 uint64_t fpu::fcvt_s_wu() {
     float res = ui32_to_f32((uint32_t)inst.rs1);
-    printf("[FPU.%d][FCVT_S_WU] r[%lx](%f) = ui32_to_f32(%lx)\n", m_id, inst.rd, res, inst.rs1);
+    FPU_INFO("[FCVT_S_WU] r[%lx](%f) = ui32_to_f32(%lx)\n", inst.rd, res, inst.rs1);
     return f2reg(res);
 }
 
 uint64_t fpu::fcvt_lu_s() {
     uint64_t res = f32_to_ui64(reg2f(inst.frs1));
-    printf("[FPU.%d][FCVT_LU_S] r[%lx](%lx) = f32_to_ui64(%f)\n", m_id, inst.rd, res, reg2f(inst.frs1));
+    FPU_INFO("[FCVT_LU_S] r[%lx](%lx) = f32_to_ui64(%f)\n", inst.rd, res, reg2f(inst.frs1));
     return res;
 }
 
 uint64_t fpu::fle_s() {
     uint64_t res;
     res = f32_le(uint32_t(inst.frs1), uint32_t(inst.frs2));
-    printf("[FPU.%d][FLE_S] r[%lx](%ld) = (%f <= %f)\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FLE_S] r[%lx](%ld) = (%f <= %f)\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return res;
 }
 
 uint64_t fpu::fmv_w_x() {
     float res = reg2f(inst.rs1);
-    printf("[FPU.%d][FMV_W_X] r[%lx](%f) = %f\n", m_id, inst.rd, res, reg2f(inst.rs1));
+    FPU_INFO("[FMV_W_X] r[%lx](%f) = %f\n", inst.rd, res, reg2f(inst.rs1));
     return f2reg(res);
 }

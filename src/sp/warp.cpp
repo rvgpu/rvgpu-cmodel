@@ -26,6 +26,7 @@
 
 #include "common/utils.hpp"
 #include "common/regid.hpp"
+#include "common/debug.hpp"
 #include "warp.hpp"
 
 warp::warp(register_file *reg) {
@@ -39,7 +40,7 @@ void warp::setup(message msg) {
     lanes.reset();
     stops.set();
 
-    printf("WARP Start from %d to %d\n", msg.start, msg.start + msg.count);
+    RVGPU_DEBUG_PRINT("WARP Start from %d to %d\n", msg.start, msg.start + msg.count);
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
         if (i < msg.count) {
             lanes.set(i);
@@ -48,25 +49,25 @@ void warp::setup(message msg) {
             m_reg->write_ireg(i, uint64_t(reg::s0), 0);
             m_reg->write_ireg(i, uint64_t(reg::ra), 0);
 
-            printf("[SP][WARP0.%d] setup sp: 0x%lx\n", i, msg.shader.stack_pointer + 0x1000 * i);
+            RVGPU_DEBUG_PRINT("[SP][WARP0.%d] setup sp: 0x%lx\n", i, msg.shader.stack_pointer + 0x1000 * i);
             m_reg->write_ireg(i, uint64_t(reg::sp), msg.shader.stack_pointer + 0x1000 * i);
 
-            printf("[SP][WARP0.%d] setup a0(tid): 0x%x\n", i, msg.start + i);
+            RVGPU_DEBUG_PRINT("[SP][WARP0.%d] setup a0(tid): 0x%x\n", i, msg.start + i);
             m_reg->write_ireg(i, uint64_t(reg::a0), msg.start + i);
             for (uint32_t argi=1; argi<msg.shader.argsize; argi++) {
-                printf("[SP][WARP0.%d] setup a%d(arg[%d]): 0x%lx\n", i, argi, argi, msg.shader.args[argi]);
+                RVGPU_DEBUG_PRINT("[SP][WARP0.%d] setup a%d(arg[%d]): 0x%lx\n", i, argi, argi, msg.shader.args[argi]);
                 m_reg->write_ireg(i, uint64_t(reg::a0) + argi, msg.shader.args[argi]);
             }
         }
     }
 
-    printf("[SP][WARP0] setup lanes: %lx\n", lanes.to_ulong());
-    printf("[SP][WARP0] setup stops: %lx\n", stops.to_ulong());
+    RVGPU_DEBUG_PRINT("[SP][WARP0] setup lanes: %lx\n", lanes.to_ulong());
+    RVGPU_DEBUG_PRINT("[SP][WARP0] setup stops: %lx\n", stops.to_ulong());
 }
 
 inst_issue warp::schedule() {
     uint32_t instcode = *((uint32_t *)pc);
-    printf("Fetch inst: [%lx (0x%lx)] 0x%08x\n", (uint64_t(pc) - uint64_t(startpc)), pc, instcode);
+    RVGPU_DEBUG_PRINT("Fetch inst: [%lx (0x%lx)] 0x%08x\n", (uint64_t(pc) - uint64_t(startpc)), pc, instcode);
     inst_issue to_issue = m_dec->decode_inst(instcode);
     to_issue.lanes = lanes.to_ulong();
 
@@ -173,7 +174,7 @@ uint64_t warp::branch(inst_issue inst, uint32_t tid) {
             } else {
                 retpc = pc + 4;
             }
-            printf("[EXEC.BRANCH.BEQ] jump to %lx, if (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BEQ] jump to %lx, if (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BGE: {
@@ -182,7 +183,7 @@ uint64_t warp::branch(inst_issue inst, uint32_t tid) {
             } else {
                 retpc = pc + 4;
             }
-            printf("[EXEC.BRANCH.BGE] jump to %lx, if (%ld >= %ld)\n", retpc, inst.rs1, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BGE] jump to %lx, if (%ld >= %ld)\n", retpc, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BGEU: {
@@ -191,7 +192,7 @@ uint64_t warp::branch(inst_issue inst, uint32_t tid) {
             } else {
                 retpc = pc + 4;
             }
-            printf("[EXEC.BRANCH.BGEU] jump to %lx, if (%lx >= %lx)\n", retpc, inst.rs1, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BGEU] jump to %lx, if (%lx >= %lx)\n", retpc, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BLTU: {
@@ -200,7 +201,7 @@ uint64_t warp::branch(inst_issue inst, uint32_t tid) {
             } else {
                 retpc = pc + 4;
             }
-            printf("[EXEC.BRANCH.BLTU] jump to %lx, if (%lx < %lx)\n", retpc, inst.rs1, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BLTU] jump to %lx, if (%lx < %lx)\n", retpc, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BNE: {
@@ -209,23 +210,23 @@ uint64_t warp::branch(inst_issue inst, uint32_t tid) {
             } else {
                 retpc = pc + 4;
             }
-            printf("[EXEC.BRANCH.BNE] jump to %lx, if (%lx != %lx)\n", retpc, inst.rs1, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BNE] jump to %lx, if (%lx != %lx)\n", retpc, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_JAL: {
             m_reg->write_ireg(tid, inst.rd, pc + 4);
             retpc = (pc + inst.uj_imm);
-            printf("[EXEC.BRANCH.JAL] jump to %lx\n", retpc);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JAL] jump to %lx\n", retpc);
             break;
         }
         case encoding::INST_BRANCH_JALR: {
             m_reg->write_ireg(tid, inst.rd, pc + 4);
             retpc = (inst.rs1 + inst.i_imm) & ~(uint64_t)(1);
-            printf("[EXEC.BRANCH.JALR] jump to %lx\n", retpc);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JALR] jump to %lx\n", retpc);
             break;
         }
         default:
-            printf("BRANCH INST TODO!\n");
+            RVGPU_ERROR_PRINT("BRANCH INST TODO!\n");
             break;
     }
 

@@ -63,11 +63,10 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
             break;
         }
         case encoding::INST_TYPE_NOP: {
-            printf("Instruction NOP\n");
             break;
         }
         default:
-            printf("Instruction ERROR\n");
+            RVGPU_ERROR_PRINT("Instruction ERROR\n");
             break;
     }
 }

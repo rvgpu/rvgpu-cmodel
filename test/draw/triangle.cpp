@@ -22,7 +22,6 @@ TEST_F(GPUExecuator, triangle) {
     PushParam((uint64_t)vp);
     run1d(count);
 
-    printf("FRAGMENT SHADER\n");
     LoadELF("fragment_shader_vt14");
     char *fb = (char *)malloc(800 * 600 * 4);
     char *testfb = (char *)malloc(800 * 600 * 4);

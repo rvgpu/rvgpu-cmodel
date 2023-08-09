@@ -23,6 +23,7 @@
 
 #pragma once
 
+#include "common/debug.hpp"
 #include "encoding.hpp"
 #include "inst_issue.hpp"
 

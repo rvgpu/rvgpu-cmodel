@@ -16,4 +16,6 @@
 #define WARP_THREAD_N_LOG2          4
 #define WARP_THREAD_N_MASK          0xF
 
+#define RVGPU_DEBUG                 0
+
 #endif

@@ -24,6 +24,7 @@
 #include <cstdio>
 
 #include "common/utils.hpp"
+#include "common/debug.hpp"
 #include "load_store.hpp"
 #include "encoding.hpp"
 
@@ -38,58 +39,58 @@ uint64_t load_store::run(inst_issue inst, uint32_t tid) {
     switch (inst.code) {
         case encoding::INST_LS_FSW: {
             uint64_t addr = inst.rs1 + inst.s_imm;
-            printf("[EXEC.LS.FSW] store.i32: mem[0x%lx] = 0x%lx (%f)\n", addr, inst.frs2, utils::reg2f(inst.frs2));
+            RVGPU_DEBUG_PRINT("[EXEC.LS.FSW] store.i32: mem[0x%lx] = 0x%lx (%f)\n", addr, inst.frs2, utils::reg2f(inst.frs2));
             *((uint32_t *)addr) = (uint32_t)inst.frs2;
             break;
         }
         case encoding::INST_LS_FLW: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint32_t data = *((uint32_t *)addr);
-            printf("[EXEC.LS.FLW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.FLW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             m_reg->write_freg(tid, inst.rd, data);
             break;
         }
         case encoding::INST_LS_SB: {
             uint64_t addr = inst.rs1 + inst.s_imm;
-            printf("[EXEC.LS.SB] store.i8: mem[0x%lx] = 0x%x\n", addr, (uint32_t)inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.SB] store.i8: mem[0x%lx] = 0x%x\n", addr, (uint32_t)inst.rs2);
             *((int8_t *)addr) = (int8_t)inst.rs2;
             break;
         }
         case encoding::INST_LS_SW: {
             uint64_t addr = inst.rs1 + inst.s_imm;
-            printf("[EXEC.LS.SW] store.i32: mem[0x%lx] = 0x%x\n", addr, (uint32_t)inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.SW] store.i32: mem[0x%lx] = 0x%x\n", addr, (uint32_t)inst.rs2);
             *((int32_t *)addr) = (int32_t)inst.rs2;
             break;
         }
         case encoding::INST_LS_SD: {
             uint64_t addr = inst.rs1 + inst.s_imm;
-            printf("[EXEC.LS.SD] store.i64: mem[0x%lx] = 0x%lx\n", addr, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.SD] store.i64: mem[0x%lx] = 0x%lx\n", addr, inst.rs2);
             *((int64_t *)addr) = (int64_t)inst.rs2;
             break;
         }
         case encoding::INST_LS_LW: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int32_t data = *((int32_t *)addr);
-            printf("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             m_reg->write_ireg(tid, inst.rd, uint64_t(data));
             break;
         }
         case encoding::INST_LS_LWU: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint32_t data = *((uint32_t *)addr);
-            printf("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             m_reg->write_ireg(tid, inst.rd, uint64_t(data));
             break;
         }
         case encoding::INST_LS_LD: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int64_t data = *((int64_t *)addr);
-            printf("[EXEC.LS.LD] load.i64: r[%ld] 0x%lx from mem[0x%lx]\n", inst.rd, data, addr);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.LD] load.i64: r[%ld] 0x%lx from mem[0x%lx]\n", inst.rd, data, addr);
             m_reg->write_ireg(tid, inst.rd, uint64_t(data));
             break;
         }
         default:
-            printf("error code of load store\n");
+            RVGPU_ERROR_PRINT("error code of load store\n");
             break;
     }
 
