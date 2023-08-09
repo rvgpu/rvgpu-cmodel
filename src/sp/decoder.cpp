@@ -43,6 +43,7 @@ std::vector<struct instlist> insts = {
         DECLARE_INSN_ALU(ADDW),
         DECLARE_INSN_ALU(LUI),
         DECLARE_INSN_ALU(MUL),
+        DECLARE_INSN_ALU(MULH),
         DECLARE_INSN_ALU(MULW),        
         DECLARE_INSN_ALU(SLTU),
         DECLARE_INSN_ALU(SLLIW),

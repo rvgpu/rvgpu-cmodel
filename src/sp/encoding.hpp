@@ -77,6 +77,8 @@ namespace encoding {
 #define MASK_MUL 0xfe00707f
 #define MATCH_MULW 0x0200003b
 #define MASK_MULW 0xfe00707f
+#define MATCH_MULH 0x2001033
+#define MASK_MULH 0xfe00707f
 #define MATCH_SW 0x2023
 #define MASK_SW 0x707f
 #define MATCH_SLTU 0x3033
@@ -117,6 +119,7 @@ typedef enum {
     INST_ALU_LUI,
     INST_ALU_MUL,
     INST_ALU_MULW,
+    INST_ALU_MULH,
     INST_ALU_SLTU,
     INST_ALU_SLLIW,
     INST_ALU_SLLI,

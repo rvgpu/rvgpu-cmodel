@@ -42,6 +42,7 @@ private:
     uint64_t addw();
     uint64_t lui();
     uint64_t mulw();
+    uint64_t mulh();
     uint64_t mul();
     uint64_t sltu();
     uint64_t slliw();
@@ -54,4 +55,6 @@ private:
     uint64_t ori();
     uint64_t xori();
     uint64_t OR();
+
+    uint64_t util_mulhu(uint64_t a, uint64_t b);
 };

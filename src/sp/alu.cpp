@@ -25,6 +25,26 @@
 
 #include "alu.hpp"
 
+uint64_t alu::util_mulhu(uint64_t a, uint64_t b)
+{
+    uint64_t t;
+    uint32_t y1, y2, y3;
+    uint64_t a0 = (uint32_t)a, a1 = a >> 32;
+    uint64_t b0 = (uint32_t)b, b1 = b >> 32;
+
+    t = a1*b0 + ((a0*b0) >> 32);
+    y1 = t;
+    y2 = t >> 32;
+
+    t = a0*b1 + y1;
+
+    t = a1*b1 + y2 + (t >> 32);
+    y2 = t;
+    y3 = t >> 32;
+
+    return ((uint64_t)y3 << 32) | y2;
+}
+
 alu::alu(uint32_t id) {
     m_id = id;
 }
@@ -54,6 +74,9 @@ uint64_t alu::run(inst_issue instruction) {
             break;
         case encoding::INST_ALU_MULW:
             ret = mulw();
+            break;
+        case encoding::INST_ALU_MULH:
+            ret = mulh();
             break;
         case encoding::INST_ALU_SLTU:
             ret = sltu();
@@ -146,6 +169,18 @@ uint64_t alu::mulw() {
     printf("[ALU.%d][MULW] r[%ld](0x%lx) = 0x%x * %d\n", m_id, inst.rd, ret, rs1, rs2);
     return ret;
 }
+
+uint64_t alu::mulh() {
+    int64_t ret = 0;
+    int64_t a = inst.rs1;
+    int64_t b = inst.rs2;
+    int negate = (a < 0) != (b < 0);
+    uint64_t res = util_mulhu(a < 0 ? -a : a, b < 0 ? -b : b);
+    ret =  negate ? ~res + (a * b == 0) : res;
+    printf("[ALU.%d][MULH] r[%ld](0x%lx) = 0x%ld * %ld\n", m_id, inst.rd, ret, inst.rs1, inst.rs2);
+    return ret;
+}
+
 uint64_t alu::sltu() {
     int64_t ret = 0;
     uint64_t rs1 = inst.rs1;
