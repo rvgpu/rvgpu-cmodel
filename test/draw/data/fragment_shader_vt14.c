@@ -1,25 +1,9 @@
 #define WIDTH 800
 
-typedef struct {
-    unsigned long in_position;
-    unsigned long in_color;
-    unsigned long out_color_buffer;
-} io;
-
-long gpumain(uint32_t x, uint32_t y, float *in_position, uint32_t v0, uint32_t v1, uint32_t v2)
+long gpumain(long pixel, float *in_position, float *in_color, float *out_color_buffer, int v0_id, int v1_id, int v2_id)
 {
-    /* Global Pointer */
-    io *desc = (io *)layout;
-
-    float *in_position = (float *)desc->in_position;
-    float *in_color = (float *)desc->in_color;
-    unsigned char *out_color_buffer = (unsigned char *)desc->out_color_buffer;
-
     unsigned int pixel_x = (unsigned int)(pixel & ((1L << 32) - 1));
     unsigned int pixel_y = (unsigned int)(pixel >> 32);
-    unsigned int v0_id = (unsigned int)(v01 & ((1L << 32) - 1));
-    unsigned int v1_id = (unsigned int)(v01 >> 32);
-    unsigned int v2_id = (unsigned int)(v2 & ((1L << 32) - 1));
 
     float v0_x = in_position[v0_id * 7 + 0];
     float v0_y = in_position[v0_id * 7 + 1];
