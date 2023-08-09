@@ -1,9 +1,4 @@
-#include <gtest/gtest.h>
-#include <bit>
-#include "sm/compute_unit.h"
 #include "ut_fpu.hpp"
-
-#include "common/softfloat_types.h"
 
 TEST_F(ut_fpu, decode_and_execute_rv64if_fmul_s) {
     // 0x10b6f6d3 : fmul.s fa3, fa3, fa1

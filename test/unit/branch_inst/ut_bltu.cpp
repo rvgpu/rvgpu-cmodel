@@ -1,5 +1,3 @@
-#include <gtest/gtest.h>
-#include "sm/compute_unit.h"
 #include "ut_branch.hpp"
 
 #define CHECK_BRANCH(rs1, s1, rs2, s2) do { \

@@ -1,9 +1,4 @@
-#include <gtest/gtest.h>
-#include <bit>
-#include "sm/compute_unit.h"
 #include "ut_loadstore.hpp"
-
-#include "common/softfloat_types.h"
 
 TEST_F(ut_loadstore, decode_and_execute_rv64if_fsw) {
     // 0x00052a27: 27 2a 05 00   fsw ft0, 20(a0)

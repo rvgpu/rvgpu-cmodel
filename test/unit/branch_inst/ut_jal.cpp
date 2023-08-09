@@ -1,5 +1,3 @@
-#include <gtest/gtest.h>
-#include "sm/compute_unit.h"
 #include "ut_branch.hpp"
 
 TEST_F(ut_branch, decode_and_execute_rv64i_pseudo_j) {

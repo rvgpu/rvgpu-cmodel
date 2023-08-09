@@ -1,6 +1,3 @@
-#include <gtest/gtest.h>
-#include <bit>
-#include "sm/compute_unit.h"
 #include "ut_fpu.hpp"
 
 TEST_F(ut_fpu, decode_and_execute_rv64if_fadd_s) {
