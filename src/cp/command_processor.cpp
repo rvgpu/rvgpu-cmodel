@@ -21,9 +21,8 @@
  * IN THE SOFTWARE.
  */
 
-#include "common/message.h"
-#include "common/configs.h"
 #include "command_processor.h"
+#include "common/debug.hpp"
 
 command_processor::command_processor() {
 }
@@ -38,7 +37,7 @@ void command_processor::run(uint64_t cmds, std::vector<message> &msg) {
             // command_split_2d(cs, msg);
             break;
         default:
-            printf("COMMAND TYPE TODO\n");
+            RVGPU_ERROR_PRINT("COMMAND TYPE TODO\n");
             break;
     }
 }

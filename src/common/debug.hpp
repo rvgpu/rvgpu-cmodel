@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdio>
+
 #include "common/configs.h"
 
 #if RVGPU_DEBUG

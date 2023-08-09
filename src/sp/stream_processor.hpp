@@ -23,7 +23,6 @@
 
 #pragma once
 
-#include "common/message.h"
 #include "common/command_stream.h"
 
 #include "warp.hpp"

@@ -28,11 +28,9 @@
 #include <cstdio>
 #include <vector>
 
-#include "common/message.h"
 
 #include "decoder.h"
 #include "mmu.h"
-#include "common/inst_constant.h"
 #include "decode_macros.h"
 #include "isa_parser.h"
 

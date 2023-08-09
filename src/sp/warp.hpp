@@ -27,7 +27,6 @@
 #include <bitset>
 #include <stack>
 
-#include "common/message.h"
 #include "common/command_stream.h"
 #include "common/configs.h"
 #include "inst_issue.hpp"

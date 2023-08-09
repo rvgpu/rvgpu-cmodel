@@ -23,10 +23,8 @@
 
 #pragma once
 
-#include "common/message.h"
 #include "common/command_stream.h"
 #include "sp/stream_processor.hpp"
-#include "compute_unit.h"
 
 class sm {
 public:

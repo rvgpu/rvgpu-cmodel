@@ -23,8 +23,9 @@
 
 #pragma once
 
+#include <vector>
+
 #include "common/command_stream.h"
-#include "sm/compute_unit.h"
 
 class rvgpu;
 

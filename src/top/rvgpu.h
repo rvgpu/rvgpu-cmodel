@@ -27,7 +27,6 @@
 
 #include "sm/stream_multiprocessor.h"
 #include "cp/command_processor.h"
-#include "common/message.h"
 
 class rvgpu {
 public:

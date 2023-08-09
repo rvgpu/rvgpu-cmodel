@@ -22,7 +22,6 @@
  */
 
 #include "common/command_stream.h"
-#include "common/message.h"
 
 #include "rvgpu.h"
 
