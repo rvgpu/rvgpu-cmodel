@@ -24,10 +24,6 @@ protected:
     }
 
 
-    void end_command() {
-
-    }
-
     void run1d (uint32_t count) {
         rvgpu_command cmd;
         cmd.type = RVGPU_COMMAND_TYPE_1D;
@@ -42,8 +38,25 @@ protected:
         commands.push_back(std::move(cmd));
 
         gpu->run((uint64_t)commands.data());
+        commands.clear();
+        params.clear();
     }
 
+    void run2d(uint32_t x, uint32_t y) {
+        rvgpu_command cmd;
+        cmd.type = RVGPU_COMMAND_TYPE_2D;
+        cmd.range = {.x= x, .y = y, .z = 0};
+        cmd.shader.pointer = pc;
+        cmd.shader.stack_pointer = stack_pointer;
+        cmd.shader.argsize = params.size();
+        for (uint32_t i=0; i<params.size(); i++) {
+            cmd.shader.args[i] = params[i];
+        }
+
+        commands.push_back(std::move(cmd));
+
+        gpu->run((uint64_t)commands.data());
+    }
 
     void PushParam(uint64_t data) {
         params.push_back(data);

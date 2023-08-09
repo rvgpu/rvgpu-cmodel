@@ -1,26 +1,26 @@
 #define WIDTH 800
 
-long gpumain(long pixel, float *in_position, float *in_color, float *out_color_buffer, int v0_id, int v1_id, int v2_id)
+long gpumain(long pixel, float *in_position, float *in_color, char *out_color_buffer, int v0_id, int v1_id, int v2_id)
 {
-    unsigned int pixel_x = (unsigned int)(pixel & ((1L << 32) - 1));
-    unsigned int pixel_y = (unsigned int)(pixel >> 32);
+    unsigned int pixel_x = pixel % 800;
+    unsigned int pixel_y = pixel / 800;
 
-    float v0_x = in_position[v0_id * 7 + 0];
-    float v0_y = in_position[v0_id * 7 + 1];
-    float v1_x = in_position[v1_id * 7 + 0];
-    float v1_y = in_position[v1_id * 7 + 1];
-    float v2_x = in_position[v2_id * 7 + 0];
-    float v2_y = in_position[v2_id * 7 + 1];
+    float v0_x = in_position[v0_id * 4 + 0];
+    float v0_y = in_position[v0_id * 4 + 1];
+    float v1_x = in_position[v1_id * 4 + 0];
+    float v1_y = in_position[v1_id * 4 + 1];
+    float v2_x = in_position[v2_id * 4 + 0];
+    float v2_y = in_position[v2_id * 4 + 1];
 
-    float v0_r = in_color[v0_id * 7 + 4];
-    float v0_g = in_color[v0_id * 7 + 5];
-    float v0_b = in_color[v0_id * 7 + 6];
-    float v1_r = in_color[v1_id * 7 + 4];
-    float v1_g = in_color[v1_id * 7 + 5];
-    float v1_b = in_color[v1_id * 7 + 6];
-    float v2_r = in_color[v2_id * 7 + 4];
-    float v2_g = in_color[v2_id * 7 + 5];
-    float v2_b = in_color[v2_id * 7 + 6];
+    float v0_r = in_color[v0_id * 3 + 0];
+    float v0_g = in_color[v0_id * 3 + 1];
+    float v0_b = in_color[v0_id * 3 + 2];
+    float v1_r = in_color[v1_id * 3 + 0];
+    float v1_g = in_color[v1_id * 3 + 1];
+    float v1_b = in_color[v1_id * 3 + 2];
+    float v2_r = in_color[v2_id * 3 + 0];
+    float v2_g = in_color[v2_id * 3 + 1];
+    float v2_b = in_color[v2_id * 3 + 2];
 
     float denominator = (v0_x * v1_y - v0_y * v1_x) + (v1_x * v2_y - v1_y * v2_x) + (v2_x * v0_y - v2_y * v0_x);
 

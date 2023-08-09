@@ -21,14 +21,12 @@ TEST_F(GPUExecuator, triangle) {
     PushParam((uint64_t)vsout_color);
     PushParam((uint64_t)vp);
     run1d(count);
-#if 0
+
+    printf("FRAGMENT SHADER\n");
     LoadELF("fragment_shader_vt14");
-    float *fb = (float *)malloc(800 * 600 * 4);
-    //long gpumain(long pixel,
-    //             float *in_position,
-    //             float *in_color,
-    //             float *out_color_buffer,
-    //             int v0_id, int v1_id, int v2_id)
+    char *fb = (char *)malloc(800 * 600 * 4);
+    char *testfb = (char *)malloc(800 * 600 * 4);
+    // long gpumain(long pixel, float *in_position, float *in_color, float *out_color_buffer, int v0_id, int v1_id, int v2_id)
     PushParam(0);
     PushParam((uint64_t)vsout_position);
     PushParam((uint64_t)vsout_color);
@@ -36,6 +34,21 @@ TEST_F(GPUExecuator, triangle) {
     PushParam(0); // v0_id
     PushParam(1); // v1_id
     PushParam(2); // v2_id
-    run1d(800 * 600);
-#endif
+    // run1d(800 * 600);
+
+    printf("PPM P3\n");
+    printf("PPM 800 600\n");
+    printf("PPM 255\n");
+    for (uint32_t i=0; i<800*600; i++) {
+        uint32_t index = i;
+        gpumain(index, vsout_position, vsout_color, testfb, 0, 1, 2);
+        // EXPECT_EQ(testfb[index * 4 + 0], fb[index * 4 + 0]);// EXPECT_EQ(testfb[index * 4 + 1], fb[index * 4 + 1]);
+        // EXPECT_EQ(testfb[index * 4 + 2], fb[index * 4 + 2]);
+        // EXPECT_EQ(testfb[index * 4 + 3], fb[index * 4 + 3]);
+        uint8_t r = fb[index * 4 + 0];
+        uint8_t g = fb[index * 4 + 1];
+        uint8_t b = fb[index * 4 + 2];
+        // uint8_t a = testfb[index + 0];
+        printf("PPM %d %d %d\n", r, g, b);
+    }
 }
