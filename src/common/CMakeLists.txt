@@ -5,6 +5,7 @@ configure_file(
 
 set(UTILS_FILES
     utils.cpp
+    softfloat.cpp
     )
 
 add_library(utils OBJECT ${UTILS_FILES})

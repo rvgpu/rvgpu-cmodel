@@ -51,7 +51,11 @@ protected:
             to_issue.frs2 = m_reg->read_freg(0, to_issue.rs2_id);
             to_issue.frs3 = m_reg->read_freg(0, to_issue.rs3_id);
             uint64_t res = m_fpu->run(to_issue);
-            m_reg->write_freg(0, to_issue.rd, res);
+            if (to_issue.rd >= 32) {
+                m_reg->write_ireg(0, to_issue.rd - 32, res);
+            } else {
+                m_reg->write_freg(0, to_issue.rd, res);
+            }
         } else {
             printf("NOT A FPU Instruction\n");
         }

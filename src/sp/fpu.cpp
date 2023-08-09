@@ -24,6 +24,7 @@
 #include <cstdio>
 
 #include "common/utils.hpp"
+#include "common/softfloat.hpp"
 #include "fpu.hpp"
 #include "encoding.hpp"
 
@@ -58,6 +59,9 @@ uint64_t fpu::run(inst_issue instruction) {
             break;
         case encoding::INST_FPU_FCVT_S_WU:
             ret = fcvt_s_wu();
+            break;
+        case encoding::INST_FPU_FLE_S:
+            ret = fle_s();
             break;
         default:
             printf("FPU Inst TODO\n");
@@ -113,5 +117,12 @@ uint64_t fpu::fcvt_s_wu() {
     float res = ui32_to_f32((uint32_t)inst.rs1);
     printf("[FPU.%d][FCVT_S_WU] r[%lx](%f) = ui32_to_f32(%lx)\n", m_id, inst.rd, res, inst.rs1);
     return f2reg(res);
+}
+
+uint64_t fpu::fle_s() {
+    uint64_t res;
+    res = f32_le(uint32_t(inst.frs1), uint32_t(inst.frs2));
+    printf("[FPU.%d][FCVT_S_WU] r[%lx](%ld) = (%f <= %f)\n", m_id, inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
+    return res;
 }
 
