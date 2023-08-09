@@ -7,6 +7,7 @@ function(rvsim_ut_ls testname)
     add_test(NAME ${testcase} COMMAND ${testcase})
 endfunction()
 
+rvsim_ut_ls(sb)
 rvsim_ut_ls(sw)
 rvsim_ut_ls(sd)
 rvsim_ut_ls(flw)

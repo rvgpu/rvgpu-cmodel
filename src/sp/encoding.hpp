@@ -85,6 +85,8 @@ namespace encoding {
 #define MASK_MULH 0xfe00707f
 #define MATCH_SW 0x2023
 #define MASK_SW 0x707f
+#define MATCH_SB 0x23
+#define MASK_SB 0x707f
 #define MATCH_SLTU 0x3033
 #define MASK_SLTU 0xfe00707f
 #define MATCH_SLLIW 0x101b
@@ -151,8 +153,9 @@ typedef enum {
     INST_LS_LD,
     INST_LS_LW,
     INST_LS_LWU,
+    INST_LS_SB,
+    INST_LS_SW,
     INST_LS_SD,
-    INST_LS_SW,    
     INST_LS_FLW,
     INST_LS_FSW,
 
