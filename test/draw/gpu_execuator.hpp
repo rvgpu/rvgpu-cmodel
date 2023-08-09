@@ -83,6 +83,27 @@ protected:
         Loader();
     }
 
+    void WritePPM(const char *fname, uint32_t w, uint32_t h, char *fb) {
+        std::string fpath;
+        fpath += fname;
+        fpath += ".ppm";
+        FILE *wf = fopen(fpath.c_str(), "w");
+        fprintf(wf, "P3\n");
+        fprintf(wf, "800 600\n");
+        fprintf(wf, "255\n");
+        for (uint32_t i=0; i<h; i++) {
+            for (uint32_t j=0; j<w; j++) {
+                uint32_t index = i * w + j;
+                uint8_t r = fb[index * 4 + 0];
+                uint8_t g = fb[index * 4 + 1];
+                uint8_t b = fb[index * 4 + 2];
+                // uint8_t a = testfb[index + 0];
+                fprintf(wf, "%d %d %d\n", r, g, b);
+            }
+        }
+
+        fclose(wf);
+    }
 private:
     bool CheckELF(Elf64_Ehdr *header) {
         // 7f 45 4c 46 02 01 01 00 00 00 00 00 00 00 00 00
