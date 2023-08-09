@@ -1,5 +1,3 @@
-#include <gtest/gtest.h>
-#include "sm/compute_unit.h"
 #include "ut_alu.hpp"
 
 #define CHECK_MUL(sr0, s0, sr1, s1, rd) do { \
