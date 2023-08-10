@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include "rvmacro.h"
 
 typedef struct {
     uint64_t lanes;

@@ -93,6 +93,9 @@ uint64_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_SRLI:
             ret = srli();
             break;
+        case encoding::INST_ALU_SRAI:
+            ret = srai();
+            break;
         case encoding::INST_ALU_SUB:
             ret = sub();
             break;
@@ -205,6 +208,13 @@ uint64_t alu::slli() {
 uint64_t alu::srli() {
     int64_t ret = 0;
     ret = (uint64_t(inst.rs1) >> (inst.i_imm & 0x3F));
+    ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
+    return ret;
+}
+
+uint64_t alu::srai() {
+    uint64_t ret = 0;
+    ret = sext_64(sext_64(inst.rs1) >> (inst.i_imm & 0x3F))
     ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
     return ret;
 }
