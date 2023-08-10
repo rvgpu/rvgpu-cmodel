@@ -1,6 +1,6 @@
-#include "ut_fpu.hpp"
+#include "ut_inst.hpp"
 
-TEST_F(ut_fpu, decode_and_execute_rv64if_fmv_w_x) {
+TEST_F(ut_inst, decode_and_execute_rv64if_fmv_w_x) {
     // 0xf0000053 : fmv.w.x ft0, zero
     insts.push_back(0xf0000053);
 

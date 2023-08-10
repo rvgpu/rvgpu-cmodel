@@ -1,6 +1,6 @@
-#include "ut_alu.hpp"
+#include "ut_inst.hpp"
 
-TEST_F(ut_alu, decode_and_execute_rv64i_slliw) {
+TEST_F(ut_inst, decode_and_execute_rv64i_slliw) {
     //bits 0x00169c1b  #slliw   s8, a3, 1
     //operate on 32-bit values and produce signed 32-bit results
     insts.push_back(0x00169c1b);

@@ -1,24 +1,26 @@
 #include <gtest/gtest.h>
 
+#include "sp/stream_processor.hpp"
 #include "common/regid.hpp"
-#include "rvcore/decoder.hpp"
-#include "rvcore/load_store.hpp"
-#include "sp/register_file.hpp"
 
 #define STACK_SIZE  2000
 
-class ut_loadstore : public ::testing::Test {
+class ut_inst : public ::testing::Test {
 protected:
     void SetUp() override {
         stack_pointer = (uint64_t)malloc(0x2000);
         stack_pointer += 0x1000;
 
         m_dec = new dec();
-        m_reg = new register_file();
+        m_alu = new alu(0);
+        m_fpu = new fpu(0);
         m_ls = new load_store();
+        m_reg = new register_file();
     }
     void TearDown() override {
         delete m_dec;
+        delete m_alu;
+        delete m_reg;
     }
 
     void SetIReg(reg id, uint64_t data) {
@@ -37,30 +39,48 @@ protected:
         return m_reg->read_freg(0, static_cast<uint32_t>(id));
     }
 
-    uint64_t GetPC() {
-        return (uint64_t)npc;
-    }
-
     uint64_t GetStackPointer() {
         return stack_pointer;
     }
 
     void ExecuateInst() {
         m_reg->write_ireg(0, static_cast<uint32_t>(reg::sp), stack_pointer);
-        m_reg->write_ireg(0, static_cast<uint32_t>(reg::zero), 0);
+
         // Run Instruction
         uint32_t instcode = insts.front();
         inst_issue to_issue = m_dec->decode_inst(instcode);
         m_reg->register_stage(0, to_issue);
-        EXPECT_EQ(to_issue.type, encoding::INST_TYPE_LS);
 
-        writeback_t res = m_ls->run(to_issue);
-        m_reg->write(0, res.rid, res.wdata);
+        writeback_t wb = {};
+        switch (to_issue.type) {
+            case encoding::INST_TYPE_ALU: {
+                wb = m_alu->run(to_issue);
+                break;
+            }
+            case encoding::INST_TYPE_FPU: {
+                wb = m_fpu->run(to_issue);
+                break;
+            }
+            case encoding::INST_TYPE_LS: {
+                wb = m_ls->run(to_issue);
+                break;
+            }
+            case encoding::INST_TYPE_NOP: {
+                break;
+            }
+            default:
+                RVGPU_ERROR_PRINT("Instruction ERROR: %x\n", to_issue.bits);
+                break;
+        }
+
+        m_reg->write(0, wb.rid, wb.wdata);
     }
 
     dec *m_dec;
-    register_file *m_reg;
+    alu *m_alu;
+    fpu *m_fpu;
     load_store *m_ls;
+    register_file *m_reg;
 
     uint64_t npc;
     std::vector<uint32_t> insts;

@@ -1,4 +1,4 @@
-#include "ut_alu.hpp"
+#include "ut_inst.hpp"
 
 #define CHECK_SUB(a, b) do {                    \
         uint64_t result = 0;                    \
@@ -9,7 +9,7 @@
         EXPECT_EQ(result, (a - b));             \
     } while(0)
 
-TEST_F(ut_alu, decode_and_execute_rv64i_add) {
+TEST_F(ut_inst, decode_and_execute_rv64i_add) {
     // 0x40b50533        sub a0, a0, a1
     insts.push_back(0x40b50533);
     auto rega = reg::a0;

@@ -1,6 +1,6 @@
-#include "ut_alu.hpp"
+#include "ut_inst.hpp"
 
-TEST_F(ut_alu, decode_and_execute_rv64im_mul) {
+TEST_F(ut_inst, decode_and_execute_rv64im_mul) {
     // 0x02a59633       mulh    a2, a1, a0
     insts.push_back(0x02a59633);
     SetIReg(reg::a1, 0x1000000000);

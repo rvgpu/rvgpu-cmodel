@@ -1,4 +1,4 @@
-#include "ut_alu.hpp"
+#include "ut_inst.hpp"
 
 #define CHECK_ADD(a, b) do {                    \
         uint64_t result = 0;                    \
@@ -9,7 +9,7 @@
         EXPECT_EQ(result, (a + b));             \
     } while(0)
 
-TEST_F(ut_alu, decode_and_execute_rv64i_add) {
+TEST_F(ut_inst, decode_and_execute_rv64i_add) {
     //0x00d786b3 : add a3, a5, a3
     insts.push_back(0x00d786b3);
     auto rega = reg::a5;

@@ -1,6 +1,6 @@
-#include "ut_alu.hpp"
+#include "ut_inst.hpp"
 
-TEST_F(ut_alu, decode_and_execute_rv64i_pseudo_sgtz_set_to_0) {
+TEST_F(ut_inst, decode_and_execute_rv64i_pseudo_sgtz_set_to_0) {
     //bits: 0x00a02ab3    #sgtz s5, a0
     //sgtz is pseudoinstructions inst, same as: slt rd, x0, rs2, Set if > zero
     insts.push_back(0x00a02ab3);
@@ -11,7 +11,7 @@ TEST_F(ut_alu, decode_and_execute_rv64i_pseudo_sgtz_set_to_0) {
     EXPECT_EQ(res, 0);
 }
 
-TEST_F(ut_alu, decode_and_execute_rv64i_pseudo_sgtz_set_to_1) {
+TEST_F(ut_inst, decode_and_execute_rv64i_pseudo_sgtz_set_to_1) {
     //bits: 0x00a02ab3    #sgtz s5, a0
     //sgtz is pseudoinstructions inst, same as: slt rd, x0, rs, Set if > zero
     insts.push_back(0x00a02ab3);

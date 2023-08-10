@@ -1,6 +1,6 @@
-#include "ut_alu.hpp"
+#include "ut_inst.hpp"
 
-TEST_F(ut_alu, decode_and_execute_rv64i_pseudo_snez_set_to_1) {
+TEST_F(ut_inst, decode_and_execute_rv64i_pseudo_snez_set_to_1) {
     // snez: 0xa03533; # snez    a0, a0
     // SNEZ rd, rs;  says: rs != 0 ? write 1 to rd : write 0 to rd;  which is assembler pseudoinstruction
     // is same with SLTU rd, x0, rs2 ; SLTU perform unsigned compares respectively,
@@ -16,7 +16,7 @@ TEST_F(ut_alu, decode_and_execute_rv64i_pseudo_snez_set_to_1) {
     EXPECT_EQ(result, 1);
 }
 
-TEST_F(ut_alu, decode_and_execute_rv64i_pseudo_snez_set_to_0) {
+TEST_F(ut_inst, decode_and_execute_rv64i_pseudo_snez_set_to_0) {
     // snez: 0xa03533; # snez a0, a0
     insts.push_back(0xa03533);
     auto rega = reg::a0;

@@ -1,6 +1,6 @@
-#include "ut_loadstore.hpp"
+#include "ut_inst.hpp"
 
-TEST_F(ut_loadstore, decode_and_execute_rv64i_sw){
+TEST_F(ut_inst, decode_and_execute_rv64i_sw){
     // 0x00a58023       sb  a0, 0(a1)
     insts.push_back(0x00a58023);
     auto sp = (uint64_t)malloc(32);

@@ -1,6 +1,6 @@
-#include "ut_fpu.hpp"
+#include "ut_inst.hpp"
 
-TEST_F(ut_fpu, decode_and_execute_rv64if_fadd_s) {
+TEST_F(ut_inst, decode_and_execute_rv64if_fadd_s) {
     // 0x00107053 : fadd.s f0, f0, f1
     insts.push_back(0x00107053);
 
