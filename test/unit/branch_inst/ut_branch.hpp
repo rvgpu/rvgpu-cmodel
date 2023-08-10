@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "common/regid.hpp"
-#include "sp/warp.hpp"
+#include "simt/warp.hpp"
 
 #define STACK_SIZE  2000
 

@@ -24,12 +24,13 @@
 #include <cstdio>
 #include "common/command_stream.h"
 #include "stream_multiprocessor.h"
+#include "simt/simt.hpp"
 
 sm::sm() {
-    m_sp = new stream_processor();
+    m_simt = new simt();
 }
 
 void sm::run(message msg) {
-    m_sp->setup(msg);
-    m_sp->run();
+    m_simt->setup(msg);
+    m_simt->run();
 }

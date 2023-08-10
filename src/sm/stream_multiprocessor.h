@@ -24,7 +24,7 @@
 #pragma once
 
 #include "common/command_stream.h"
-#include "sp/stream_processor.hpp"
+#include "simt/simt.hpp"
 
 class sm {
 public:
@@ -32,5 +32,5 @@ public:
     void run(message msg);
 
 private:
-    stream_processor *m_sp;
+    simt *m_simt;
 };

@@ -24,10 +24,10 @@
 #include <cstdio>
 
 #include "common/utils.hpp"
-#include "stream_processor.hpp"
+#include "simt.hpp"
 #include "rvcore/encoding.hpp"
 
-stream_processor::stream_processor() {
+simt::simt() {
     m_reg = new register_file();
     m_warp = new warp(m_reg);
     m_ls = new load_store();
@@ -37,11 +37,11 @@ stream_processor::stream_processor() {
     }
 }
 
-void stream_processor::setup(message msg) {
+void simt::setup(message msg) {
     m_warp->setup(msg);
 }
 
-void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
+void simt::issue_single(inst_issue to_issue, uint32_t tid) {
     writeback_t wb = {};
     switch (to_issue.type) {
         case encoding::INST_TYPE_ALU: {
@@ -67,7 +67,7 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
     m_reg->write(tid, wb.rid, wb.wdata);
 }
 
-void stream_processor::issue(inst_issue to_issue) {
+void simt::issue(inst_issue to_issue) {
     FOREACH_WARP_THREAD {
         if (to_issue.lanes & (1 << thread)) {
             m_reg->register_stage(thread, to_issue);
@@ -76,7 +76,7 @@ void stream_processor::issue(inst_issue to_issue) {
     }
 }
 
-void stream_processor::run() {
+void simt::run() {
     while (!m_warp->stop()) {
         inst_issue to_issue = m_warp->schedule();
 

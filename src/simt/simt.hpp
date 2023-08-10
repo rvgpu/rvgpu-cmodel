@@ -32,11 +32,10 @@
 #include "rvcore/load_store.hpp"
 #include "rvcore/decoder.hpp"
 
-// Stream Processor: A simt-x processor
-
-class stream_processor {
+// A simt-x processor
+class simt {
 public:
-    stream_processor();
+    simt();
     void setup(message msg);
     void run();
 

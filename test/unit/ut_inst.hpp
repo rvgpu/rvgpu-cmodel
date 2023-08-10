@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "sp/stream_processor.hpp"
+#include "simt/simt.hpp"
 #include "common/regid.hpp"
 
 #define STACK_SIZE  2000
