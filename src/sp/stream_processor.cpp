@@ -42,21 +42,18 @@ void stream_processor::setup(message msg) {
 }
 
 void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
-    writeback_t wb;
+    writeback_t wb = {};
     switch (to_issue.type) {
         case encoding::INST_TYPE_ALU: {
             wb = m_alu[tid]->run(to_issue);
-            m_reg->write(tid, wb.rid, wb.wdata);
             break;
         }
         case encoding::INST_TYPE_FPU: {
             wb = m_fpu[tid]->run(to_issue);
-            m_reg->write(tid, wb.rid, wb.wdata);
             break;
         }
         case encoding::INST_TYPE_LS: {
             wb = m_ls->run(to_issue);
-            m_reg->write(tid, wb.rid, wb.wdata);
             break;
         }
         case encoding::INST_TYPE_NOP: {
@@ -66,6 +63,8 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
             RVGPU_ERROR_PRINT("Instruction ERROR: %x\n", to_issue.bits);
             break;
     }
+
+    m_reg->write(tid, wb.rid, wb.wdata);
 }
 
 void stream_processor::issue(inst_issue to_issue) {
