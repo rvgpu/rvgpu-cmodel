@@ -123,61 +123,51 @@ writeback_t alu::run(inst_issue instruction) {
 }
 
 writeback_t alu::add() {
-    int64_t ret = inst.rs1 + inst.rs2;
-    ALU_INFO("[ADD] r[%ld](0x%lx) = 0x%lx + %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = sext_xlen(inst.rs1 + inst.rs2);
+    ALU_INFO("[ADD] r[%ld](0x%lx) = 0x%lx + %ld\n", inst.rd, res, inst.rs1, inst.rs2);
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::addi() {
-    uint64_t ret  = 0;
-    ret = inst.rs1 + inst.i_imm;
-    ALU_INFO("[ADDI] r[%ld](0x%lx) = 0x%lx + %ld\n", inst.rd, ret, inst.rs1, inst.i_imm);
-
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = sext_xlen(inst.rs1 + inst.i_imm);
+    ALU_INFO("[ADDI] r[%ld](0x%lx) = 0x%lx + %ld\n", inst.rd, res, inst.rs1, inst.i_imm);
+    return writeback_t {inst.rd, res};
 }
+
 writeback_t alu::addiw() {
-    int64_t ret = 0;
-    int32_t rs1 = inst.rs1;
-    int32_t imm = inst.i_imm;
-    ret = rs1 + imm;
-    ALU_INFO("[ADDIW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, ret, rs1, imm);
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = sext32(inst.i_imm + inst.rs1);
+    ALU_INFO("[ADDIW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, res, rs1, imm);
+    return writeback_t {inst.rd, res};
 }
 writeback_t alu::addw() {
-    int64_t ret = 0;
-    int32_t rs1 = inst.rs1;
-    int32_t rs2 = inst.rs2;
-    ret = rs1 + rs2;
-    ALU_INFO("[ADDW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, ret, rs1, rs2);
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = sext32(inst.rs1 + inst.rs2);
+    ALU_INFO("[ADDW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, res, rs1, rs2);
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::lui() {
-    uint64_t ret = inst.u_imm;
-    ALU_INFO("[LUI] r[%ld](0x%lx) = 0x%lx\n", inst.rd, ret, inst.u_imm);
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = inst.u_imm;
+    ALU_INFO("[LUI] r[%ld](0x%lx) = 0x%lx\n", inst.rd, res, inst.u_imm);
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::mul() {
-    int64_t ret = 0;
-    ret = int64_t(inst.rs1 * inst.rs2);
-    ALU_INFO("[MUL] r[%ld](0x%lx) = 0x%lx * %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = sext_xlen(inst.rs1 * inst.rs2);
+    ALU_INFO("[MUL] r[%ld](0x%lx) = 0x%lx * %ld\n", inst.rd, res, inst.rs1, inst.rs2);
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::mulw() {
-    int64_t ret = 0;
-    int32_t rs1 = inst.rs1;
-    int32_t rs2 = inst.rs2;
-    ret = int64_t(rs1 * rs2);
-    ALU_INFO("[MULW] r[%ld](0x%lx) = 0x%x * %d\n", inst.rd, ret, rs1, rs2);
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = sext32(inst.rs1 * inst.rs2);
+    ALU_INFO("[MULW] r[%ld](0x%lx) = 0x%x * %d\n", inst.rd, res, rs1, rs2);
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::mulh() {
     int64_t ret = 0;
     int64_t a = inst.rs1;
     int64_t b = inst.rs2;
+
     int negate = (a < 0) != (b < 0);
     uint64_t res = util_mulhu(a < 0 ? -a : a, b < 0 ? -b : b);
     ret =  negate ? ~res + (a * b == 0) : res;
@@ -186,87 +176,73 @@ writeback_t alu::mulh() {
 }
 
 writeback_t alu::sltu() {
-    int64_t ret = 0;
-    uint64_t rs1 = inst.rs1;
-    uint64_t rs2 = inst.rs2;
-    ret = (rs1 < rs2) ? 1 : 0;
-    ALU_INFO("[SLTU] r[%ld](0x%lx) = (0x%lx < 0x%lx) ? 1 : 0\n", inst.rd, ret, rs1, rs2);
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = (inst.rs1 < inst.rs2);
+    ALU_INFO("[SLTU] r[%ld](0x%lx) = (0x%lx < 0x%lx) ? 1 : 0\n", inst.rd, res, rs1, rs2);
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::slliw() {
-    uint64_t ret = 0;
-    ret = int32_t(inst.rs1 << (inst.i_imm & 0x3F));
-    ALU_INFO("[SLLIW] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = sext32(inst.rs1 << SHAMT)
+    ALU_INFO("[SLLIW] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, res, inst.rs1, (inst.i_imm & 0x3F));
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::slli() {
-    int64_t ret = 0;
-    ret = (inst.rs1 << (inst.i_imm & 0x3F));
-    ALU_INFO("[SLLI] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = sext_xlen(inst.rs1 << SHAMT);
+    ALU_INFO("[SLLI] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, res, inst.rs1, (inst.i_imm & 0x3F));
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::srli() {
-    int64_t ret = 0;
-    ret = (uint64_t(inst.rs1) >> (inst.i_imm & 0x3F));
-    ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = sext_xlen(zext_xlen(inst.rs1) >> SHAMT);
+    ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, (inst.i_imm & 0x3F));
+    return writeback_t {inst.rd, uint64_t(res)};
 }
 
 writeback_t alu::srai() {
-    uint64_t ret = 0;
-    ret = sext_64(sext_64(inst.rs1) >> (inst.i_imm & 0x3F))
-    ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, ret, inst.rs1, (inst.i_imm & 0x3F));
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = sext_xlen(sext_xlen(inst.rs1) >> SHAMT)
+    ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, (inst.i_imm & 0x3F));
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::slt() {
-    int64_t ret = 0;
-    ret = int64_t(inst.rs1) < int64_t(inst.rs2);
-    ALU_INFO("[SLT] r[%ld](0x%lx) = 0x%lx < %ld\n", inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = (sreg_t(inst.rs1) < sreg_t(inst.rs2));
+    ALU_INFO("[SLT] r[%ld](0x%lx) = 0x%lx < %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::sub() {
-    int64_t ret = 0;
-    ret = int64_t(inst.rs1 - inst.rs2);
-    ALU_INFO("[SUB] r[%ld](0x%lx) = 0x%lx - %ld\n", inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = (sext_xlen(inst.rs1 - inst.rs2));
+    ALU_INFO("[SUB] r[%ld](0x%lx) = 0x%lx - %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::subw() {
-    int64_t ret = 0;
-    ret = int64_t(int32_t(inst.rs1 - inst.rs2));
-    ALU_INFO("[SUBW] r[%ld](0x%lx) = 0x%lx - %ld\n", inst.rd, ret, int64_t(inst.rs1), int64_t(inst.rs2));
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = (sext32(inst.rs1 - inst.rs2));
+    ALU_INFO("[SUBW] r[%ld](0x%lx) = 0x%lx - %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::andi() {
-    uint64_t ret = 0;
-    ret = inst.i_imm & inst.rs1;
-    ALU_INFO("[ANDI] r[%ld](0x%lx) = 0x%lx & %ld\n", inst.rd, ret, inst.i_imm, inst.rs1);
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = (inst.i_imm & inst.rs1);
+    ALU_INFO("[ANDI] r[%ld](0x%lx) = 0x%lx & %ld\n", inst.rd, res, inst.i_imm, inst.rs1);
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::ori() {
-    uint64_t ret = 0;
-    ret = inst.i_imm | inst.rs1;
-    ALU_INFO("[ORI] r[%ld](0x%lx) = 0x%lx | %ld\n", inst.rd, ret, inst.i_imm, inst.rs1);
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = (inst.i_imm | inst.rs1);
+    ALU_INFO("[ORI] r[%ld](0x%lx) = 0x%lx | %ld\n", inst.rd, res, inst.i_imm, inst.rs1);
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::xori() {
-    uint64_t ret = 0;
-    ret = inst.i_imm ^ inst.rs1;
-    ALU_INFO("[XORI] r[%ld](0x%lx) = 0x%lx ^ %ld\n", inst.rd, ret, inst.i_imm, inst.rs1);
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = (inst.i_imm ^ inst.rs1);
+    ALU_INFO("[XORI] r[%ld](0x%lx) = 0x%lx ^ %ld\n", inst.rd, res, inst.i_imm, inst.rs1);
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::OR() {
-    uint64_t ret = 0;
-    ret = inst.rs1 | inst.rs2;
-    ALU_INFO("[OR] r[%ld](0x%lx) = 0x%lx | %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
-    return writeback_t {inst.rd, uint64_t(ret)};
+    uint64_t res = (inst.rs1 | inst.rs2);
+    ALU_INFO("[OR] r[%ld](0x%lx) = 0x%lx | %ld\n", inst.rd, res, inst.rs1, inst.rs2);
+    return writeback_t {inst.rd, res};
 }
