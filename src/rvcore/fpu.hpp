@@ -31,21 +31,21 @@ class fpu {
 public:
     fpu(uint32_t id);
 
-    uint64_t run(inst_issue instruction);
+    writeback_t run(inst_issue instruction);
 private:
     uint32_t m_id;
     inst_issue inst;
 
     int32_t getrm();
 
-    uint64_t fadd_s();
-    uint64_t fmul_s();
-    uint64_t fdiv_s();
-    uint64_t fmadd_s();
-    uint64_t fmsub_s();
-    uint64_t fsub_s();
-    uint64_t fcvt_s_wu();
-    uint64_t fcvt_lu_s();
-    uint64_t fle_s();
-    uint64_t fmv_w_x();
+    writeback_t fadd_s();
+    writeback_t fmul_s();
+    writeback_t fdiv_s();
+    writeback_t fmadd_s();
+    writeback_t fmsub_s();
+    writeback_t fsub_s();
+    writeback_t fcvt_s_wu();
+    writeback_t fcvt_lu_s();
+    writeback_t fle_s();
+    writeback_t fmv_w_x();
 };

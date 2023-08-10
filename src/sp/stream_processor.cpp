@@ -43,6 +43,7 @@ void stream_processor::setup(message msg) {
 
 void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
     uint64_t result;
+    writeback_t wb;
     switch (to_issue.type) {
         case encoding::INST_TYPE_ALU: {
             result = m_alu[tid]->run(to_issue);
@@ -50,11 +51,11 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
             break;
         }
         case encoding::INST_TYPE_FPU: {
-            result = m_fpu[tid]->run(to_issue);
-            if (to_issue.rd >= 32) {
-                m_reg->write_ireg(tid, to_issue.rd - 32, result);
+            wb = m_fpu[tid]->run(to_issue);
+            if (wb.rid >= 32) {
+                m_reg->write_ireg(tid, to_issue.rd - 32, wb.wdata);
             } else {
-                m_reg->write_freg(tid, to_issue.rd, result);
+                m_reg->write_freg(tid, to_issue.rd, wb.wdata);
             }
             break;
         }

@@ -31,3 +31,8 @@ typedef struct {
     int64_t uj_imm;
     uint64_t rm;
 } inst_issue;
+
+typedef struct {
+    uint64_t rid;
+    uint64_t wdata;
+} writeback_t;
