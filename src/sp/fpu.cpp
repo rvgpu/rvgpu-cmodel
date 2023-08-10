@@ -25,7 +25,7 @@
 
 #include "common/debug.hpp"
 #include "common/utils.hpp"
-#include "common/softfloat.hpp"
+#include "softfloat/softfloat.hpp"
 #include "fpu.hpp"
 #include "encoding.hpp"
 
