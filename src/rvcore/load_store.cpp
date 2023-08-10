@@ -54,6 +54,12 @@ writeback_t load_store::run(inst_issue inst) {
             *((int8_t *)addr) = (int8_t)inst.rs2;
             break;
         }
+        case encoding::INST_LS_SH: {
+            uint64_t addr = inst.rs1 + inst.s_imm;
+            RVGPU_DEBUG_PRINT("[EXEC.LS.SH] store.i16: mem[0x%lx] = 0x%x\n", addr, (uint32_t)inst.rs2);
+            *((uint16_t *)addr) = (uint16_t)inst.rs2;
+            break;
+        }
         case encoding::INST_LS_SW: {
             uint64_t addr = inst.rs1 + inst.s_imm;
             RVGPU_DEBUG_PRINT("[EXEC.LS.SW] store.i32: mem[0x%lx] = 0x%x\n", addr, (uint32_t)inst.rs2);
@@ -69,28 +75,28 @@ writeback_t load_store::run(inst_issue inst) {
         case encoding::INST_LS_LB: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int8_t data = *((int8_t *)addr);
-            RVGPU_DEBUG_PRINT("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.LB] load.i8: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             result = writeback_t {inst.rd, uint64_t(data)};
             break;
         }
         case encoding::INST_LS_LBU: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint8_t data = *((uint8_t *)addr);
-            RVGPU_DEBUG_PRINT("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.LBU] load.u8: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             result = writeback_t {inst.rd, uint64_t(data)};
             break;
         }
         case encoding::INST_LS_LH: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int16_t data = *((int16_t *)addr);
-            RVGPU_DEBUG_PRINT("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.LH] load.i16: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             result = writeback_t {inst.rd, uint64_t(data)};
             break;
         }
         case encoding::INST_LS_LHU: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint16_t data = *((uint16_t *)addr);
-            RVGPU_DEBUG_PRINT("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.LHU] load.u16: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             result = writeback_t {inst.rd, uint64_t(data)};
             break;
         }

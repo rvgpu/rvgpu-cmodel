@@ -3,6 +3,7 @@ function(rvsim_ut_ls testname)
 endfunction()
 
 rvsim_ut_ls(sb)
+rvsim_ut_ls(sh)
 rvsim_ut_ls(sw)
 rvsim_ut_ls(sd)
 rvsim_ut_ls(flw)

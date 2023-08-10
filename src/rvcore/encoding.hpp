@@ -73,6 +73,7 @@ typedef enum {
     INST_LS_LWU,
     INST_LS_LD,
     INST_LS_SB,
+    INST_LS_SH,
     INST_LS_SW,
     INST_LS_SD,
     INST_LS_FLW,
