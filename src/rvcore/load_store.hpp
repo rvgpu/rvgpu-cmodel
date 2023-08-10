@@ -30,7 +30,7 @@ class load_store {
 public:
     load_store(register_file *regfile);
 
-    uint64_t run(inst_issue inst, uint32_t tid);
+    writeback_t run(inst_issue inst);
 
 private:
     inst_issue proc_inst;

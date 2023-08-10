@@ -55,7 +55,8 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
             break;
         }
         case encoding::INST_TYPE_LS: {
-            m_ls->run(to_issue, tid);
+            wb = m_ls->run(to_issue);
+            m_reg->write(tid, wb.rid, wb.wdata);
             break;
         }
         case encoding::INST_TYPE_NOP: {

@@ -54,7 +54,8 @@ protected:
         m_reg->register_stage(0, to_issue);
         EXPECT_EQ(to_issue.type, encoding::INST_TYPE_LS);
 
-        npc = m_ls->run(to_issue, 0);
+        writeback_t res = m_ls->run(to_issue);
+        m_reg->write(0, res.rid, res.wdata);
     }
 
     dec *m_dec;

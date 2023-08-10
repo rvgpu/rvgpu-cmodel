@@ -32,9 +32,9 @@ load_store::load_store(register_file *regfile) {
     m_reg = regfile;
 }
 
-uint64_t load_store::run(inst_issue inst, uint32_t tid) {
+writeback_t load_store::run(inst_issue inst) {
     proc_inst = inst;
-    uint64_t result = 0;
+    writeback_t result = {0, 0};
 
     switch (inst.code) {
         case encoding::INST_LS_FSW: {
@@ -47,7 +47,7 @@ uint64_t load_store::run(inst_issue inst, uint32_t tid) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint32_t data = *((uint32_t *)addr);
             RVGPU_DEBUG_PRINT("[EXEC.LS.FLW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
-            m_reg->write_freg(tid, inst.rd, data);
+            result = writeback_t {inst.frd, data};
             break;
         }
         case encoding::INST_LS_SB: {
@@ -72,21 +72,21 @@ uint64_t load_store::run(inst_issue inst, uint32_t tid) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int32_t data = *((int32_t *)addr);
             RVGPU_DEBUG_PRINT("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
-            m_reg->write_ireg(tid, inst.rd, uint64_t(data));
+            result = writeback_t {inst.rd, uint64_t(data)};
             break;
         }
         case encoding::INST_LS_LWU: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint32_t data = *((uint32_t *)addr);
             RVGPU_DEBUG_PRINT("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
-            m_reg->write_ireg(tid, inst.rd, uint64_t(data));
+            result = writeback_t {inst.rd, uint64_t(data)};
             break;
         }
         case encoding::INST_LS_LD: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int64_t data = *((int64_t *)addr);
             RVGPU_DEBUG_PRINT("[EXEC.LS.LD] load.i64: r[%ld] 0x%lx from mem[0x%lx]\n", inst.rd, data, addr);
-            m_reg->write_ireg(tid, inst.rd, uint64_t(data));
+            result = writeback_t {inst.rd, uint64_t(data)};
             break;
         }
         default:
