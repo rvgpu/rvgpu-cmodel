@@ -31,6 +31,7 @@
 #include "common/configs.h"
 #include "rvcore/inst_issue.hpp"
 #include "rvcore/decoder.hpp"
+#include "rvcore/branch.hpp"
 #include "register_file.hpp"
 
 class ut_branch;
@@ -52,6 +53,7 @@ public:
 private:
     register_file *m_reg;
     dec *m_dec;
+    branch *m_branch;
 
     uint32_t startpc;
     uint64_t pc;
@@ -60,7 +62,6 @@ private:
     std::bitset<WARP_THREAD_N> lanes;
     std::bitset<WARP_THREAD_N> stops;
 
-    uint64_t branch(inst_issue to_issue, uint32_t tid);
     warpstore diverage();
     bool merge_lanes(struct warpstore &w0, struct warpstore &w1);
 

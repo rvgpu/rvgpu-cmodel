@@ -8,6 +8,8 @@ typedef struct {
     uint32_t bits;
     uint32_t code;
     uint32_t type;
+    uint64_t currpc;
+    int64_t jpc;
 
     uint64_t rs1_id;
     uint64_t rs2_id;

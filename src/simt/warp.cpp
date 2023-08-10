@@ -32,6 +32,7 @@
 warp::warp(register_file *reg) {
     m_reg = reg;
     m_dec = new dec();
+    m_branch = new branch();
 }
 
 void warp::setup(message msg) {
@@ -70,11 +71,14 @@ inst_issue warp::schedule() {
     RVGPU_DEBUG_PRINT("Fetch inst: [%lx (0x%lx)] 0x%08x\n", (uint64_t(pc) - uint64_t(startpc)), pc, instcode);
     inst_issue to_issue = m_dec->decode_inst(instcode);
     to_issue.lanes = lanes.to_ulong();
+    to_issue.currpc = pc;
 
     if (to_issue.type == encoding::INST_TYPE_BRANCH) {
         FOREACH_WARP_THREAD {
             if (lanes.test(thread)) {
-                npc[thread] = branch(to_issue, thread);
+                m_reg->register_stage(thread, to_issue);
+                writeback_t wb = m_branch->run(to_issue, npc[thread]);
+                m_reg->write(thread, wb.rid, wb.wdata);
             }
         }
 
@@ -154,83 +158,6 @@ bool warp::merge_lanes(struct warpstore &w0, struct warpstore &w1) {
     } else {
         return false;
     }
-}
-
-uint64_t warp::branch(inst_issue inst, uint32_t tid) {
-    uint64_t retpc = pc + 4;
-    inst.rs1 = m_reg->read(tid, inst.rs1_id);
-    inst.rs2 = m_reg->read(tid, inst.rs2_id);
-    inst.rs3 = m_reg->read(tid, inst.rs3_id);
-
-    switch (inst.code) {
-        case encoding::INST_BRANCH_AUIPC: {
-            m_reg->write(tid, inst.rd, (pc + inst.u_imm));
-            retpc = pc + 4;
-            break;
-        }
-        case encoding::INST_BRANCH_BEQ: {
-            if (inst.rs1 == inst.rs2) {
-                retpc = pc + inst.sb_imm;
-            } else {
-                retpc = pc + 4;
-            }
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BEQ] jump to %lx, if (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
-            break;
-        }
-        case encoding::INST_BRANCH_BGE: {
-            if (int64_t(inst.rs1) >= int64_t(inst.rs2)) {
-                retpc = pc + inst.sb_imm;
-            } else {
-                retpc = pc + 4;
-            }
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BGE] jump to %lx, if (%ld >= %ld)\n", retpc, inst.rs1, inst.rs2);
-            break;
-        }
-        case encoding::INST_BRANCH_BGEU: {
-            if (inst.rs1 >= inst.rs2) {
-                retpc = pc + inst.sb_imm;
-            } else {
-                retpc = pc + 4;
-            }
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BGEU] jump to %lx, if (%lx >= %lx)\n", retpc, inst.rs1, inst.rs2);
-            break;
-        }
-        case encoding::INST_BRANCH_BLTU: {
-            if (inst.rs1 < inst.rs2) {
-                retpc = pc + inst.sb_imm;
-            } else {
-                retpc = pc + 4;
-            }
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BLTU] jump to %lx, if (%lx < %lx)\n", retpc, inst.rs1, inst.rs2);
-            break;
-        }
-        case encoding::INST_BRANCH_BNE: {
-            if (inst.rs1 != inst.rs2) {
-                retpc = pc + inst.sb_imm;
-            } else {
-                retpc = pc + 4;
-            }
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BNE] jump to %lx, if (%lx != %lx)\n", retpc, inst.rs1, inst.rs2);
-            break;
-        }
-        case encoding::INST_BRANCH_JAL: {
-            m_reg->write(tid, inst.rd, pc + 4);
-            retpc = (pc + inst.uj_imm);
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JAL] jump to %lx\n", retpc);
-            break;
-        }
-        case encoding::INST_BRANCH_JALR: {
-            m_reg->write(tid, inst.rd, pc + 4);
-            retpc = (inst.rs1 + inst.i_imm) & ~(uint64_t)(1);
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JALR] jump to %lx\n", retpc);
-            break;
-        }
-        default:
-            RVGPU_ERROR_PRINT("BRANCH INST TODO!\n");
-            break;
-    }
-
-    return retpc;
 }
 
 bool warp::stop() {

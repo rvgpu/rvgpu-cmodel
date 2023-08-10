@@ -7,6 +7,8 @@ set(RVCORE_FILES
     fpu.hpp
     load_store.cpp
     load_store.hpp
+    branch.cpp
+    branch.hpp
     )
 
 add_library(rvcore OBJECT ${RVCORE_FILES})

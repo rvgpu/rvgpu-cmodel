@@ -15,6 +15,7 @@ protected:
         m_alu = new alu(0);
         m_fpu = new fpu(0);
         m_ls = new load_store();
+        m_branch = new branch();
         m_reg = new register_file();
     }
     void TearDown() override {
@@ -50,6 +51,7 @@ protected:
         uint32_t instcode = insts.front();
         inst_issue to_issue = m_dec->decode_inst(instcode);
         m_reg->register_stage(0, to_issue);
+        to_issue.currpc = (uint64_t)insts.data();
 
         writeback_t wb = {};
         switch (to_issue.type) {
@@ -65,6 +67,10 @@ protected:
                 wb = m_ls->run(to_issue);
                 break;
             }
+            case encoding::INST_TYPE_BRANCH: {
+                wb = m_branch->run(to_issue, npc);
+                break;
+            }
             case encoding::INST_TYPE_NOP: {
                 break;
             }
@@ -76,9 +82,14 @@ protected:
         m_reg->write(0, wb.rid, wb.wdata);
     }
 
+    uint64_t GetPC() {
+        return npc;
+    }
+
     dec *m_dec;
     alu *m_alu;
     fpu *m_fpu;
+    branch *m_branch;
     load_store *m_ls;
     register_file *m_reg;
 

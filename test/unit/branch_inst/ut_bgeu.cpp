@@ -1,4 +1,4 @@
-#include "ut_branch.hpp"
+#include "ut_inst.hpp"
 
 #define CHECK_BRANCH(a, b) do {         \
         SetIReg(rs1, a);                \
@@ -13,7 +13,7 @@
     } while(0)
 
 
-TEST_F(ut_branch, decode_and_execute_rv64i_bgeu) {
+TEST_F(ut_inst, decode_and_execute_rv64i_bgeu) {
     // 0x0496f663 : bgeu a3, s1, 76
     insts.push_back(0x0496f663);
     reg rs1 = reg::a3;

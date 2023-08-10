@@ -1,6 +1,6 @@
-#include "ut_branch.hpp"
+#include "ut_inst.hpp"
 
-TEST_F(ut_branch, decode_and_execute_rv64i_auipc) {
+TEST_F(ut_inst, decode_and_execute_rv64i_auipc) {
     //auipc bits: 0x97; auipc  ra, 0
     insts.push_back(0x97);
     ExecuateInst();
