@@ -48,7 +48,7 @@ writeback_t branch::run(inst_issue inst, uint64_t &retpc) {
             break;
         }
         case encoding::INST_BRANCH_BGE: {
-            if (int64_t(inst.rs1) >= int64_t(inst.rs2)) {
+            if (sreg_t(inst.rs1) >= sreg_t(inst.rs2)) {
                 retpc = pc + inst.sb_imm;
             }
             RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BGE] jump to %lx, if (%ld >= %ld)\n", retpc, inst.rs1, inst.rs2);
