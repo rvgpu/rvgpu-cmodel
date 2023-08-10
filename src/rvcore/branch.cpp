@@ -76,6 +76,15 @@ writeback_t branch::run(inst_issue inst, uint64_t &retpc) {
             RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BLTU] jump to %lx, if (%lx < %lx)\n", retpc, inst.rs1, inst.rs2);
             break;
         }
+        case encoding::INST_BRANCH_BLT: {
+            if (sreg_t(inst.rs1) < sreg_t(inst.rs2)) {
+                retpc = pc + inst.sb_imm;
+            } else {
+                retpc = pc + 4;
+            }
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BLT] jump to %lx, if (%lx < %lx)\n", retpc, inst.rs1, inst.rs2);
+            break;
+        }
         case encoding::INST_BRANCH_BNE: {
             if (inst.rs1 != inst.rs2) {
                 retpc = pc + inst.sb_imm;
