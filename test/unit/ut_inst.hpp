@@ -24,19 +24,19 @@ protected:
     }
 
     void SetIReg(reg id, uint64_t data) {
-        m_reg->write_ireg(0, static_cast<uint32_t>(id), data);
+        m_reg->write(0, static_cast<uint32_t>(id), data);
     }
 
     uint64_t GetIReg(reg id) {
-        return m_reg->read_ireg(0, static_cast<uint32_t>(id));
+        return m_reg->read(0, static_cast<uint32_t>(id));
     }
 
     void SetFReg(fpreg id, uint64_t data) {
-        m_reg->write_freg(0, static_cast<uint32_t>(id), data);
+        m_reg->write(0, static_cast<uint32_t>(id), data);
     }
 
     uint64_t GetFReg(fpreg id) {
-        return m_reg->read_freg(0, static_cast<uint32_t>(id));
+        return m_reg->read(0, static_cast<uint32_t>(id));
     }
 
     uint64_t GetStackPointer() {
@@ -44,7 +44,7 @@ protected:
     }
 
     void ExecuateInst() {
-        m_reg->write_ireg(0, static_cast<uint32_t>(reg::sp), stack_pointer);
+        m_reg->write(0, static_cast<uint32_t>(reg::sp), stack_pointer);
 
         // Run Instruction
         uint32_t instcode = insts.front();

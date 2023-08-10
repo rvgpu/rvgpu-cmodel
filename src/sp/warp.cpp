@@ -46,17 +46,17 @@ void warp::setup(message msg) {
             lanes.set(i);
             stops.reset(i);
 
-            m_reg->write_ireg(i, uint64_t(reg::s0), 0);
-            m_reg->write_ireg(i, uint64_t(reg::ra), 0);
+            m_reg->write(i, uint64_t(reg::s0), 0);
+            m_reg->write(i, uint64_t(reg::ra), 0);
 
             RVGPU_DEBUG_PRINT("[SP][WARP0.%d] setup sp: 0x%lx\n", i, msg.shader.stack_pointer + 0x1000 * i);
-            m_reg->write_ireg(i, uint64_t(reg::sp), msg.shader.stack_pointer + 0x1000 * i);
+            m_reg->write(i, uint64_t(reg::sp), msg.shader.stack_pointer + 0x1000 * i);
 
             RVGPU_DEBUG_PRINT("[SP][WARP0.%d] setup a0(tid): 0x%x\n", i, msg.start + i);
-            m_reg->write_ireg(i, uint64_t(reg::a0), msg.start + i);
+            m_reg->write(i, uint64_t(reg::a0), msg.start + i);
             for (uint32_t argi=1; argi<msg.shader.argsize; argi++) {
                 RVGPU_DEBUG_PRINT("[SP][WARP0.%d] setup a%d(arg[%d]): 0x%lx\n", i, argi, argi, msg.shader.args[argi]);
-                m_reg->write_ireg(i, uint64_t(reg::a0) + argi, msg.shader.args[argi]);
+                m_reg->write(i, uint64_t(reg::a0) + argi, msg.shader.args[argi]);
             }
         }
     }
@@ -158,13 +158,13 @@ bool warp::merge_lanes(struct warpstore &w0, struct warpstore &w1) {
 
 uint64_t warp::branch(inst_issue inst, uint32_t tid) {
     uint64_t retpc = pc + 4;
-    inst.rs1 = m_reg->read_ireg(tid, inst.rs1_id);
-    inst.rs2 = m_reg->read_ireg(tid, inst.rs2_id);
-    inst.rs3 = m_reg->read_ireg(tid, inst.rs3_id);
+    inst.rs1 = m_reg->read(tid, inst.rs1_id);
+    inst.rs2 = m_reg->read(tid, inst.rs2_id);
+    inst.rs3 = m_reg->read(tid, inst.rs3_id);
 
     switch (inst.code) {
         case encoding::INST_BRANCH_AUIPC: {
-            m_reg->write_ireg(tid, inst.rd, (pc + inst.u_imm));
+            m_reg->write(tid, inst.rd, (pc + inst.u_imm));
             retpc = pc + 4;
             break;
         }
@@ -214,13 +214,13 @@ uint64_t warp::branch(inst_issue inst, uint32_t tid) {
             break;
         }
         case encoding::INST_BRANCH_JAL: {
-            m_reg->write_ireg(tid, inst.rd, pc + 4);
+            m_reg->write(tid, inst.rd, pc + 4);
             retpc = (pc + inst.uj_imm);
             RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JAL] jump to %lx\n", retpc);
             break;
         }
         case encoding::INST_BRANCH_JALR: {
-            m_reg->write_ireg(tid, inst.rd, pc + 4);
+            m_reg->write(tid, inst.rd, pc + 4);
             retpc = (inst.rs1 + inst.i_imm) & ~(uint64_t)(1);
             RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JALR] jump to %lx\n", retpc);
             break;

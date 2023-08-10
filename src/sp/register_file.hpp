@@ -54,25 +54,6 @@ public:
         }
     }
 
-    void write_ireg(uint32_t tid, uint32_t rid, uint64_t data) {
-        if (rid != 0) {
-            reg[tid][rid] = data;
-        }
-    }
-
-    uint64_t read_ireg(uint32_t tid, uint32_t rid) {
-        if (rid > 32) { return 0; }
-        return reg[tid][rid];
-    }
-
-    void write_freg(uint32_t tid, uint32_t rid, uint64_t data) {
-        reg[tid][rid + 32] = data;
-    }
-
-    uint64_t read_freg(uint32_t tid, uint32_t rid) {
-        return reg[tid][rid + 32];
-    }
-
 private:
     uint64_t reg[WARP_THREAD_N][64];
 };
