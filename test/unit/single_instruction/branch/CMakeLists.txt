@@ -1,0 +1,12 @@
+function(rvsim_ut_branch testname)
+    rvsim_unit_test(rvsim_ut_branch_${testname} ut_${testname}.cpp)
+endfunction()
+
+rvsim_ut_branch(auipc)
+rvsim_ut_branch(beq)
+rvsim_ut_branch(bge)
+rvsim_ut_branch(bgeu)
+rvsim_ut_branch(bltu)
+rvsim_ut_branch(bne)
+rvsim_ut_branch(jal)
+rvsim_ut_branch(jalr)
