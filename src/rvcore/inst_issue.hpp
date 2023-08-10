@@ -17,6 +17,7 @@ typedef struct {
     uint64_t frs3_id;
 
     uint64_t rd;
+    uint64_t frd;
     uint64_t rs1;
     uint64_t rs2;
     uint64_t rs3;

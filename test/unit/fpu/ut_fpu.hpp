@@ -47,11 +47,7 @@ protected:
 
         if (to_issue.type == encoding::INST_TYPE_FPU) {
             writeback_t res = m_fpu->run(to_issue);
-            if (res.rid >= 32) {
-                m_reg->write_ireg(0, to_issue.rd - 32, res.wdata);
-            } else {
-                m_reg->write_freg(0, to_issue.rd, res.wdata);
-            }
+            m_reg->write(0, res.rid, res.wdata);
         } else {
             printf("NOT A FPU Instruction\n");
         }

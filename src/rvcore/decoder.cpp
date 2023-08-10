@@ -64,13 +64,7 @@ inst_issue dec::decode_inst(uint32_t instcode) {
     to_issue.uj_imm = (xget(21, 10) << 1) + (xget(20, 1) << 11) + (xget(12, 8) << 12) + (imm_sign() << 20);
     to_issue.rm = xget(12, 3);
 
-    if (to_issue.code == INST_FPU_FLE_S) {
-        to_issue.rd = to_issue.rd + 32;
-    }
-    if (to_issue.code == INST_FPU_FCVT_LU_S) {
-        to_issue.rd = to_issue.rd + 32;
-    }
-
+    to_issue.frd = to_issue.rd + 32;
     to_issue.frs1_id = to_issue.rs1_id + 32;
     to_issue.frs2_id = to_issue.rs2_id + 32;
     to_issue.frs3_id = to_issue.rs3_id + 32;

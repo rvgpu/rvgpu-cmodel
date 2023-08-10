@@ -82,48 +82,48 @@ writeback_t fpu::fadd_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) + reg2f(inst.frs2);
     FPU_INFO("[FADD_S] r[%ld](%f) = %f + %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
-    return writeback_t {inst.rd, f2reg(res)};
+    return writeback_t {inst.frd, f2reg(res)};
 }
 
 writeback_t fpu::fmul_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) * reg2f(inst.frs2);
     FPU_INFO("[FMUL_S] r[%ld](%f) = %f * %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
-    return writeback_t {inst.rd, f2reg(res)};
+    return writeback_t {inst.frd, f2reg(res)};
 }
 
 writeback_t fpu::fdiv_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) / reg2f(inst.frs2);
     FPU_INFO("[FDIV_S] r[%ld](%f) = %f / %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
-    return writeback_t {inst.rd, f2reg(res)};
+    return writeback_t {inst.frd, f2reg(res)};
 }
 
 writeback_t fpu::fmadd_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) * reg2f(inst.frs2) + reg2f(inst.frs3);
     FPU_INFO("[FMADD_S] r[%ld](%f) = %f * %f + %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
-    return writeback_t {inst.rd, f2reg(res)};
+    return writeback_t {inst.frd, f2reg(res)};
 }
 
 writeback_t fpu::fmsub_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) * reg2f(inst.frs2) - reg2f(inst.frs3);
     FPU_INFO("[FMSUB_S] r[%ld](%f) = %f * %f - %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
-    return writeback_t {inst.rd, f2reg(res)};
+    return writeback_t {inst.frd, f2reg(res)};
 }
 
 writeback_t fpu::fsub_s() {
     float res = 0.0f;
     res = reg2f(inst.frs1) - reg2f(inst.frs2);
     FPU_INFO("[FSUB_S] r[%ld](%f) = %f + %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
-    return writeback_t {inst.rd, f2reg(res)};
+    return writeback_t {inst.frd, f2reg(res)};
 }
 
 writeback_t fpu::fcvt_s_wu() {
     float32_t res = ui32_to_f32((uint32_t)inst.rs1);
-    FPU_INFO("[FCVT_S_WU] r[%lx](%f) = ui32_to_f32(%lx)\n", inst.rd, res, inst.rs1);
-    return writeback_t {inst.rd, uint64_t(res.v)};
+    FPU_INFO("[FCVT_S_WU] r[%lx](%f) = ui32_to_f32(%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
+    return writeback_t {inst.frd, uint64_t(res.v)};
 }
 
 writeback_t fpu::fcvt_lu_s() {
@@ -142,7 +142,7 @@ writeback_t fpu::fle_s() {
 writeback_t fpu::fmv_w_x() {
     float res = reg2f(inst.rs1);
     FPU_INFO("[FMV_W_X] r[%lx](%f) = %f\n", inst.rd, res, reg2f(inst.rs1));
-    return writeback_t {inst.rd, f2reg(res)};
+    return writeback_t {inst.frd, f2reg(res)};
 }
 
 int32_t fpu::getrm()

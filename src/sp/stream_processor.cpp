@@ -52,11 +52,7 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
         }
         case encoding::INST_TYPE_FPU: {
             wb = m_fpu[tid]->run(to_issue);
-            if (wb.rid >= 32) {
-                m_reg->write_ireg(tid, to_issue.rd - 32, wb.wdata);
-            } else {
-                m_reg->write_freg(tid, to_issue.rd, wb.wdata);
-            }
+            m_reg->write(tid, wb.rid, wb.wdata);
             break;
         }
         case encoding::INST_TYPE_LS: {
