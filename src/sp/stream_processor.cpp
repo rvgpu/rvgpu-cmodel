@@ -66,7 +66,7 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
             break;
         }
         default:
-            RVGPU_ERROR_PRINT("Instruction ERROR\n");
+            RVGPU_ERROR_PRINT("Instruction ERROR: %x\n", to_issue.bits);
             break;
     }
 }
