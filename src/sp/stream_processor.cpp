@@ -30,7 +30,7 @@
 stream_processor::stream_processor() {
     m_reg = new register_file();
     m_warp = new warp(m_reg);
-    m_ls = new load_store(m_reg);
+    m_ls = new load_store();
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
         m_alu[i] = new alu(i);
         m_fpu[i] = new fpu(i);

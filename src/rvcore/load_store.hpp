@@ -28,12 +28,7 @@
 
 class load_store {
 public:
-    load_store(register_file *regfile);
+    load_store();
 
     writeback_t run(inst_issue inst);
-
-private:
-    inst_issue proc_inst;
-
-    register_file *m_reg;
 };

@@ -15,7 +15,7 @@ protected:
 
         m_dec = new dec();
         m_reg = new register_file();
-        m_ls = new load_store(m_reg);
+        m_ls = new load_store();
     }
     void TearDown() override {
         delete m_dec;

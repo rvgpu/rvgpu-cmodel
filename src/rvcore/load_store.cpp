@@ -28,12 +28,10 @@
 #include "load_store.hpp"
 #include "encoding.hpp"
 
-load_store::load_store(register_file *regfile) {
-    m_reg = regfile;
+load_store::load_store() {
 }
 
 writeback_t load_store::run(inst_issue inst) {
-    proc_inst = inst;
     writeback_t result = {0, 0};
 
     switch (inst.code) {
