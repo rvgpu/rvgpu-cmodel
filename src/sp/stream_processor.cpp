@@ -25,7 +25,7 @@
 
 #include "common/utils.hpp"
 #include "stream_processor.hpp"
-#include "encoding.hpp"
+#include "rvcore/encoding.hpp"
 
 stream_processor::stream_processor() {
     m_reg = new register_file();

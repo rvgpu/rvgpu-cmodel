@@ -1,12 +1,4 @@
 set(SP_FILES
-    alu.cpp
-    alu.hpp
-    decoder.cpp
-    decoder.hpp
-    fpu.cpp
-    fpu.hpp
-    load_store.cpp
-    load_store.hpp
     register_file.hpp
     stream_processor.cpp
     stream_processor.hpp

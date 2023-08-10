@@ -27,10 +27,10 @@
 
 #include "warp.hpp"
 #include "register_file.hpp"
-#include "alu.hpp"
-#include "fpu.hpp"
-#include "load_store.hpp"
-#include "decoder.hpp"
+#include "rvcore/alu.hpp"
+#include "rvcore/fpu.hpp"
+#include "rvcore/load_store.hpp"
+#include "rvcore/decoder.hpp"
 
 // Stream Processor: A simt-x processor
 

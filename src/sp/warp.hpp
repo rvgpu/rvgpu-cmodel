@@ -29,9 +29,9 @@
 
 #include "common/command_stream.h"
 #include "common/configs.h"
-#include "inst_issue.hpp"
+#include "rvcore/inst_issue.hpp"
+#include "rvcore/decoder.hpp"
 #include "register_file.hpp"
-#include "decoder.hpp"
 
 class ut_branch;
 

@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 
 #include "common/regid.hpp"
-#include "sp/decoder.hpp"
+#include "rvcore/decoder.hpp"
+#include "rvcore/load_store.hpp"
 #include "sp/register_file.hpp"
-#include "sp/load_store.hpp"
 
 #define STACK_SIZE  2000
 

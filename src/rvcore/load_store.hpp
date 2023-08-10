@@ -24,7 +24,7 @@
 #pragma once
 
 #include "inst_issue.hpp"
-#include "register_file.hpp"
+#include "sp/register_file.hpp"
 
 class load_store {
 public:
