@@ -38,11 +38,8 @@ protected:
         m_reg->register_stage(0, to_issue);
 
         if (to_issue.type == encoding::INST_TYPE_ALU) {
-            to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
-            to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
-            to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
-            uint64_t res = m_alu->run(to_issue);
-            m_reg->write_ireg(0, to_issue.rd, res);
+            writeback_t res = m_alu->run(to_issue);
+            m_reg->write(0, res.rid, res.wdata);
         } else {
             printf("NOT A ALU Instruction\n");
         }

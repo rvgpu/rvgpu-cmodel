@@ -42,12 +42,11 @@ void stream_processor::setup(message msg) {
 }
 
 void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
-    uint64_t result;
     writeback_t wb;
     switch (to_issue.type) {
         case encoding::INST_TYPE_ALU: {
-            result = m_alu[tid]->run(to_issue);
-            m_reg->write_ireg(tid, to_issue.rd, result);
+            wb = m_alu[tid]->run(to_issue);
+            m_reg->write(tid, wb.rid, wb.wdata);
             break;
         }
         case encoding::INST_TYPE_FPU: {

@@ -31,32 +31,32 @@ class alu {
 public:
     alu(uint32_t id);
 
-    uint64_t run(inst_issue instruction);
+    writeback_t run(inst_issue instruction);
 
 private:
     uint32_t m_id;
     inst_issue inst;
 
-    uint64_t add();
-    uint64_t addi();
-    uint64_t addiw();
-    uint64_t addw();
-    uint64_t lui();
-    uint64_t mulw();
-    uint64_t mulh();
-    uint64_t mul();
-    uint64_t sltu();
-    uint64_t slliw();
-    uint64_t slli();
-    uint64_t slt();
-    uint64_t srli();
-    uint64_t srai();
-    uint64_t sub();
-    uint64_t subw();
-    uint64_t andi();
-    uint64_t ori();
-    uint64_t xori();
-    uint64_t OR();
+    writeback_t add();
+    writeback_t addi();
+    writeback_t addiw();
+    writeback_t addw();
+    writeback_t lui();
+    writeback_t mulw();
+    writeback_t mulh();
+    writeback_t mul();
+    writeback_t sltu();
+    writeback_t slliw();
+    writeback_t slli();
+    writeback_t slt();
+    writeback_t srli();
+    writeback_t srai();
+    writeback_t sub();
+    writeback_t subw();
+    writeback_t andi();
+    writeback_t ori();
+    writeback_t xori();
+    writeback_t OR();
 
     uint64_t util_mulhu(uint64_t a, uint64_t b);
 };
