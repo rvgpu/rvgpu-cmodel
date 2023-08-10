@@ -35,6 +35,8 @@ protected:
         // Run Instruction
         uint32_t instcode = insts.front();
         inst_issue to_issue = m_dec->decode_inst(instcode);
+        m_reg->register_stage(0, to_issue);
+
         if (to_issue.type == encoding::INST_TYPE_ALU) {
             to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
             to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);

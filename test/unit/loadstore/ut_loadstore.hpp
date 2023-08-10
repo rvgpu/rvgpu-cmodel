@@ -51,14 +51,9 @@ protected:
         // Run Instruction
         uint32_t instcode = insts.front();
         inst_issue to_issue = m_dec->decode_inst(instcode);
+        m_reg->register_stage(0, to_issue);
         EXPECT_EQ(to_issue.type, encoding::INST_TYPE_LS);
 
-        to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
-        to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
-        to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
-        to_issue.frs1 = m_reg->read_freg(0, to_issue.rs1_id);
-        to_issue.frs2 = m_reg->read_freg(0, to_issue.rs2_id);
-        to_issue.frs3 = m_reg->read_freg(0, to_issue.rs3_id);
         npc = m_ls->run(to_issue, 0);
     }
 

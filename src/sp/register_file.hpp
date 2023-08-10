@@ -31,30 +31,48 @@ class register_file {
 public:
     register_file() {
         FOREACH_WARP_THREAD {
-            ireg[thread][0] = 0;
+            reg[thread][0] = 0;
         }
     };
 
+    void register_stage(uint32_t tid, inst_issue &to_issue) {
+        to_issue.rs1 = read(tid, to_issue.rs1_id);
+        to_issue.rs2 = read(tid, to_issue.rs2_id);
+        to_issue.rs3 = read(tid, to_issue.rs3_id);
+        to_issue.frs1 = read(tid, to_issue.frs1_id);
+        to_issue.frs2 = read(tid, to_issue.frs2_id);
+        to_issue.frs3 = read(tid, to_issue.frs3_id);
+    }
+
+    uint64_t read(uint32_t tid, uint32_t rid) {
+        return reg[tid][rid];
+    }
+
+    void write(uint32_t tid, uint32_t rid, uint64_t data) {
+        if (rid != 0) {
+            reg[tid][rid] = data;
+        }
+    }
+
     void write_ireg(uint32_t tid, uint32_t rid, uint64_t data) {
         if (rid != 0) {
-            ireg[tid][rid] = data;
+            reg[tid][rid] = data;
         }
     }
 
     uint64_t read_ireg(uint32_t tid, uint32_t rid) {
         if (rid > 32) { return 0; }
-        return ireg[tid][rid];
+        return reg[tid][rid];
     }
 
     void write_freg(uint32_t tid, uint32_t rid, uint64_t data) {
-        freg[tid][rid] = data;
+        reg[tid][rid + 32] = data;
     }
 
     uint64_t read_freg(uint32_t tid, uint32_t rid) {
-        return freg[tid][rid];
+        return reg[tid][rid + 32];
     }
 
 private:
-    uint64_t ireg[WARP_THREAD_N][32];
-    uint64_t freg[WARP_THREAD_N][32];
+    uint64_t reg[WARP_THREAD_N][64];
 };

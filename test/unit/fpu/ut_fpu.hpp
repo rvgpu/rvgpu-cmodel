@@ -43,13 +43,9 @@ protected:
         // Run Instruction
         uint32_t instcode = insts.front();
         inst_issue to_issue = m_dec->decode_inst(instcode);
+        m_reg->register_stage(0, to_issue);
+
         if (to_issue.type == encoding::INST_TYPE_FPU) {
-            to_issue.rs1 = m_reg->read_ireg(0, to_issue.rs1_id);
-            to_issue.rs2 = m_reg->read_ireg(0, to_issue.rs2_id);
-            to_issue.rs3 = m_reg->read_ireg(0, to_issue.rs3_id);
-            to_issue.frs1 = m_reg->read_freg(0, to_issue.rs1_id);
-            to_issue.frs2 = m_reg->read_freg(0, to_issue.rs2_id);
-            to_issue.frs3 = m_reg->read_freg(0, to_issue.rs3_id);
             uint64_t res = m_fpu->run(to_issue);
             if (to_issue.rd >= 32) {
                 m_reg->write_ireg(0, to_issue.rd - 32, res);

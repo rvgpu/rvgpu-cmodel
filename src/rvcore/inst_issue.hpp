@@ -12,6 +12,9 @@ typedef struct {
     uint64_t rs1_id;
     uint64_t rs2_id;
     uint64_t rs3_id;
+    uint64_t frs1_id;
+    uint64_t frs2_id;
+    uint64_t frs3_id;
 
     uint64_t rd;
     uint64_t rs1;

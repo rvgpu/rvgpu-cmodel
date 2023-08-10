@@ -70,6 +70,10 @@ inst_issue dec::decode_inst(uint32_t instcode) {
     if (to_issue.code == INST_FPU_FCVT_LU_S) {
         to_issue.rd = to_issue.rd + 32;
     }
+
+    to_issue.frs1_id = to_issue.rs1_id + 32;
+    to_issue.frs2_id = to_issue.rs2_id + 32;
+    to_issue.frs3_id = to_issue.rs3_id + 32;
     return to_issue;
 }
 

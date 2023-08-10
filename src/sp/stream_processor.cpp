@@ -74,12 +74,7 @@ void stream_processor::issue_single(inst_issue to_issue, uint32_t tid) {
 void stream_processor::issue(inst_issue to_issue) {
     FOREACH_WARP_THREAD {
         if (to_issue.lanes & (1 << thread)) {
-            to_issue.rs1 = m_reg->read_ireg(thread, to_issue.rs1_id);
-            to_issue.rs2 = m_reg->read_ireg(thread, to_issue.rs2_id);
-            to_issue.rs3 = m_reg->read_ireg(thread, to_issue.rs3_id);
-            to_issue.frs1 = m_reg->read_freg(thread, to_issue.rs1_id);
-            to_issue.frs2 = m_reg->read_freg(thread, to_issue.rs2_id);
-            to_issue.frs3 = m_reg->read_freg(thread, to_issue.rs3_id);
+            m_reg->register_stage(thread, to_issue);
             issue_single(to_issue, thread);
         }
     }
