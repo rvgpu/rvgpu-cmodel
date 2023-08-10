@@ -25,7 +25,7 @@
 
 #include "common/debug.hpp"
 #include "common/utils.hpp"
-#include "softfloat/softfloat.hpp"
+#include "softfloat/softfloat.h"
 #include "fpu.hpp"
 #include "encoding.hpp"
 
@@ -121,20 +121,20 @@ uint64_t fpu::fsub_s() {
 }
 
 uint64_t fpu::fcvt_s_wu() {
-    float res = ui32_to_f32((uint32_t)inst.rs1);
+    float32_t res = ui32_to_f32((uint32_t)inst.rs1);
     FPU_INFO("[FCVT_S_WU] r[%lx](%f) = ui32_to_f32(%lx)\n", inst.rd, res, inst.rs1);
-    return f2reg(res);
+    return res.v;
 }
 
 uint64_t fpu::fcvt_lu_s() {
-    uint64_t res = f32_to_ui64(reg2f(inst.frs1));
+    uint64_t res = f32_to_ui64(float32_t(inst.frs1), getrm(), true);
     FPU_INFO("[FCVT_LU_S] r[%lx](%lx) = f32_to_ui64(%f)\n", inst.rd, res, reg2f(inst.frs1));
     return res;
 }
 
 uint64_t fpu::fle_s() {
     uint64_t res;
-    res = f32_le(uint32_t(inst.frs1), uint32_t(inst.frs2));
+    res = f32_le(float32_t(inst.frs1), float32_t(inst.frs2));
     FPU_INFO("[FLE_S] r[%lx](%ld) = (%f <= %f)\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
     return res;
 }
@@ -143,4 +143,18 @@ uint64_t fpu::fmv_w_x() {
     float res = reg2f(inst.rs1);
     FPU_INFO("[FMV_W_X] r[%lx](%f) = %f\n", inst.rd, res, reg2f(inst.rs1));
     return f2reg(res);
+}
+
+int32_t fpu::getrm()
+{
+    int rm = inst.rm;
+    if (rm == 7) {
+        printf("TODO FSCRs\n");
+        // rm = STATE.frm->read();
+    }
+    if (rm > 4) {
+        RVGPU_ERROR_PRINT("illegal instruction: %x\n", inst.bits);
+    }
+
+    return rm;
 }

@@ -107,6 +107,7 @@ inst_issue dec::decode_inst(uint32_t instcode) {
     to_issue.s_imm = xget(7, 5) + (xsget(25, 7) << 5);
     to_issue.sb_imm = (xget(8, 4) << 1) + (xget(25, 6) << 5) + (xget(7, 1) << 11) + (imm_sign() << 12);
     to_issue.uj_imm = (xget(21, 10) << 1) + (xget(20, 1) << 11) + (xget(12, 8) << 12) + (imm_sign() << 20);
+    to_issue.rm = xget(12, 3);
 
     if (to_issue.code == INST_FPU_FLE_S) {
         to_issue.rd = to_issue.rd + 32;

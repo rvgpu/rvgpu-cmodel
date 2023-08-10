@@ -25,4 +25,5 @@ typedef struct {
     int64_t s_imm;
     int64_t sb_imm;
     int64_t uj_imm;
+    uint64_t rm;
 } inst_issue;

@@ -36,6 +36,8 @@ private:
     uint32_t m_id;
     inst_issue inst;
 
+    int32_t getrm();
+
     uint64_t fadd_s();
     uint64_t fmul_s();
     uint64_t fdiv_s();
