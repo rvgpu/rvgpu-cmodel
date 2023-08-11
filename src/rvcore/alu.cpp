@@ -24,7 +24,7 @@
 #include <cstdio>
 
 #include "alu.hpp"
-#include "mul.hpp"
+#include "mext.hpp"
 
 alu::alu(uint32_t id) {
     m_id = id;
@@ -53,6 +53,18 @@ writeback_t alu::run(inst_issue instruction) {
             break;
         case encoding::INST_ALU_ANDI:
             ret = andi();
+            break;
+        case encoding::INST_ALU_DIV:
+            ret = div();
+            break;
+        case encoding::INST_ALU_DIVU:
+            ret = divu();
+            break;
+        case encoding::INST_ALU_DIVUW:
+            ret = divuw();
+            break;
+        case encoding::INST_ALU_DIVW:
+            ret = divw();
             break;
         case encoding::INST_ALU_LUI:
             ret = lui();
@@ -163,9 +175,34 @@ writeback_t alu::addiw() {
     ALU_INFO("[ADDIW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, res, rs1, imm);
     return writeback_t {inst.rd, res};
 }
+
 writeback_t alu::addw() {
     uint64_t res = sext32(inst.rs1 + inst.rs2);
     ALU_INFO("[ADDW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, res, rs1, rs2);
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::div() {
+    uint64_t res = proc_div(inst.rs1, inst.rs2);
+    ALU_INFO("[DIV] r[%ld](0x%lx) = 0x%x / %d\n", inst.rd, res, rs1, rs2);
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::divu() {
+    uint64_t res = proc_divu(inst.rs1, inst.rs2);
+    ALU_INFO("[DIVU] r[%ld](0x%lx) = 0x%x / %d\n", inst.rd, res, rs1, rs2);
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::divw() {
+    uint64_t res = proc_divw(inst.rs1, inst.rs2);
+    ALU_INFO("[DIVW] r[%ld](0x%lx) = 0x%x / %d\n", inst.rd, res, rs1, rs2);
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::divuw() {
+    uint64_t res = proc_divuw(inst.rs1, inst.rs2);
+    ALU_INFO("[DIVUW] r[%ld](0x%lx) = 0x%x / %d\n", inst.rd, res, rs1, rs2);
     return writeback_t {inst.rd, res};
 }
 

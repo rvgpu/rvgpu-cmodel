@@ -43,6 +43,10 @@ private:
     writeback_t addiw();
     writeback_t addw();
     writeback_t AND();
+    writeback_t div();
+    writeback_t divu();
+    writeback_t divw();
+    writeback_t divuw();
     writeback_t lui();
     writeback_t mulw();
     writeback_t mulh();
