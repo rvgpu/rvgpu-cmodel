@@ -44,6 +44,7 @@ typedef enum {
     INST_ALU_SLLI,
     INST_ALU_SLT,
     INST_ALU_SLTI,
+    INST_ALU_SLTIU,
     INST_ALU_SRLI,
     INST_ALU_SRAI,
     INST_ALU_SUB,
