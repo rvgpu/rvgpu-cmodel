@@ -105,6 +105,9 @@ writeback_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_SRAI:
             ret = srai();
             break;
+        case encoding::INST_ALU_SRAIW:
+            ret = sraiw();
+            break;
         case encoding::INST_ALU_SUB:
             ret = sub();
             break;
@@ -228,7 +231,13 @@ writeback_t alu::srliw() {
 
 writeback_t alu::srai() {
     uint64_t res = sext_xlen(sext_xlen(inst.rs1) >> SHAMT)
-    ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, SHAMT);
+    ALU_INFO("[SRAI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, SHAMT);
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::sraiw() {
+    uint64_t res = (sext32(int32_t(inst.rs1) >> SHAMT));
+    ALU_INFO("[SRAIW] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, SHAMT);
     return writeback_t {inst.rd, res};
 }
 

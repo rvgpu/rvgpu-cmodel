@@ -54,6 +54,7 @@ private:
     writeback_t srli();
     writeback_t srliw();
     writeback_t srai();
+    writeback_t sraiw();
     writeback_t sub();
     writeback_t subw();
     writeback_t andi();
