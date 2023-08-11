@@ -90,6 +90,9 @@ writeback_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_SLT:
             ret = slt();
             break;
+        case encoding::INST_ALU_SLTI:
+            ret = slti();
+            break;
         case encoding::INST_ALU_SRLI:
             ret = srli();
             break;
@@ -178,6 +181,12 @@ writeback_t alu::mulh() {
 writeback_t alu::sltu() {
     uint64_t res = (inst.rs1 < inst.rs2);
     ALU_INFO("[SLTU] r[%ld](0x%lx) = (0x%lx < 0x%lx) ? 1 : 0\n", inst.rd, res, rs1, rs2);
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::slti() {
+    uint64_t res = (sreg_t(inst.rs1) < sreg_t(inst.i_imm));
+    ALU_INFO("[SLTI] r[%ld](0x%lx) = (0x%lx < 0x%lx) ? 1 : 0\n", inst.rd, res, sreg_t(inst.rs1), sreg_t(inst.i_imm));
     return writeback_t {inst.rd, res};
 }
 
