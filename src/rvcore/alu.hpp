@@ -71,6 +71,4 @@ private:
     writeback_t XOR();
     writeback_t xori();
     writeback_t OR();
-
-    uint64_t util_mulhu(uint64_t a, uint64_t b);
 };
