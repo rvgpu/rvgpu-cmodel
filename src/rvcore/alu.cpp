@@ -138,6 +138,18 @@ writeback_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_SUBW:
             ret = subw();
             break;
+        case encoding::INST_ALU_REM:
+            ret = rem();
+            break;
+        case encoding::INST_ALU_REMU:
+            ret = remu();
+            break;
+        case encoding::INST_ALU_REMW:
+            ret = remw();
+            break;
+        case encoding::INST_ALU_REMUW:
+            ret = remuw();
+            break;
         case encoding::INST_ALU_ORI:
             ret = ori();
             break;
@@ -347,6 +359,30 @@ writeback_t alu::sub() {
 writeback_t alu::subw() {
     uint64_t res = (sext32(inst.rs1 - inst.rs2));
     ALU_INFO("[SUBW] r[%ld](0x%lx) = 0x%lx - %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::rem() {
+    uint64_t res = proc_rem(inst.rs1, inst.rs2);
+    ALU_INFO("[REM] r[%ld](0x%lx) = 0x%lx % %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::remu() {
+    uint64_t res = proc_remu(inst.rs1, inst.rs2);
+    ALU_INFO("[REMU] r[%ld](0x%lx) = 0x%lx % %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::remw() {
+    uint64_t res = proc_remw(inst.rs1, inst.rs2);
+    ALU_INFO("[REMW] r[%ld](0x%lx) = 0x%lx % %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::remuw() {
+    uint64_t res = proc_remuw(inst.rs1, inst.rs2);
+    ALU_INFO("[REMUW] r[%ld](0x%lx) = 0x%lx % %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
     return writeback_t {inst.rd, res};
 }
 

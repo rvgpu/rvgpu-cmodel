@@ -43,6 +43,7 @@ private:
     writeback_t addiw();
     writeback_t addw();
     writeback_t AND();
+    writeback_t andi();
     writeback_t div();
     writeback_t divu();
     writeback_t divw();
@@ -71,7 +72,10 @@ private:
     writeback_t sraw();
     writeback_t sub();
     writeback_t subw();
-    writeback_t andi();
+    writeback_t rem();
+    writeback_t remu();
+    writeback_t remw();
+    writeback_t remuw();
     writeback_t ori();
     writeback_t XOR();
     writeback_t xori();

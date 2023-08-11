@@ -93,3 +93,62 @@ inline static uint64_t proc_divuw(uint64_t a, uint64_t b)
 
     return res;
 }
+
+inline static uint64_t proc_rem(uint64_t a, uint64_t b)
+{
+    uint64_t res = 0;
+
+    sreg_t lhs = sext_xlen(a);
+    sreg_t rhs = sext_xlen(b);
+    if (rhs == 0) {
+        res = (lhs);
+    } else if (lhs == INT64_MIN && rhs == -1) {
+        res = (0);
+    } else {
+        res = (sext_xlen(lhs % rhs));
+    }
+
+    return res;
+}
+
+inline static uint64_t proc_remu(uint64_t a, uint64_t b)
+{
+    uint64_t res = 0;
+    reg_t lhs = zext_xlen(a);
+    reg_t rhs = zext_xlen(b);
+    if (rhs == 0) {
+        res = (sext_xlen(a));
+    } else {
+        res = (sext_xlen(lhs % rhs));
+    }
+
+    return res;
+}
+
+inline static uint64_t proc_remw(uint64_t a, uint64_t b)
+{
+    uint64_t res = 0;
+    sreg_t lhs = sext32(a);
+    sreg_t rhs = sext32(b);
+    if (rhs == 0) {
+        res = (lhs);
+    } else {
+        res = (sext32(lhs % rhs));
+    }
+
+    return res;
+}
+
+inline static uint64_t proc_remuw(uint64_t a, uint64_t b)
+{
+    uint64_t res = 0;
+    reg_t lhs = zext32(a);
+    reg_t rhs = zext32(b);
+    if (rhs == 0) {
+        res = (sext32(lhs));
+    } else {
+        res = (sext32(lhs % rhs));
+    }
+
+    return res;
+}
