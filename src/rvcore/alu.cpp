@@ -97,6 +97,9 @@ writeback_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_SLLI:
             ret = slli();
             break;
+        case encoding::INST_ALU_SLLW:
+            ret = sllw();
+            break;
         case encoding::INST_ALU_SLT:
             ret = slt();
             break;
@@ -115,6 +118,9 @@ writeback_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_SRLIW:
             ret = srliw();
             break;
+        case encoding::INST_ALU_SRLW:
+            ret = srlw();
+            break;
         case encoding::INST_ALU_SRA:
             ret = sra();
             break;
@@ -123,6 +129,9 @@ writeback_t alu::run(inst_issue instruction) {
             break;
         case encoding::INST_ALU_SRAIW:
             ret = sraiw();
+            break;
+        case encoding::INST_ALU_SRAW:
+            ret = sraw();
             break;
         case encoding::INST_ALU_SUB:
             ret = sub();
@@ -227,6 +236,12 @@ writeback_t alu::slliw() {
     return writeback_t {inst.rd, res};
 }
 
+writeback_t alu::sllw() {
+    uint64_t res = (sext32(inst.rs1 << (inst.rs2 & 0x1F)));
+    ALU_INFO("[SLLW] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, res, inst.rs1, (inst.rs2 & 0x1F));
+    return writeback_t {inst.rd, res};
+}
+
 writeback_t alu::sll() {
     uint64_t res = (sext_xlen(inst.rs1 << (inst.rs2 & (xlen-1))));
     ALU_INFO("[SLL] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, res, inst.rs1, (inst.rs2 & (xlen-1)));
@@ -257,6 +272,12 @@ writeback_t alu::srliw() {
     return writeback_t {inst.rd, uint64_t(res)};
 }
 
+writeback_t alu::srlw() {
+    uint64_t res = (sext32((uint32_t)inst.rs1 >> (inst.rs2 & 0x1F)));
+    ALU_INFO("[SRLW] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, (inst.rs2 & 0x1F));
+    return writeback_t {inst.rd, uint64_t(res)};
+}
+
 writeback_t alu::sra() {
     uint64_t res = (sext_xlen(sext_xlen(inst.rs1) >> (inst.rs2 & (xlen - 1))));
     ALU_INFO("[SRA] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, (inst.rs2 & (xlen-1)));
@@ -272,6 +293,12 @@ writeback_t alu::srai() {
 writeback_t alu::sraiw() {
     uint64_t res = (sext32(int32_t(inst.rs1) >> SHAMT));
     ALU_INFO("[SRAIW] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, SHAMT);
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::sraw() {
+    uint64_t res = (sext32(int32_t(inst.rs1) >> (inst.rs2 & 0x1F)));
+    ALU_INFO("[SRAIW] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, (inst.rs2 & 0x1F));
     return writeback_t {inst.rd, res};
 }
 
