@@ -99,6 +99,9 @@ writeback_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_SRLI:
             ret = srli();
             break;
+        case encoding::INST_ALU_SRLIW:
+            ret = srliw();
+            break;
         case encoding::INST_ALU_SRAI:
             ret = srai();
             break;
@@ -213,13 +216,19 @@ writeback_t alu::slli() {
 
 writeback_t alu::srli() {
     uint64_t res = sext_xlen(zext_xlen(inst.rs1) >> SHAMT);
-    ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, (inst.i_imm & 0x3F));
+    ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, SHAMT);
+    return writeback_t {inst.rd, uint64_t(res)};
+}
+
+writeback_t alu::srliw() {
+    uint64_t res = (sext32((uint32_t)inst.rs1 >> SHAMT));
+    ALU_INFO("[SRLIW] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, SHAMT);
     return writeback_t {inst.rd, uint64_t(res)};
 }
 
 writeback_t alu::srai() {
     uint64_t res = sext_xlen(sext_xlen(inst.rs1) >> SHAMT)
-    ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, (inst.i_imm & 0x3F));
+    ALU_INFO("[SRLI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, SHAMT);
     return writeback_t {inst.rd, res};
 }
 

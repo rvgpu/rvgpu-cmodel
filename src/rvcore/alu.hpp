@@ -52,6 +52,7 @@ private:
     writeback_t slti();
     writeback_t sltiu();
     writeback_t srli();
+    writeback_t srliw();
     writeback_t srai();
     writeback_t sub();
     writeback_t subw();
