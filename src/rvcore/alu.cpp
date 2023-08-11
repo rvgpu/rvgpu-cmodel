@@ -69,6 +69,9 @@ writeback_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_MULHSU:
             ret = mulhsu();
             break;
+        case encoding::INST_ALU_MULHU:
+            ret = mulhu();
+            break;
         case encoding::INST_ALU_SLTU:
             ret = sltu();
             break;
@@ -192,6 +195,12 @@ writeback_t alu::mulh() {
 
 writeback_t alu::mulhsu() {
     uint64_t res = proc_mulhsu(inst.rs1, inst.rs2);
+    ALU_INFO("[MULHSU] r[%ld](0x%lx) = 0x%ld * %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::mulhu() {
+    uint64_t res = proc_mulhu(inst.rs1, inst.rs2);
     ALU_INFO("[MULHSU] r[%ld](0x%lx) = 0x%ld * %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, res};
 }

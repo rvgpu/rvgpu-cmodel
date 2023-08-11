@@ -47,6 +47,7 @@ private:
     writeback_t mulw();
     writeback_t mulh();
     writeback_t mulhsu();
+    writeback_t mulhu();
     writeback_t mul();
     writeback_t sltu();
     writeback_t sll();
