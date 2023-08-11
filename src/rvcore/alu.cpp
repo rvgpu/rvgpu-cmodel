@@ -47,6 +47,7 @@ uint64_t alu::util_mulhu(uint64_t a, uint64_t b)
 
 alu::alu(uint32_t id) {
     m_id = id;
+    xlen = 64;
 }
 
 writeback_t alu::run(inst_issue instruction) {
@@ -66,6 +67,12 @@ writeback_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_ADDW:
             ret = addw();
             break;
+        case encoding::INST_ALU_AND:
+            ret = AND();
+            break;
+        case encoding::INST_ALU_ANDI:
+            ret = andi();
+            break;
         case encoding::INST_ALU_LUI:
             ret = lui();
             break;
@@ -84,6 +91,9 @@ writeback_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_SLLIW:
             ret = slliw();
             break;
+        case encoding::INST_ALU_SLL:
+            ret = sll();
+            break;
         case encoding::INST_ALU_SLLI:
             ret = slli();
             break;
@@ -96,11 +106,17 @@ writeback_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_SLTIU:
             ret = sltiu();
             break;
+        case encoding::INST_ALU_SRL:
+            ret = srl();
+            break;
         case encoding::INST_ALU_SRLI:
             ret = srli();
             break;
         case encoding::INST_ALU_SRLIW:
             ret = srliw();
+            break;
+        case encoding::INST_ALU_SRA:
+            ret = sra();
             break;
         case encoding::INST_ALU_SRAI:
             ret = srai();
@@ -114,14 +130,14 @@ writeback_t alu::run(inst_issue instruction) {
         case encoding::INST_ALU_SUBW:
             ret = subw();
             break;
-        case encoding::INST_ALU_ANDI:
-            ret = andi();
-            break;
         case encoding::INST_ALU_ORI:
             ret = ori();
             break;
         case encoding::INST_ALU_XORI:
             ret = xori();
+            break;
+        case encoding::INST_ALU_XOR:
+            ret = XOR();
             break;
         case encoding::INST_ALU_OR:
             ret = OR();
@@ -211,10 +227,22 @@ writeback_t alu::slliw() {
     return writeback_t {inst.rd, res};
 }
 
+writeback_t alu::sll() {
+    uint64_t res = (sext_xlen(inst.rs1 << (inst.rs2 & (xlen-1))));
+    ALU_INFO("[SLL] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, res, inst.rs1, (inst.rs2 & (xlen-1)));
+    return writeback_t {inst.rd, res};
+}
+
 writeback_t alu::slli() {
     uint64_t res = sext_xlen(inst.rs1 << SHAMT);
-    ALU_INFO("[SLLI] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, res, inst.rs1, (inst.i_imm & 0x3F));
+    ALU_INFO("[SLLI] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, res, inst.rs1, SHAMT);
     return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::srl() {
+    uint64_t res = (sext_xlen(zext_xlen(inst.rs1) >> (inst.rs2 & (xlen-1))));
+    ALU_INFO("[SRL] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, (inst.rs2 & (xlen-1)));
+    return writeback_t {inst.rd, uint64_t(res)};
 }
 
 writeback_t alu::srli() {
@@ -227,6 +255,12 @@ writeback_t alu::srliw() {
     uint64_t res = (sext32((uint32_t)inst.rs1 >> SHAMT));
     ALU_INFO("[SRLIW] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, SHAMT);
     return writeback_t {inst.rd, uint64_t(res)};
+}
+
+writeback_t alu::sra() {
+    uint64_t res = (sext_xlen(sext_xlen(inst.rs1) >> (inst.rs2 & (xlen - 1))));
+    ALU_INFO("[SRA] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, (inst.rs2 & (xlen-1)));
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::srai() {
@@ -265,9 +299,21 @@ writeback_t alu::andi() {
     return writeback_t {inst.rd, res};
 }
 
+writeback_t alu::AND() {
+    uint64_t res = (inst.rs1 & inst.rs2);
+    ALU_INFO("[AND] r[%ld](0x%lx) = 0x%lx & %ld\n", inst.rd, res, inst.rs1, inst.rs1);
+    return writeback_t {inst.rd, res};
+}
+
 writeback_t alu::ori() {
     uint64_t res = (inst.i_imm | inst.rs1);
     ALU_INFO("[ORI] r[%ld](0x%lx) = 0x%lx | %ld\n", inst.rd, res, inst.i_imm, inst.rs1);
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t alu::XOR() {
+    uint64_t res = (inst.rs1 ^ inst.rs2);
+    ALU_INFO("[XORI] r[%ld](0x%lx) = 0x%lx ^ %ld\n", inst.rd, res, inst.rs1, inst.rs1);
     return writeback_t {inst.rd, res};
 }
 

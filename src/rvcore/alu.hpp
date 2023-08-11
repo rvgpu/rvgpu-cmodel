@@ -36,29 +36,35 @@ public:
 private:
     uint32_t m_id;
     inst_issue inst;
+    uint32_t xlen;
 
     writeback_t add();
     writeback_t addi();
     writeback_t addiw();
     writeback_t addw();
+    writeback_t AND();
     writeback_t lui();
     writeback_t mulw();
     writeback_t mulh();
     writeback_t mul();
     writeback_t sltu();
+    writeback_t sll();
     writeback_t slliw();
     writeback_t slli();
     writeback_t slt();
     writeback_t slti();
     writeback_t sltiu();
+    writeback_t srl();
     writeback_t srli();
     writeback_t srliw();
+    writeback_t sra();
     writeback_t srai();
     writeback_t sraiw();
     writeback_t sub();
     writeback_t subw();
     writeback_t andi();
     writeback_t ori();
+    writeback_t XOR();
     writeback_t xori();
     writeback_t OR();
 
