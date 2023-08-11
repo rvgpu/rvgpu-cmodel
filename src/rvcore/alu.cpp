@@ -25,6 +25,33 @@
 
 #include "alu.hpp"
 
+static inline uint64_t proc_mulhu(uint64_t a, uint64_t b)
+{
+  uint64_t t;
+  uint32_t y1, y2, y3;
+  uint64_t a0 = (uint32_t)a, a1 = a >> 32;
+  uint64_t b0 = (uint32_t)b, b1 = b >> 32;
+
+  t = a1*b0 + ((a0*b0) >> 32);
+  y1 = t;
+  y2 = t >> 32;
+
+  t = a0*b1 + y1;
+
+  t = a1*b1 + y2 + (t >> 32);
+  y2 = t;
+  y3 = t >> 32;
+
+  return ((uint64_t)y3 << 32) | y2;
+}
+
+inline static uint64_t proc_mulhsu(int64_t a, uint64_t b)
+{
+    int negate = a < 0;
+    uint64_t res = proc_mulhu(a < 0 ? -a : a, b);
+    return negate ? ~res + (a * b == 0) : res;
+}
+
 uint64_t alu::util_mulhu(uint64_t a, uint64_t b)
 {
     uint64_t t;
@@ -84,6 +111,9 @@ writeback_t alu::run(inst_issue instruction) {
             break;
         case encoding::INST_ALU_MULH:
             ret = mulh();
+            break;
+        case encoding::INST_ALU_MULHSU:
+            ret = mulhsu();
             break;
         case encoding::INST_ALU_SLTU:
             ret = sltu();
@@ -210,6 +240,12 @@ writeback_t alu::mulh() {
     ret =  negate ? ~res + (a * b == 0) : res;
     ALU_INFO("[MULH] r[%ld](0x%lx) = 0x%ld * %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, uint64_t(ret)};
+}
+
+writeback_t alu::mulhsu() {
+    uint64_t res = proc_mulhsu(inst.rs1, inst.rs2);
+    ALU_INFO("[MULHSU] r[%ld](0x%lx) = 0x%ld * %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
+    return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::sltu() {
