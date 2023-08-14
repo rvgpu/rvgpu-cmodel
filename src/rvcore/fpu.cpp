@@ -104,9 +104,9 @@ writeback_t fpu::fadd_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FADD_D] r[%ld](%f) = %f + %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FADD_D] r[%ld](%f) = %f + %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
 
-    return writeback_t {inst.frd, (uint64_t)res.v};
+    return writeback_t {inst.frd, res.v};
 }
 
 writeback_t fpu::fmul_s() {

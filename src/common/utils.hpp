@@ -9,4 +9,6 @@
 namespace utils {
     float reg2f(uint64_t data);
     uint64_t f2reg(float data);
+    double reg2d(uint64_t data);
+    uint64_t d2reg(double data);
 }
