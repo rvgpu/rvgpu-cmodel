@@ -46,20 +46,35 @@ writeback_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FADD_D:
             ret = fadd_d();
             break;
+        case encoding::INST_FPU_FSUB_S:
+            ret = fsub_s();
+            break;
+        case encoding::INST_FPU_FSUB_D:
+            ret = fsub_d();
+            break;
         case encoding::INST_FPU_FMUL_S:
             ret = fmul_s();
+            break;
+        case encoding::INST_FPU_FMUL_D:
+            ret = fmul_d();
             break;
         case encoding::INST_FPU_FDIV_S:
             ret = fdiv_s();
             break;
+        case encoding::INST_FPU_FDIV_D:
+            ret = fdiv_d();
+            break;
         case encoding::INST_FPU_FMADD_S:
             ret = fmadd_s();
+            break;
+        case encoding::INST_FPU_FMADD_D:
+            ret = fmadd_d();
             break;
         case encoding::INST_FPU_FMSUB_S:
             ret = fmsub_s();
             break;
-        case encoding::INST_FPU_FSUB_S:
-            ret = fsub_s();
+        case encoding::INST_FPU_FMSUB_D:
+            ret = fmsub_d();
             break;
         case encoding::INST_FPU_FCVT_S_WU:
             ret = fcvt_s_wu();
@@ -109,6 +124,34 @@ writeback_t fpu::fadd_d() {
     return writeback_t {inst.frd, res.v};
 }
 
+writeback_t fpu::fsub_s() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    float32_t res = f32_sub(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FSUB_S] r[%ld](%f) = %f - %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
+}
+
+writeback_t fpu::fsub_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    float64_t res = f64_sub(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FSUB_D] r[%ld](%f) = %f - %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+
+    return writeback_t {inst.frd, res.v};
+}
+
 writeback_t fpu::fmul_s() {
     softfloat_roundingMode = get_rounding_mode();
 
@@ -123,6 +166,20 @@ writeback_t fpu::fmul_s() {
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
 
+writeback_t fpu::fmul_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    float64_t res = f64_mul(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FMUL_D] r[%ld](%f) = %f * %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+
+    return writeback_t {inst.frd, res.v};
+}
+
 writeback_t fpu::fdiv_s() {
     softfloat_roundingMode = get_rounding_mode();
 
@@ -135,6 +192,20 @@ writeback_t fpu::fdiv_s() {
     FPU_INFO("[FDIV_S] r[%ld](%f) = %f / %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
+}
+
+writeback_t fpu::fdiv_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    float64_t res = f64_div(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FDIV_D] r[%ld](%f) = %f / %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+
+    return writeback_t {inst.frd, res.v};
 }
 
 writeback_t fpu::fmadd_s() {
@@ -152,6 +223,21 @@ writeback_t fpu::fmadd_s() {
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
 
+writeback_t fpu::fmadd_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    float64_t frs3 = { (uint64_t)inst.frs3 };
+    float64_t res = f64_mulAdd(frs1, frs2, frs3);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FMADD_D] r[%ld](%f) = %f * %f + %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
+
+    return writeback_t {inst.frd, res.v};
+}
+
 writeback_t fpu::fmsub_s() {
     softfloat_roundingMode = get_rounding_mode();
 
@@ -167,18 +253,19 @@ writeback_t fpu::fmsub_s() {
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
 
-writeback_t fpu::fsub_s() {
+writeback_t fpu::fmsub_d() {
     softfloat_roundingMode = get_rounding_mode();
 
-    float32_t frs1 = { (uint32_t)inst.frs1 };
-    float32_t frs2 = { (uint32_t)inst.frs2 };
-    float32_t res = f32_sub(frs1, frs2);
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    float64_t frs3 = { (uint64_t)inst.frs3 ^ (1L << 63) };
+    float64_t res = f64_mulAdd(frs1, frs2, frs3);
 
     set_fp_exceptions();
 
-    FPU_INFO("[FSUB_S] r[%ld](%f) = %f - %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FMADD_D] r[%ld](%f) = %f * %f - %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
 
-    return writeback_t {inst.frd, (uint64_t)res.v};
+    return writeback_t {inst.frd, res.v};
 }
 
 writeback_t fpu::fcvt_s_wu() {
