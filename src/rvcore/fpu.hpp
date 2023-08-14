@@ -57,6 +57,10 @@ private:
     writeback_t fmadd_d();
     writeback_t fmsub_s();
     writeback_t fmsub_d();
+    writeback_t fmax_s();
+    writeback_t fmax_d();
+    writeback_t fmin_s();
+    writeback_t fmin_d();
     writeback_t fcvt_s_wu();
     writeback_t fcvt_lu_s();
     writeback_t fle_s();

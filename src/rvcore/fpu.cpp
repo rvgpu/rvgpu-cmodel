@@ -76,6 +76,18 @@ writeback_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FMSUB_D:
             ret = fmsub_d();
             break;
+        case encoding::INST_FPU_FMAX_S:
+            ret = fmax_s();
+            break;
+        case encoding::INST_FPU_FMAX_D:
+            ret = fmax_d();
+            break;
+        case encoding::INST_FPU_FMIN_S:
+            ret = fmin_s();
+            break;
+        case encoding::INST_FPU_FMIN_D:
+            ret = fmin_d();
+            break;
         case encoding::INST_FPU_FCVT_S_WU:
             ret = fcvt_s_wu();
             break;
@@ -251,6 +263,62 @@ writeback_t fpu::fmsub_s() {
     FPU_INFO("[FMSUB_S] r[%ld](%f) = %f * %f - %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
+}
+
+writeback_t fpu::fmax_s() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    float32_t res = f32_max(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FMAX_S] r[%ld](%f) = max(%f, %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
+}
+
+writeback_t fpu::fmax_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    float64_t res = f64_max(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FMAX_D] r[%ld](%f) = max(%f, %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+
+    return writeback_t {inst.frd, res.v};
+}
+
+writeback_t fpu::fmin_s() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    float32_t res = f32_min(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FMIN_S] r[%ld](%f) = min(%f, %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
+}
+
+writeback_t fpu::fmin_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    float64_t res = f64_min(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FMIN_D] r[%ld](%f) = min(%f, %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+
+    return writeback_t {inst.frd, res.v};
 }
 
 writeback_t fpu::fmsub_d() {
