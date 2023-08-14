@@ -79,10 +79,17 @@ writeback_t fpu::run(inst_issue instruction) {
 }
 
 writeback_t fpu::fadd_s() {
-    float res = 0.0f;
-    res = reg2f(inst.frs1) + reg2f(inst.frs2);
-    FPU_INFO("[FADD_S] r[%ld](%f) = %f + %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
-    return writeback_t {inst.frd, f2reg(res)};
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    float32_t res = f32_add(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FADD_S] r[%ld](%f) = %f + %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
 }
 
 writeback_t fpu::fmul_s() {
@@ -127,7 +134,7 @@ writeback_t fpu::fcvt_s_wu() {
 }
 
 writeback_t fpu::fcvt_lu_s() {
-    uint64_t res = f32_to_ui64(float32_t(inst.frs1), getrm(), true);
+    uint64_t res = f32_to_ui64(float32_t(inst.frs1), get_rounding_mode(), true);
     FPU_INFO("[FCVT_LU_S] r[%lx](%lx) = f32_to_ui64(%f)\n", inst.rd, res, reg2f(inst.frs1));
     return writeback_t {inst.rd, res};
 }
@@ -145,16 +152,44 @@ writeback_t fpu::fmv_w_x() {
     return writeback_t {inst.frd, f2reg(res)};
 }
 
-int32_t fpu::getrm()
-{
-    int rm = inst.rm;
+uint32_t fpu::get_rounding_mode() {
+    uint32_t rm = inst.rm;
+
     if (rm == 7) {
-        printf("TODO FSCRs\n");
-        // rm = STATE.frm->read();
-    }
-    if (rm > 4) {
+        uint32_t frm = read_frm();
+        if (frm <= 4) {
+            rm = frm;
+        } else {
+            RVGPU_ERROR_PRINT("illegal instruction: %x\n", inst.bits);
+        }
+    } else if (rm > 4) {
         RVGPU_ERROR_PRINT("illegal instruction: %x\n", inst.bits);
     }
 
     return rm;
+}
+
+void fpu::set_fp_exceptions() {
+    if (softfloat_exceptionFlags) {
+        write_fflags(read_fflags() | softfloat_exceptionFlags);
+    }
+    softfloat_exceptionFlags = 0;
+}
+
+uint32_t fpu::read_fflags() {
+    return fcsr & 0x1f;
+}
+
+void fpu::write_fflags(uint32_t data) {
+    uint32_t mask = 0x1f;
+    fcsr = (fcsr & (~mask)) | (data & mask);
+}
+
+uint32_t fpu::read_frm() {
+    return (fcsr >> 5) & 0x7;
+}
+
+void fpu::write_frm(uint32_t data) {
+    uint32_t mask = 0x7 << 5;
+    fcsr = (fcsr & (~mask)) | ((data << 5) & mask);
 }

@@ -35,8 +35,15 @@ public:
 private:
     uint32_t m_id;
     inst_issue inst;
+    uint32_t fcsr = 0;  // Floating-Point Control and Status Register (FCSR)
 
-    int32_t getrm();
+    uint32_t get_rounding_mode();
+    void set_fp_exceptions();
+    uint32_t read_fflags();
+    void write_fflags(uint32_t data);
+    uint32_t read_frm();
+    void write_frm(uint32_t data);
+
 
     writeback_t fadd_s();
     writeback_t fmul_s();
