@@ -46,6 +46,7 @@ private:
 
 
     writeback_t fadd_s();
+    writeback_t fadd_d();
     writeback_t fmul_s();
     writeback_t fdiv_s();
     writeback_t fmadd_s();

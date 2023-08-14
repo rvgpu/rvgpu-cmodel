@@ -3,6 +3,7 @@ function(rvsim_ut_fpu testname)
 endfunction()
 
 rvsim_ut_fpu(fadd_s)
+rvsim_ut_fpu(fadd_d)
 rvsim_ut_fpu(fdiv_s)
 rvsim_ut_fpu(fmadd_s)
 rvsim_ut_fpu(fmul_s)

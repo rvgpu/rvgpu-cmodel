@@ -43,6 +43,9 @@ writeback_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FADD_S:
             ret = fadd_s();
             break;
+        case encoding::INST_FPU_FADD_D:
+            ret = fadd_d();
+            break;
         case encoding::INST_FPU_FMUL_S:
             ret = fmul_s();
             break;
@@ -88,6 +91,20 @@ writeback_t fpu::fadd_s() {
     set_fp_exceptions();
 
     FPU_INFO("[FADD_S] r[%ld](%f) = %f + %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
+}
+
+writeback_t fpu::fadd_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    float64_t res = f64_add(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FADD_D] r[%ld](%f) = %f + %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
