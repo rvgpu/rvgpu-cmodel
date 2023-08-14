@@ -110,38 +110,75 @@ writeback_t fpu::fadd_d() {
 }
 
 writeback_t fpu::fmul_s() {
-    float res = 0.0f;
-    res = reg2f(inst.frs1) * reg2f(inst.frs2);
-    FPU_INFO("[FMUL_S] r[%ld](%f) = %f * %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
-    return writeback_t {inst.frd, f2reg(res)};
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    float32_t res = f32_mul(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FMUL_S] r[%ld](%f) = %f * %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
 }
 
 writeback_t fpu::fdiv_s() {
-    float res = 0.0f;
-    res = reg2f(inst.frs1) / reg2f(inst.frs2);
-    FPU_INFO("[FDIV_S] r[%ld](%f) = %f / %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
-    return writeback_t {inst.frd, f2reg(res)};
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    float32_t res = f32_div(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FDIV_S] r[%ld](%f) = %f / %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
 }
 
 writeback_t fpu::fmadd_s() {
-    float res = 0.0f;
-    res = reg2f(inst.frs1) * reg2f(inst.frs2) + reg2f(inst.frs3);
-    FPU_INFO("[FMADD_S] r[%ld](%f) = %f * %f + %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
-    return writeback_t {inst.frd, f2reg(res)};
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    float32_t frs3 = { (uint32_t)inst.frs3 };
+    float32_t res = f32_mulAdd(frs1, frs2, frs3);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FMADD_S] r[%ld](%f) = %f * %f + %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
 }
 
 writeback_t fpu::fmsub_s() {
-    float res = 0.0f;
-    res = reg2f(inst.frs1) * reg2f(inst.frs2) - reg2f(inst.frs3);
-    FPU_INFO("[FMSUB_S] r[%ld](%f) = %f * %f - %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
-    return writeback_t {inst.frd, f2reg(res)};
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    float32_t frs3 = { (uint32_t)inst.frs3 ^ (1 << 31) };
+    float32_t res = f32_mulAdd(frs1, frs2, frs3);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FMSUB_S] r[%ld](%f) = %f * %f - %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
 }
 
 writeback_t fpu::fsub_s() {
-    float res = 0.0f;
-    res = reg2f(inst.frs1) - reg2f(inst.frs2);
-    FPU_INFO("[FSUB_S] r[%ld](%f) = %f + %f\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
-    return writeback_t {inst.frd, f2reg(res)};
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    float32_t res = f32_sub(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FSUB_S] r[%ld](%f) = %f - %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
 }
 
 writeback_t fpu::fcvt_s_wu() {
