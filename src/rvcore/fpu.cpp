@@ -306,7 +306,7 @@ writeback_t fpu::fmsub_s() {
 
     float32_t frs1 = { (uint32_t)inst.frs1 };
     float32_t frs2 = { (uint32_t)inst.frs2 };
-    float32_t frs3 = { (uint32_t)inst.frs3 ^ (1 << 31) };
+    float32_t frs3 = { (uint32_t)inst.frs3 ^ F32_SIGN };
     float32_t res = f32_mulAdd(frs1, frs2, frs3);
 
     set_fp_exceptions();
@@ -321,7 +321,7 @@ writeback_t fpu::fmsub_d() {
 
     float64_t frs1 = { (uint64_t)inst.frs1 };
     float64_t frs2 = { (uint64_t)inst.frs2 };
-    float64_t frs3 = { (uint64_t)inst.frs3 ^ (1L << 63) };
+    float64_t frs3 = { (uint64_t)inst.frs3 ^ F64_SIGN };
     float64_t res = f64_mulAdd(frs1, frs2, frs3);
 
     set_fp_exceptions();
@@ -334,9 +334,9 @@ writeback_t fpu::fmsub_d() {
 writeback_t fpu::fnmadd_s() {
     softfloat_roundingMode = get_rounding_mode();
 
-    float32_t frs1 = { (uint32_t)inst.frs1 ^ (1 << 31) };
+    float32_t frs1 = { (uint32_t)inst.frs1 ^ F32_SIGN };
     float32_t frs2 = { (uint32_t)inst.frs2 };
-    float32_t frs3 = { (uint32_t)inst.frs3 ^ (1 << 31) };
+    float32_t frs3 = { (uint32_t)inst.frs3 ^ F32_SIGN };
     float32_t res = f32_mulAdd(frs1, frs2, frs3);
 
     set_fp_exceptions();
@@ -349,9 +349,9 @@ writeback_t fpu::fnmadd_s() {
 writeback_t fpu::fnmadd_d() {
     softfloat_roundingMode = get_rounding_mode();
 
-    float64_t frs1 = { (uint64_t)inst.frs1 ^ (1L << 63) };
+    float64_t frs1 = { (uint64_t)inst.frs1 ^ F64_SIGN };
     float64_t frs2 = { (uint64_t)inst.frs2 };
-    float64_t frs3 = { (uint64_t)inst.frs3 ^ (1L << 63) };
+    float64_t frs3 = { (uint64_t)inst.frs3 ^ F64_SIGN };
     float64_t res = f64_mulAdd(frs1, frs2, frs3);
 
     set_fp_exceptions();
@@ -364,7 +364,7 @@ writeback_t fpu::fnmadd_d() {
 writeback_t fpu::fnmsub_s() {
     softfloat_roundingMode = get_rounding_mode();
 
-    float32_t frs1 = { (uint32_t)inst.frs1 ^ (1 << 31) };
+    float32_t frs1 = { (uint32_t)inst.frs1 ^ F32_SIGN };
     float32_t frs2 = { (uint32_t)inst.frs2 };
     float32_t frs3 = { (uint32_t)inst.frs3 };
     float32_t res = f32_mulAdd(frs1, frs2, frs3);
@@ -379,7 +379,7 @@ writeback_t fpu::fnmsub_s() {
 writeback_t fpu::fnmsub_d() {
     softfloat_roundingMode = get_rounding_mode();
 
-    float64_t frs1 = { (uint64_t)inst.frs1 ^ (1L << 63) };
+    float64_t frs1 = { (uint64_t)inst.frs1 ^ F64_SIGN };
     float64_t frs2 = { (uint64_t)inst.frs2 };
     float64_t frs3 = { (uint64_t)inst.frs3 };
     float64_t res = f64_mulAdd(frs1, frs2, frs3);
