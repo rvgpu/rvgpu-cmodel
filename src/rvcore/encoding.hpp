@@ -99,7 +99,12 @@ typedef enum {
     INST_FPU_FSQRT_D,
     INST_FPU_FCVT_S_WU,
     INST_FPU_FCVT_LU_S,
+    INST_FPU_FEQ_S,
+    INST_FPU_FEQ_D,
     INST_FPU_FLE_S,
+    INST_FPU_FLE_D,
+    INST_FPU_FLT_S,
+    INST_FPU_FLT_D,
     INST_FPU_FMV_W_X,
 
     INST_TYPE_LS = 0x400,

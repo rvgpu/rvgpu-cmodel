@@ -69,6 +69,11 @@ private:
     writeback_t fsqrt_d();
     writeback_t fcvt_s_wu();
     writeback_t fcvt_lu_s();
+    writeback_t feq_s();
+    writeback_t feq_d();
     writeback_t fle_s();
+    writeback_t fle_d();
+    writeback_t flt_s();
+    writeback_t flt_d();
     writeback_t fmv_w_x();
 };

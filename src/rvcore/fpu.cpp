@@ -112,8 +112,23 @@ writeback_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FCVT_LU_S:
             ret = fcvt_lu_s();
             break;
+        case encoding::INST_FPU_FEQ_S:
+            ret = feq_s();
+            break;
+        case encoding::INST_FPU_FEQ_D:
+            ret = feq_d();
+            break;
         case encoding::INST_FPU_FLE_S:
             ret = fle_s();
+            break;
+        case encoding::INST_FPU_FLE_D:
+            ret = fle_d();
+            break;
+        case encoding::INST_FPU_FLT_S:
+            ret = flt_s();
+            break;
+        case encoding::INST_FPU_FLT_D:
+            ret = flt_d();
             break;
         case encoding::INST_FPU_FMV_W_X:
             ret = fmv_w_x();
@@ -444,10 +459,75 @@ writeback_t fpu::fcvt_lu_s() {
     return writeback_t {inst.rd, res};
 }
 
+writeback_t fpu::feq_s() {
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    uint64_t res = f32_eq(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FEQ_S] r[%ld](%ld) = (%f == %f)\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t fpu::feq_d() {
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    uint64_t res = f64_eq(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FEQ_D] r[%ld](%ld) = (%f == %f)\n", inst.rd, res, reg2d(inst.frs1), reg2d(inst.frs2));
+
+    return writeback_t {inst.rd, res};
+}
+
 writeback_t fpu::fle_s() {
-    uint64_t res;
-    res = f32_le(float32_t(inst.frs1), float32_t(inst.frs2));
-    FPU_INFO("[FLE_S] r[%lx](%ld) = (%f <= %f)\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    uint64_t res = f32_le(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FLE_S] r[%ld](%ld) = (%f <= %f)\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t fpu::fle_d() {
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    uint64_t res = f64_le(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FLE_D] r[%ld](%ld) = (%f <= %f)\n", inst.rd, res, reg2d(inst.frs1), reg2d(inst.frs2));
+
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t fpu::flt_s() {
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    uint64_t res = f32_lt(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FLT_S] r[%ld](%ld) = (%f < %f)\n", inst.rd, res, reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t fpu::flt_d() {
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    uint64_t res = f64_lt(frs1, frs2);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FLT_D] r[%ld](%ld) = (%f < %f)\n", inst.rd, res, reg2d(inst.frs1), reg2d(inst.frs2));
+
     return writeback_t {inst.rd, res};
 }
 
