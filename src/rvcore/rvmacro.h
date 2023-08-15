@@ -12,3 +12,6 @@ typedef uint64_t reg_t;
 #define sext_xlen(x)    (((sreg_t)(x) << (64 - 64)) >> (64 - 64))
 #define zext_xlen(x)    zext(x, 64)
 #define SHAMT           (inst.i_imm & 0x3F)
+
+#define F32_SIGN ((uint32_t)1 << 31)
+#define F64_SIGN ((uint64_t)1 << 63)

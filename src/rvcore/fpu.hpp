@@ -75,5 +75,11 @@ private:
     writeback_t fle_d();
     writeback_t flt_s();
     writeback_t flt_d();
+    writeback_t fsgnj_s();
+    writeback_t fsgnj_d();
+    writeback_t fsgnjn_s();
+    writeback_t fsgnjn_d();
+    writeback_t fsgnjx_s();
+    writeback_t fsgnjx_d();
     writeback_t fmv_w_x();
 };

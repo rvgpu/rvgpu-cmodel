@@ -130,6 +130,24 @@ writeback_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FLT_D:
             ret = flt_d();
             break;
+        case encoding::INST_FPU_FSGNJ_S:
+            ret = fsgnj_s();
+            break;
+        case encoding::INST_FPU_FSGNJ_D:
+            ret = fsgnj_d();
+            break;
+        case encoding::INST_FPU_FSGNJN_S:
+            ret = fsgnjn_s();
+            break;
+        case encoding::INST_FPU_FSGNJN_D:
+            ret = fsgnjn_d();
+            break;
+        case encoding::INST_FPU_FSGNJX_S:
+            ret = fsgnjx_s();
+            break;
+        case encoding::INST_FPU_FSGNJX_D:
+            ret = fsgnjx_d();
+            break;
         case encoding::INST_FPU_FMV_W_X:
             ret = fmv_w_x();
             break;
@@ -529,6 +547,72 @@ writeback_t fpu::flt_d() {
     FPU_INFO("[FLT_D] r[%ld](%ld) = (%f < %f)\n", inst.rd, res, reg2d(inst.frs1), reg2d(inst.frs2));
 
     return writeback_t {inst.rd, res};
+}
+
+writeback_t fpu::fsgnj_s() {
+    uint32_t frs1 = (uint32_t)inst.frs1;
+    uint32_t frs2 = (uint32_t)inst.frs2;
+    uint32_t sign = frs2 & F32_SIGN;
+    uint32_t res = (frs1 & ~F32_SIGN) | (sign & F32_SIGN);
+
+    FPU_INFO("[FSGNJ_S] r[%ld](%f) = sgnj(%f, %f)\n", inst.rd, reg2f(res), reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.frd, (uint64_t)res};
+}
+
+writeback_t fpu::fsgnj_d() {
+    uint64_t frs1 = (uint64_t)inst.frs1;
+    uint64_t frs2 = (uint64_t)inst.frs2;
+    uint64_t sign = frs2 & F64_SIGN;
+    uint64_t res = (frs1 & ~F64_SIGN) | (sign & F64_SIGN);
+
+    FPU_INFO("[FSGNJ_D] r[%ld](%f) = sgnj(%f, %f)\n", inst.rd, reg2d(res), reg2d(inst.frs1), reg2d(inst.frs2));
+
+    return writeback_t {inst.frd, res};
+}
+
+writeback_t fpu::fsgnjn_s() {
+    uint32_t frs1 = (uint32_t)inst.frs1;
+    uint32_t frs2 = (uint32_t)inst.frs2;
+    uint32_t sign = (frs2 & F32_SIGN) ^ F32_SIGN;
+    uint32_t res = (frs1 & ~F32_SIGN) | (sign & F32_SIGN);
+
+    FPU_INFO("[FSGNJN_S] r[%ld](%f) = sgnjn(%f, %f)\n", inst.rd, reg2f(res), reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.frd, (uint64_t)res};
+}
+
+writeback_t fpu::fsgnjn_d() {
+    uint64_t frs1 = (uint64_t)inst.frs1;
+    uint64_t frs2 = (uint64_t)inst.frs2;
+    uint64_t sign = (frs2 & F64_SIGN) ^ F64_SIGN;
+    uint64_t res = (frs1 & ~F64_SIGN) | (sign & F64_SIGN);
+
+    FPU_INFO("[FSGNJN_D] r[%ld](%f) = sgnjn(%f, %f)\n", inst.rd, reg2d(res), reg2d(inst.frs1), reg2d(inst.frs2));
+
+    return writeback_t {inst.frd, res};
+}
+
+writeback_t fpu::fsgnjx_s() {
+    uint32_t frs1 = (uint32_t)inst.frs1;
+    uint32_t frs2 = (uint32_t)inst.frs2;
+    uint32_t sign = (frs2 & F32_SIGN) ^ (frs1 & F32_SIGN);
+    uint32_t res = (frs1 & ~F32_SIGN) | (sign & F32_SIGN);
+
+    FPU_INFO("[FSGNJX_S] r[%ld](%f) = sgnjx(%f, %f)\n", inst.rd, reg2f(res), reg2f(inst.frs1), reg2f(inst.frs2));
+
+    return writeback_t {inst.frd, (uint64_t)res};
+}
+
+writeback_t fpu::fsgnjx_d() {
+    uint64_t frs1 = (uint64_t)inst.frs1;
+    uint64_t frs2 = (uint64_t)inst.frs2;
+    uint64_t sign = (frs2 & F64_SIGN) ^ (frs1 & F64_SIGN);
+    uint64_t res = (frs1 & ~F64_SIGN) | (sign & F64_SIGN);
+
+    FPU_INFO("[FSGNJX_D] r[%ld](%f) = sgnjx(%f, %f)\n", inst.rd, reg2d(res), reg2d(inst.frs1), reg2d(inst.frs2));
+
+    return writeback_t {inst.frd, res};
 }
 
 writeback_t fpu::fmv_w_x() {
