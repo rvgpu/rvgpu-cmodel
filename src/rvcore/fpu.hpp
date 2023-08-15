@@ -65,6 +65,8 @@ private:
     writeback_t fmax_d();
     writeback_t fmin_s();
     writeback_t fmin_d();
+    writeback_t fsqrt_s();
+    writeback_t fsqrt_d();
     writeback_t fcvt_s_wu();
     writeback_t fcvt_lu_s();
     writeback_t fle_s();

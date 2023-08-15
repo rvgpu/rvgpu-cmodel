@@ -100,6 +100,12 @@ writeback_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FMIN_D:
             ret = fmin_d();
             break;
+        case encoding::INST_FPU_FSQRT_S:
+            ret = fsqrt_s();
+            break;
+        case encoding::INST_FPU_FSQRT_D:
+            ret = fsqrt_d();
+            break;
         case encoding::INST_FPU_FCVT_S_WU:
             ret = fcvt_s_wu();
             break;
@@ -396,6 +402,32 @@ writeback_t fpu::fmin_d() {
     set_fp_exceptions();
 
     FPU_INFO("[FMIN_D] r[%ld](%f) = min(%f, %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+
+    return writeback_t {inst.frd, res.v};
+}
+
+writeback_t fpu::fsqrt_s() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 };
+    float32_t res = f32_sqrt(frs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FSQRT_S] r[%ld](%f) = sqrt(%f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
+}
+
+writeback_t fpu::fsqrt_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t res = f64_sqrt(frs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FSQRT_D] r[%ld](%f) = sqrt(%f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1));
 
     return writeback_t {inst.frd, res.v};
 }

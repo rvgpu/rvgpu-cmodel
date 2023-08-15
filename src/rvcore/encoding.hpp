@@ -95,6 +95,8 @@ typedef enum {
     INST_FPU_FMAX_D,
     INST_FPU_FMIN_S,
     INST_FPU_FMIN_D,
+    INST_FPU_FSQRT_S,
+    INST_FPU_FSQRT_D,
     INST_FPU_FCVT_S_WU,
     INST_FPU_FCVT_LU_S,
     INST_FPU_FLE_S,
