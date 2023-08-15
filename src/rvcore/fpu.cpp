@@ -266,8 +266,6 @@ writeback_t fpu::fmsub_s() {
 }
 
 writeback_t fpu::fmax_s() {
-    softfloat_roundingMode = get_rounding_mode();
-
     float32_t frs1 = { (uint32_t)inst.frs1 };
     float32_t frs2 = { (uint32_t)inst.frs2 };
     float32_t res = f32_max(frs1, frs2);
@@ -280,8 +278,6 @@ writeback_t fpu::fmax_s() {
 }
 
 writeback_t fpu::fmax_d() {
-    softfloat_roundingMode = get_rounding_mode();
-
     float64_t frs1 = { (uint64_t)inst.frs1 };
     float64_t frs2 = { (uint64_t)inst.frs2 };
     float64_t res = f64_max(frs1, frs2);
@@ -294,8 +290,6 @@ writeback_t fpu::fmax_d() {
 }
 
 writeback_t fpu::fmin_s() {
-    softfloat_roundingMode = get_rounding_mode();
-
     float32_t frs1 = { (uint32_t)inst.frs1 };
     float32_t frs2 = { (uint32_t)inst.frs2 };
     float32_t res = f32_min(frs1, frs2);
@@ -308,8 +302,6 @@ writeback_t fpu::fmin_s() {
 }
 
 writeback_t fpu::fmin_d() {
-    softfloat_roundingMode = get_rounding_mode();
-
     float64_t frs1 = { (uint64_t)inst.frs1 };
     float64_t frs2 = { (uint64_t)inst.frs2 };
     float64_t res = f64_min(frs1, frs2);
