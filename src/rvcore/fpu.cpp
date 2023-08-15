@@ -76,6 +76,18 @@ writeback_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FMSUB_D:
             ret = fmsub_d();
             break;
+        case encoding::INST_FPU_FNMADD_S:
+            ret = fnmadd_s();
+            break;
+        case encoding::INST_FPU_FNMADD_D:
+            ret = fnmadd_d();
+            break;
+        case encoding::INST_FPU_FNMSUB_S:
+            ret = fnmsub_s();
+            break;
+        case encoding::INST_FPU_FNMSUB_D:
+            ret = fnmsub_d();
+            break;
         case encoding::INST_FPU_FMAX_S:
             ret = fmax_s();
             break;
@@ -265,6 +277,81 @@ writeback_t fpu::fmsub_s() {
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
 
+writeback_t fpu::fmsub_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t frs1 = { (uint64_t)inst.frs1 };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    float64_t frs3 = { (uint64_t)inst.frs3 ^ (1L << 63) };
+    float64_t res = f64_mulAdd(frs1, frs2, frs3);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FMSUB_D] r[%ld](%f) = %f * %f - %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
+
+    return writeback_t {inst.frd, res.v};
+}
+
+writeback_t fpu::fnmadd_s() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 ^ (1 << 31) };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    float32_t frs3 = { (uint32_t)inst.frs3 ^ (1 << 31) };
+    float32_t res = f32_mulAdd(frs1, frs2, frs3);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FNMADD_S] r[%ld](%f) = -(%f * %f + %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
+}
+
+writeback_t fpu::fnmadd_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t frs1 = { (uint64_t)inst.frs1 ^ (1L << 63) };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    float64_t frs3 = { (uint64_t)inst.frs3 ^ (1L << 63) };
+    float64_t res = f64_mulAdd(frs1, frs2, frs3);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FNMADD_D] r[%ld](%f) = -(%f * %f + %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
+
+    return writeback_t {inst.frd, res.v};
+}
+
+writeback_t fpu::fnmsub_s() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t frs1 = { (uint32_t)inst.frs1 ^ (1 << 31) };
+    float32_t frs2 = { (uint32_t)inst.frs2 };
+    float32_t frs3 = { (uint32_t)inst.frs3 };
+    float32_t res = f32_mulAdd(frs1, frs2, frs3);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FNMSUB_S] r[%ld](%f) = -(%f * %f - %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
+}
+
+writeback_t fpu::fnmsub_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t frs1 = { (uint64_t)inst.frs1 ^ (1L << 63) };
+    float64_t frs2 = { (uint64_t)inst.frs2 };
+    float64_t frs3 = { (uint64_t)inst.frs3 };
+    float64_t res = f64_mulAdd(frs1, frs2, frs3);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FNMSUB_D] r[%ld](%f) = -(%f * %f - %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
+
+    return writeback_t {inst.frd, res.v};
+}
+
 writeback_t fpu::fmax_s() {
     float32_t frs1 = { (uint32_t)inst.frs1 };
     float32_t frs2 = { (uint32_t)inst.frs2 };
@@ -309,21 +396,6 @@ writeback_t fpu::fmin_d() {
     set_fp_exceptions();
 
     FPU_INFO("[FMIN_D] r[%ld](%f) = min(%f, %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
-
-    return writeback_t {inst.frd, res.v};
-}
-
-writeback_t fpu::fmsub_d() {
-    softfloat_roundingMode = get_rounding_mode();
-
-    float64_t frs1 = { (uint64_t)inst.frs1 };
-    float64_t frs2 = { (uint64_t)inst.frs2 };
-    float64_t frs3 = { (uint64_t)inst.frs3 ^ (1L << 63) };
-    float64_t res = f64_mulAdd(frs1, frs2, frs3);
-
-    set_fp_exceptions();
-
-    FPU_INFO("[FMADD_D] r[%ld](%f) = %f * %f - %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
 
     return writeback_t {inst.frd, res.v};
 }

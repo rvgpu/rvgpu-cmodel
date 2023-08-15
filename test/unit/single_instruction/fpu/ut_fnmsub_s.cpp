@@ -1,8 +1,8 @@
 #include "ut_inst.hpp"
 
-TEST_F(ut_inst, decode_and_execute_rv64if_fmsub_s) {
-    // 0x20107247   fmsub.s ft4, ft0, ft1, ft4
-    insts.push_back(0x20107247);
+TEST_F(ut_inst, decode_and_execute_rv64if_fnmsub_s) {
+    // 0x2010724b   fnmsub.s ft4, ft0, ft1, ft4
+    insts.push_back(0x2010724b);
 
     float a = 1.1f;
     float b = 2.1f;
@@ -14,5 +14,5 @@ TEST_F(ut_inst, decode_and_execute_rv64if_fmsub_s) {
     ExecuateInst();
 
     uint32_t res = GetFReg(fpreg::ft4);
-    EXPECT_FLOAT_EQ(std::bit_cast<float>(res), a * b - c);
+    EXPECT_FLOAT_EQ(std::bit_cast<float>(res), -(a * b - c));
 }
