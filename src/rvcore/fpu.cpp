@@ -151,6 +151,15 @@ writeback_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FMV_W_X:
             ret = fmv_w_x();
             break;
+        case encoding::INST_FPU_FMV_X_W:
+            ret = fmv_x_w();
+            break;
+        case encoding::INST_FPU_FMV_D_X:
+            ret = fmv_d_x();
+            break;
+        case encoding::INST_FPU_FMV_X_D:
+            ret = fmv_x_d();
+            break;
         default:
             printf("FPU Inst TODO\n");
             break;
@@ -615,10 +624,44 @@ writeback_t fpu::fsgnjx_d() {
     return writeback_t {inst.frd, res};
 }
 
+// word to float
 writeback_t fpu::fmv_w_x() {
-    float res = reg2f(inst.rs1);
-    FPU_INFO("[FMV_W_X] r[%lx](%f) = %f\n", inst.rd, res, reg2f(inst.rs1));
-    return writeback_t {inst.frd, f2reg(res)};
+    uint32_t data = (uint32_t)inst.rs1;
+    uint64_t res = (uint64_t)data;
+
+    FPU_INFO("[FMV_W_X] r[%lx](%f) = 0x%x\n", inst.rd, reg2f(res), data);
+
+    return writeback_t {inst.frd, res};
+}
+
+// float to word
+writeback_t fpu::fmv_x_w() {
+    uint32_t data = (uint32_t)inst.frs1;
+    uint64_t res = sext32(data);
+
+    FPU_INFO("[FMV_X_W] r[%lx](0x%lx) = %f\n", inst.rd, res, reg2f(data));
+
+    return writeback_t {inst.rd, res};
+}
+
+// double word to double
+writeback_t fpu::fmv_d_x() {
+    uint64_t data = (uint64_t)inst.rs1;
+    uint64_t res = data;
+
+    FPU_INFO("[FMV_D_X] r[%lx](%f) = 0x%lx\n", inst.rd, reg2d(res), data);
+
+    return writeback_t {inst.frd, res};
+}
+
+// double to double word
+writeback_t fpu::fmv_x_d() {
+    uint64_t data = (uint64_t)inst.frs1;
+    uint64_t res = data;
+
+    FPU_INFO("[FMV_X_D] r[%lx](0x%lx) = %f\n", inst.rd, res, reg2d(data));
+
+    return writeback_t {inst.rd, res};
 }
 
 uint32_t fpu::get_rounding_mode() {

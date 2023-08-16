@@ -82,4 +82,7 @@ private:
     writeback_t fsgnjx_s();
     writeback_t fsgnjx_d();
     writeback_t fmv_w_x();
+    writeback_t fmv_x_w();
+    writeback_t fmv_d_x();
+    writeback_t fmv_x_d();
 };

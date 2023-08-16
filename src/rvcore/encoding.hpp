@@ -112,6 +112,9 @@ typedef enum {
     INST_FPU_FSGNJX_S,
     INST_FPU_FSGNJX_D,
     INST_FPU_FMV_W_X,
+    INST_FPU_FMV_X_W,
+    INST_FPU_FMV_D_X,
+    INST_FPU_FMV_X_D,
 
     INST_TYPE_LS = 0x400,
     INST_LS_LB,
