@@ -106,11 +106,53 @@ writeback_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FSQRT_D:
             ret = fsqrt_d();
             break;
+        case encoding::INST_FPU_FCVT_S_L:
+            ret = fcvt_s_l();
+            break;
+        case encoding::INST_FPU_FCVT_S_LU:
+            ret = fcvt_s_lu();
+            break;
+        case encoding::INST_FPU_FCVT_S_W:
+            ret = fcvt_s_w();
+            break;
         case encoding::INST_FPU_FCVT_S_WU:
             ret = fcvt_s_wu();
             break;
+        case encoding::INST_FPU_FCVT_L_S:
+            ret = fcvt_l_s();
+            break;
         case encoding::INST_FPU_FCVT_LU_S:
             ret = fcvt_lu_s();
+            break;
+        case encoding::INST_FPU_FCVT_W_S:
+            ret = fcvt_w_s();
+            break;
+        case encoding::INST_FPU_FCVT_WU_S:
+            ret = fcvt_wu_s();
+            break;
+        case encoding::INST_FPU_FCVT_D_L:
+            ret = fcvt_d_l();
+            break;
+        case encoding::INST_FPU_FCVT_D_LU:
+            ret = fcvt_d_lu();
+            break;
+        case encoding::INST_FPU_FCVT_D_W:
+            ret = fcvt_d_w();
+            break;
+        case encoding::INST_FPU_FCVT_D_WU:
+            ret = fcvt_d_wu();
+            break;
+        case encoding::INST_FPU_FCVT_L_D:
+            ret = fcvt_l_d();
+            break;
+        case encoding::INST_FPU_FCVT_LU_D:
+            ret = fcvt_lu_d();
+            break;
+        case encoding::INST_FPU_FCVT_W_D:
+            ret = fcvt_w_d();
+            break;
+        case encoding::INST_FPU_FCVT_WU_D:
+            ret = fcvt_wu_d();
             break;
         case encoding::INST_FPU_FEQ_S:
             ret = feq_s();
@@ -474,15 +516,216 @@ writeback_t fpu::fsqrt_d() {
     return writeback_t {inst.frd, res.v};
 }
 
-writeback_t fpu::fcvt_s_wu() {
-    float32_t res = ui32_to_f32((uint32_t)inst.rs1);
-    FPU_INFO("[FCVT_S_WU] r[%lx](%f) = ui32_to_f32(%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
+// int64 to float
+writeback_t fpu::fcvt_s_l() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t res = i64_to_f32((int64_t)inst.rs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_S_L] fr[%lx](%f) = i64_to_f32(%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
+
     return writeback_t {inst.frd, uint64_t(res.v)};
 }
 
+// uint64 to float
+writeback_t fpu::fcvt_s_lu() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t res = ui64_to_f32((uint64_t)inst.rs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_S_LU] fr[%lx](%f) = ui64_to_f32(%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
+
+    return writeback_t {inst.frd, uint64_t(res.v)};
+}
+
+// int32 to float
+writeback_t fpu::fcvt_s_w() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t res = i32_to_f32((int32_t)inst.rs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_S_W] fr[%lx](%f) = i32_to_f32(%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
+
+    return writeback_t {inst.frd, uint64_t(res.v)};
+}
+
+// uint32 to float
+writeback_t fpu::fcvt_s_wu() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t res = ui32_to_f32((uint32_t)inst.rs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_S_WU] fr[%lx](%f) = ui32_to_f32(%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
+
+    return writeback_t {inst.frd, uint64_t(res.v)};
+}
+
+// float to int64
+writeback_t fpu::fcvt_l_s() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    uint64_t res = f32_to_i64((float32_t)inst.frs1, get_rounding_mode(), true);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_L_S] r[%lx](%lx) = f32_to_i64(%f)\n", inst.rd, res, reg2f(inst.frs1));
+
+    return writeback_t {inst.rd, res};
+}
+
+// float to uint64
 writeback_t fpu::fcvt_lu_s() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    uint64_t res = f32_to_ui64((float32_t)inst.frs1, get_rounding_mode(), true);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_LU_S] r[%lx](%lx) = f32_to_ui64(%f)\n", inst.rd, res, reg2f(inst.frs1));
+
+    return writeback_t {inst.rd, res};
+
+    /*
     uint64_t res = f32_to_ui64(float32_t(inst.frs1), get_rounding_mode(), true);
     FPU_INFO("[FCVT_LU_S] r[%lx](%lx) = f32_to_ui64(%f)\n", inst.rd, res, reg2f(inst.frs1));
+    return writeback_t {inst.rd, res};*/
+}
+
+// float to int32
+writeback_t fpu::fcvt_w_s() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    uint64_t res = sext32(f32_to_i32((float32_t)inst.frs1, get_rounding_mode(), true));
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_W_S] r[%lx](%lx) = f32_to_i32(%f)\n", inst.rd, res, reg2f(inst.frs1));
+
+    return writeback_t {inst.rd, res};
+}
+
+// float to uint32
+writeback_t fpu::fcvt_wu_s() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    uint64_t res = sext32(f32_to_ui32((float32_t)inst.frs1, get_rounding_mode(), true));
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_WU_S] r[%lx](%lx) = f32_to_ui32(%f)\n", inst.rd, res, reg2f(inst.frs1));
+
+    return writeback_t {inst.rd, res};
+}
+
+// int64 to double
+writeback_t fpu::fcvt_d_l() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t res = i64_to_f64((int64_t)inst.rs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_D_L] fr[%lx](%f) = i64_to_f64(%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
+
+    return writeback_t {inst.frd, uint64_t(res.v)};
+}
+
+// uint64 to double
+writeback_t fpu::fcvt_d_lu() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t res = ui64_to_f64((uint64_t)inst.rs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_D_LU] fr[%lx](%f) = ui64_to_f64(%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
+
+    return writeback_t {inst.frd, uint64_t(res.v)};
+}
+
+// int32 to double
+writeback_t fpu::fcvt_d_w() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t res = i32_to_f64((int32_t)inst.rs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_D_W] fr[%lx](%f) = i32_to_f64(%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
+
+    return writeback_t {inst.frd, uint64_t(res.v)};
+}
+
+// uint32 to double
+writeback_t fpu::fcvt_d_wu() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t res = ui32_to_f64((uint32_t)inst.rs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_D_WU] fr[%lx](%f) = ui32_to_f64(%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
+
+    return writeback_t {inst.frd, uint64_t(res.v)};
+}
+
+// double to int64
+writeback_t fpu::fcvt_l_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    uint64_t res = f64_to_i64((float64_t)inst.frs1, get_rounding_mode(), true);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_L_D] r[%lx](%lx) = f64_to_i64(%f)\n", inst.rd, res, reg2d(inst.frs1));
+
+    return writeback_t {inst.rd, res};
+}
+
+// double to uint64
+writeback_t fpu::fcvt_lu_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    uint64_t res = f64_to_ui64((float64_t)inst.frs1, get_rounding_mode(), true);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_LU_D] r[%lx](%lx) = f64_to_ui64(%f)\n", inst.rd, res, reg2d(inst.frs1));
+
+    return writeback_t {inst.rd, res};
+}
+
+// double to int32
+writeback_t fpu::fcvt_w_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    uint64_t res = sext32(f64_to_i32((float64_t)inst.frs1, get_rounding_mode(), true));
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_W_D] r[%lx](%lx) = f64_to_i32(%f)\n", inst.rd, res, reg2d(inst.frs1));
+
+    return writeback_t {inst.rd, res};
+}
+
+// double to uint32
+writeback_t fpu::fcvt_wu_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    uint64_t res = sext32(f64_to_ui32((float64_t)inst.frs1, get_rounding_mode(), true));
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_WU_D] r[%lx](%lx) = f64_to_ui32(%f)\n", inst.rd, res, reg2d(inst.frs1));
+
     return writeback_t {inst.rd, res};
 }
 
