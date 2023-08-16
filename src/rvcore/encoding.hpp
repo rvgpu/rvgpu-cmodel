@@ -148,6 +148,8 @@ typedef enum {
     INST_LS_SD,
     INST_LS_FLW,
     INST_LS_FSW,
+    INST_LS_FLD,
+    INST_LS_FSD,
 
     INST_TYPE_BRANCH = 0x800,
     INST_BRANCH_BEQ,

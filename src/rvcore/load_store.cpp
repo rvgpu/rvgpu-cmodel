@@ -44,7 +44,20 @@ writeback_t load_store::run(inst_issue inst) {
         case encoding::INST_LS_FLW: {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint32_t data = *((uint32_t *)addr);
-            RVGPU_DEBUG_PRINT("[EXEC.LS.FLW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.FLW] load.i32: fr[%ld] 0x%x (%f) from mem[0x%lx]\n", inst.rd, data, utils::reg2f(data), addr);
+            result = writeback_t {inst.frd, data};
+            break;
+        }
+        case encoding::INST_LS_FSD: {
+            uint64_t addr = inst.rs1 + inst.s_imm;
+            RVGPU_DEBUG_PRINT("[EXEC.LS.FSD] store.i64: mem[0x%lx] = 0x%lx (%f)\n", addr, inst.frs2, utils::reg2d(inst.frs2));
+            *((uint64_t *)addr) = (uint64_t)inst.frs2;
+            break;
+        }
+        case encoding::INST_LS_FLD: {
+            uint64_t addr = inst.rs1 + inst.i_imm;
+            uint64_t data = *((uint64_t *)addr);
+            RVGPU_DEBUG_PRINT("[EXEC.LS.FLD] load.i64: fr[%ld] 0x%lx (%f) from mem[0x%lx]\n", inst.rd, data, utils::reg2d(data), addr);
             result = writeback_t {inst.frd, data};
             break;
         }
