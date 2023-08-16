@@ -177,7 +177,7 @@ writeback_t fpu::fadd_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FADD_S] r[%ld](%f) = %f + %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FADD_S] fr[%ld](%f) = %f + %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
@@ -191,7 +191,7 @@ writeback_t fpu::fadd_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FADD_D] r[%ld](%f) = %f + %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+    FPU_INFO("[FADD_D] fr[%ld](%f) = %f + %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
 
     return writeback_t {inst.frd, res.v};
 }
@@ -205,7 +205,7 @@ writeback_t fpu::fsub_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FSUB_S] r[%ld](%f) = %f - %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FSUB_S] fr[%ld](%f) = %f - %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
@@ -219,7 +219,7 @@ writeback_t fpu::fsub_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FSUB_D] r[%ld](%f) = %f - %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+    FPU_INFO("[FSUB_D] fr[%ld](%f) = %f - %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
 
     return writeback_t {inst.frd, res.v};
 }
@@ -233,7 +233,7 @@ writeback_t fpu::fmul_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FMUL_S] r[%ld](%f) = %f * %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FMUL_S] fr[%ld](%f) = %f * %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
@@ -247,7 +247,7 @@ writeback_t fpu::fmul_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FMUL_D] r[%ld](%f) = %f * %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+    FPU_INFO("[FMUL_D] fr[%ld](%f) = %f * %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
 
     return writeback_t {inst.frd, res.v};
 }
@@ -261,7 +261,7 @@ writeback_t fpu::fdiv_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FDIV_S] r[%ld](%f) = %f / %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FDIV_S] fr[%ld](%f) = %f / %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
@@ -275,7 +275,7 @@ writeback_t fpu::fdiv_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FDIV_D] r[%ld](%f) = %f / %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+    FPU_INFO("[FDIV_D] fr[%ld](%f) = %f / %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
 
     return writeback_t {inst.frd, res.v};
 }
@@ -290,7 +290,7 @@ writeback_t fpu::fmadd_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FMADD_S] r[%ld](%f) = %f * %f + %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
+    FPU_INFO("[FMADD_S] fr[%ld](%f) = %f * %f + %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
@@ -305,7 +305,7 @@ writeback_t fpu::fmadd_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FMADD_D] r[%ld](%f) = %f * %f + %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
+    FPU_INFO("[FMADD_D] fr[%ld](%f) = %f * %f + %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
 
     return writeback_t {inst.frd, res.v};
 }
@@ -320,7 +320,7 @@ writeback_t fpu::fmsub_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FMSUB_S] r[%ld](%f) = %f * %f - %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
+    FPU_INFO("[FMSUB_S] fr[%ld](%f) = %f * %f - %f\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
@@ -335,7 +335,7 @@ writeback_t fpu::fmsub_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FMSUB_D] r[%ld](%f) = %f * %f - %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
+    FPU_INFO("[FMSUB_D] fr[%ld](%f) = %f * %f - %f\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
 
     return writeback_t {inst.frd, res.v};
 }
@@ -350,7 +350,7 @@ writeback_t fpu::fnmadd_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FNMADD_S] r[%ld](%f) = -(%f * %f + %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
+    FPU_INFO("[FNMADD_S] fr[%ld](%f) = -(%f * %f + %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
@@ -365,7 +365,7 @@ writeback_t fpu::fnmadd_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FNMADD_D] r[%ld](%f) = -(%f * %f + %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
+    FPU_INFO("[FNMADD_D] fr[%ld](%f) = -(%f * %f + %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
 
     return writeback_t {inst.frd, res.v};
 }
@@ -380,7 +380,7 @@ writeback_t fpu::fnmsub_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FNMSUB_S] r[%ld](%f) = -(%f * %f - %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
+    FPU_INFO("[FNMSUB_S] fr[%ld](%f) = -(%f * %f - %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2), reg2f(inst.frs3));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
@@ -395,7 +395,7 @@ writeback_t fpu::fnmsub_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FNMSUB_D] r[%ld](%f) = -(%f * %f - %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
+    FPU_INFO("[FNMSUB_D] fr[%ld](%f) = -(%f * %f - %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2), reg2d(inst.frs3));
 
     return writeback_t {inst.frd, res.v};
 }
@@ -407,7 +407,7 @@ writeback_t fpu::fmax_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FMAX_S] r[%ld](%f) = max(%f, %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FMAX_S] fr[%ld](%f) = max(%f, %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
@@ -419,7 +419,7 @@ writeback_t fpu::fmax_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FMAX_D] r[%ld](%f) = max(%f, %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+    FPU_INFO("[FMAX_D] fr[%ld](%f) = max(%f, %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
 
     return writeback_t {inst.frd, res.v};
 }
@@ -431,7 +431,7 @@ writeback_t fpu::fmin_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FMIN_S] r[%ld](%f) = min(%f, %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FMIN_S] fr[%ld](%f) = min(%f, %f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1), reg2f(inst.frs2));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
@@ -443,7 +443,7 @@ writeback_t fpu::fmin_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FMIN_D] r[%ld](%f) = min(%f, %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
+    FPU_INFO("[FMIN_D] fr[%ld](%f) = min(%f, %f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1), reg2d(inst.frs2));
 
     return writeback_t {inst.frd, res.v};
 }
@@ -456,7 +456,7 @@ writeback_t fpu::fsqrt_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FSQRT_S] r[%ld](%f) = sqrt(%f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1));
+    FPU_INFO("[FSQRT_S] fr[%ld](%f) = sqrt(%f)\n", inst.rd, reg2f(res.v), reg2f(inst.frs1));
 
     return writeback_t {inst.frd, (uint64_t)res.v};
 }
@@ -469,7 +469,7 @@ writeback_t fpu::fsqrt_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FSQRT_D] r[%ld](%f) = sqrt(%f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1));
+    FPU_INFO("[FSQRT_D] fr[%ld](%f) = sqrt(%f)\n", inst.rd, reg2d(res.v), reg2d(inst.frs1));
 
     return writeback_t {inst.frd, res.v};
 }
@@ -564,7 +564,7 @@ writeback_t fpu::fsgnj_s() {
     uint32_t sign = frs2 & F32_SIGN;
     uint32_t res = (frs1 & ~F32_SIGN) | (sign & F32_SIGN);
 
-    FPU_INFO("[FSGNJ_S] r[%ld](%f) = sgnj(%f, %f)\n", inst.rd, reg2f(res), reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FSGNJ_S] fr[%ld](%f) = sgnj(%f, %f)\n", inst.rd, reg2f(res), reg2f(inst.frs1), reg2f(inst.frs2));
 
     return writeback_t {inst.frd, (uint64_t)res};
 }
@@ -575,7 +575,7 @@ writeback_t fpu::fsgnj_d() {
     uint64_t sign = frs2 & F64_SIGN;
     uint64_t res = (frs1 & ~F64_SIGN) | (sign & F64_SIGN);
 
-    FPU_INFO("[FSGNJ_D] r[%ld](%f) = sgnj(%f, %f)\n", inst.rd, reg2d(res), reg2d(inst.frs1), reg2d(inst.frs2));
+    FPU_INFO("[FSGNJ_D] fr[%ld](%f) = sgnj(%f, %f)\n", inst.rd, reg2d(res), reg2d(inst.frs1), reg2d(inst.frs2));
 
     return writeback_t {inst.frd, res};
 }
@@ -586,7 +586,7 @@ writeback_t fpu::fsgnjn_s() {
     uint32_t sign = (frs2 & F32_SIGN) ^ F32_SIGN;
     uint32_t res = (frs1 & ~F32_SIGN) | (sign & F32_SIGN);
 
-    FPU_INFO("[FSGNJN_S] r[%ld](%f) = sgnjn(%f, %f)\n", inst.rd, reg2f(res), reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FSGNJN_S] fr[%ld](%f) = sgnjn(%f, %f)\n", inst.rd, reg2f(res), reg2f(inst.frs1), reg2f(inst.frs2));
 
     return writeback_t {inst.frd, (uint64_t)res};
 }
@@ -597,7 +597,7 @@ writeback_t fpu::fsgnjn_d() {
     uint64_t sign = (frs2 & F64_SIGN) ^ F64_SIGN;
     uint64_t res = (frs1 & ~F64_SIGN) | (sign & F64_SIGN);
 
-    FPU_INFO("[FSGNJN_D] r[%ld](%f) = sgnjn(%f, %f)\n", inst.rd, reg2d(res), reg2d(inst.frs1), reg2d(inst.frs2));
+    FPU_INFO("[FSGNJN_D] fr[%ld](%f) = sgnjn(%f, %f)\n", inst.rd, reg2d(res), reg2d(inst.frs1), reg2d(inst.frs2));
 
     return writeback_t {inst.frd, res};
 }
@@ -608,7 +608,7 @@ writeback_t fpu::fsgnjx_s() {
     uint32_t sign = (frs2 & F32_SIGN) ^ (frs1 & F32_SIGN);
     uint32_t res = (frs1 & ~F32_SIGN) | (sign & F32_SIGN);
 
-    FPU_INFO("[FSGNJX_S] r[%ld](%f) = sgnjx(%f, %f)\n", inst.rd, reg2f(res), reg2f(inst.frs1), reg2f(inst.frs2));
+    FPU_INFO("[FSGNJX_S] fr[%ld](%f) = sgnjx(%f, %f)\n", inst.rd, reg2f(res), reg2f(inst.frs1), reg2f(inst.frs2));
 
     return writeback_t {inst.frd, (uint64_t)res};
 }
@@ -619,7 +619,7 @@ writeback_t fpu::fsgnjx_d() {
     uint64_t sign = (frs2 & F64_SIGN) ^ (frs1 & F64_SIGN);
     uint64_t res = (frs1 & ~F64_SIGN) | (sign & F64_SIGN);
 
-    FPU_INFO("[FSGNJX_D] r[%ld](%f) = sgnjx(%f, %f)\n", inst.rd, reg2d(res), reg2d(inst.frs1), reg2d(inst.frs2));
+    FPU_INFO("[FSGNJX_D] fr[%ld](%f) = sgnjx(%f, %f)\n", inst.rd, reg2d(res), reg2d(inst.frs1), reg2d(inst.frs2));
 
     return writeback_t {inst.frd, res};
 }
@@ -629,7 +629,7 @@ writeback_t fpu::fmv_w_x() {
     uint32_t data = (uint32_t)inst.rs1;
     uint64_t res = (uint64_t)data;
 
-    FPU_INFO("[FMV_W_X] r[%lx](%f) = 0x%x\n", inst.rd, reg2f(res), data);
+    FPU_INFO("[FMV_W_X] fr[%lx](%f) = 0x%x\n", inst.rd, reg2f(res), data);
 
     return writeback_t {inst.frd, res};
 }
@@ -649,7 +649,7 @@ writeback_t fpu::fmv_d_x() {
     uint64_t data = (uint64_t)inst.rs1;
     uint64_t res = data;
 
-    FPU_INFO("[FMV_D_X] r[%lx](%f) = 0x%lx\n", inst.rd, reg2d(res), data);
+    FPU_INFO("[FMV_D_X] fr[%lx](%f) = 0x%lx\n", inst.rd, reg2d(res), data);
 
     return writeback_t {inst.frd, res};
 }
