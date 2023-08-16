@@ -524,7 +524,7 @@ writeback_t fpu::fcvt_s_l() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_S_L] fr[%lx](%f) = i64_to_f32(%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
+    FPU_INFO("[FCVT_S_L] fr[%ld](%f) = i64_to_f32(0x%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
 
     return writeback_t {inst.frd, uint64_t(res.v)};
 }
@@ -537,7 +537,7 @@ writeback_t fpu::fcvt_s_lu() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_S_LU] fr[%lx](%f) = ui64_to_f32(%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
+    FPU_INFO("[FCVT_S_LU] fr[%ld](%f) = ui64_to_f32(0x%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
 
     return writeback_t {inst.frd, uint64_t(res.v)};
 }
@@ -550,7 +550,7 @@ writeback_t fpu::fcvt_s_w() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_S_W] fr[%lx](%f) = i32_to_f32(%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
+    FPU_INFO("[FCVT_S_W] fr[%ld](%f) = i32_to_f32(0x%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
 
     return writeback_t {inst.frd, uint64_t(res.v)};
 }
@@ -563,7 +563,7 @@ writeback_t fpu::fcvt_s_wu() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_S_WU] fr[%lx](%f) = ui32_to_f32(%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
+    FPU_INFO("[FCVT_S_WU] fr[%ld](%f) = ui32_to_f32(0x%lx)\n", inst.rd, reg2f(res.v), inst.rs1);
 
     return writeback_t {inst.frd, uint64_t(res.v)};
 }
@@ -576,7 +576,7 @@ writeback_t fpu::fcvt_l_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_L_S] r[%lx](%lx) = f32_to_i64(%f)\n", inst.rd, res, reg2f(inst.frs1));
+    FPU_INFO("[FCVT_L_S] r[%ld](0x%lx) = f32_to_i64(%f)\n", inst.rd, res, reg2f(inst.frs1));
 
     return writeback_t {inst.rd, res};
 }
@@ -589,14 +589,9 @@ writeback_t fpu::fcvt_lu_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_LU_S] r[%lx](%lx) = f32_to_ui64(%f)\n", inst.rd, res, reg2f(inst.frs1));
+    FPU_INFO("[FCVT_LU_S] r[%ld](0x%lx) = f32_to_ui64(%f)\n", inst.rd, res, reg2f(inst.frs1));
 
     return writeback_t {inst.rd, res};
-
-    /*
-    uint64_t res = f32_to_ui64(float32_t(inst.frs1), get_rounding_mode(), true);
-    FPU_INFO("[FCVT_LU_S] r[%lx](%lx) = f32_to_ui64(%f)\n", inst.rd, res, reg2f(inst.frs1));
-    return writeback_t {inst.rd, res};*/
 }
 
 // float to int32
@@ -607,7 +602,7 @@ writeback_t fpu::fcvt_w_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_W_S] r[%lx](%lx) = f32_to_i32(%f)\n", inst.rd, res, reg2f(inst.frs1));
+    FPU_INFO("[FCVT_W_S] r[%ld](0x%lx) = f32_to_i32(%f)\n", inst.rd, res, reg2f(inst.frs1));
 
     return writeback_t {inst.rd, res};
 }
@@ -620,7 +615,7 @@ writeback_t fpu::fcvt_wu_s() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_WU_S] r[%lx](%lx) = f32_to_ui32(%f)\n", inst.rd, res, reg2f(inst.frs1));
+    FPU_INFO("[FCVT_WU_S] r[%ld](0x%lx) = f32_to_ui32(%f)\n", inst.rd, res, reg2f(inst.frs1));
 
     return writeback_t {inst.rd, res};
 }
@@ -633,7 +628,7 @@ writeback_t fpu::fcvt_d_l() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_D_L] fr[%lx](%f) = i64_to_f64(%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
+    FPU_INFO("[FCVT_D_L] fr[%ld](%f) = i64_to_f64(0x%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
 
     return writeback_t {inst.frd, uint64_t(res.v)};
 }
@@ -646,7 +641,7 @@ writeback_t fpu::fcvt_d_lu() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_D_LU] fr[%lx](%f) = ui64_to_f64(%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
+    FPU_INFO("[FCVT_D_LU] fr[%ld](%f) = ui64_to_f64(0x%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
 
     return writeback_t {inst.frd, uint64_t(res.v)};
 }
@@ -659,7 +654,7 @@ writeback_t fpu::fcvt_d_w() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_D_W] fr[%lx](%f) = i32_to_f64(%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
+    FPU_INFO("[FCVT_D_W] fr[%ld](%f) = i32_to_f64(0x%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
 
     return writeback_t {inst.frd, uint64_t(res.v)};
 }
@@ -672,7 +667,7 @@ writeback_t fpu::fcvt_d_wu() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_D_WU] fr[%lx](%f) = ui32_to_f64(%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
+    FPU_INFO("[FCVT_D_WU] fr[%ld](%f) = ui32_to_f64(0x%lx)\n", inst.rd, reg2d(res.v), inst.rs1);
 
     return writeback_t {inst.frd, uint64_t(res.v)};
 }
@@ -685,7 +680,7 @@ writeback_t fpu::fcvt_l_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_L_D] r[%lx](%lx) = f64_to_i64(%f)\n", inst.rd, res, reg2d(inst.frs1));
+    FPU_INFO("[FCVT_L_D] r[%ld](0x%lx) = f64_to_i64(%f)\n", inst.rd, res, reg2d(inst.frs1));
 
     return writeback_t {inst.rd, res};
 }
@@ -698,7 +693,7 @@ writeback_t fpu::fcvt_lu_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_LU_D] r[%lx](%lx) = f64_to_ui64(%f)\n", inst.rd, res, reg2d(inst.frs1));
+    FPU_INFO("[FCVT_LU_D] r[%ld](0x%lx) = f64_to_ui64(%f)\n", inst.rd, res, reg2d(inst.frs1));
 
     return writeback_t {inst.rd, res};
 }
@@ -711,7 +706,7 @@ writeback_t fpu::fcvt_w_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_W_D] r[%lx](%lx) = f64_to_i32(%f)\n", inst.rd, res, reg2d(inst.frs1));
+    FPU_INFO("[FCVT_W_D] r[%ld](0x%lx) = f64_to_i32(%f)\n", inst.rd, res, reg2d(inst.frs1));
 
     return writeback_t {inst.rd, res};
 }
@@ -724,7 +719,7 @@ writeback_t fpu::fcvt_wu_d() {
 
     set_fp_exceptions();
 
-    FPU_INFO("[FCVT_WU_D] r[%lx](%lx) = f64_to_ui32(%f)\n", inst.rd, res, reg2d(inst.frs1));
+    FPU_INFO("[FCVT_WU_D] r[%ld](0x%lx) = f64_to_ui32(%f)\n", inst.rd, res, reg2d(inst.frs1));
 
     return writeback_t {inst.rd, res};
 }
@@ -872,7 +867,7 @@ writeback_t fpu::fmv_w_x() {
     uint32_t data = (uint32_t)inst.rs1;
     uint64_t res = (uint64_t)data;
 
-    FPU_INFO("[FMV_W_X] fr[%lx](%f) = 0x%x\n", inst.rd, reg2f(res), data);
+    FPU_INFO("[FMV_W_X] fr[%ld](%f) = 0x%x\n", inst.rd, reg2f(res), data);
 
     return writeback_t {inst.frd, res};
 }
@@ -882,7 +877,7 @@ writeback_t fpu::fmv_x_w() {
     uint32_t data = (uint32_t)inst.frs1;
     uint64_t res = sext32(data);
 
-    FPU_INFO("[FMV_X_W] r[%lx](0x%lx) = %f\n", inst.rd, res, reg2f(data));
+    FPU_INFO("[FMV_X_W] r[%ld](0x%lx) = %f\n", inst.rd, res, reg2f(data));
 
     return writeback_t {inst.rd, res};
 }
@@ -892,7 +887,7 @@ writeback_t fpu::fmv_d_x() {
     uint64_t data = (uint64_t)inst.rs1;
     uint64_t res = data;
 
-    FPU_INFO("[FMV_D_X] fr[%lx](%f) = 0x%lx\n", inst.rd, reg2d(res), data);
+    FPU_INFO("[FMV_D_X] fr[%ld](%f) = 0x%lx\n", inst.rd, reg2d(res), data);
 
     return writeback_t {inst.frd, res};
 }
@@ -902,7 +897,7 @@ writeback_t fpu::fmv_x_d() {
     uint64_t data = (uint64_t)inst.frs1;
     uint64_t res = data;
 
-    FPU_INFO("[FMV_X_D] r[%lx](0x%lx) = %f\n", inst.rd, res, reg2d(data));
+    FPU_INFO("[FMV_X_D] r[%ld](0x%lx) = %f\n", inst.rd, res, reg2d(data));
 
     return writeback_t {inst.rd, res};
 }
