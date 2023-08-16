@@ -154,6 +154,18 @@ writeback_t fpu::run(inst_issue instruction) {
         case encoding::INST_FPU_FCVT_WU_D:
             ret = fcvt_wu_d();
             break;
+        case encoding::INST_FPU_FCVT_D_S:
+            ret = fcvt_d_s();
+            break;
+        case encoding::INST_FPU_FCVT_S_D:
+            ret = fcvt_s_d();
+            break;
+        case encoding::INST_FPU_FCLASS_S:
+            ret = fclass_s();
+            break;
+        case encoding::INST_FPU_FCLASS_D:
+            ret = fclass_d();
+            break;
         case encoding::INST_FPU_FEQ_S:
             ret = feq_s();
             break;
@@ -720,6 +732,48 @@ writeback_t fpu::fcvt_wu_d() {
     set_fp_exceptions();
 
     FPU_INFO("[FCVT_WU_D] r[%ld](0x%lx) = f64_to_ui32(%f)\n", inst.rd, res, reg2d(inst.frs1));
+
+    return writeback_t {inst.rd, res};
+}
+
+// float to double
+writeback_t fpu::fcvt_d_s() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float64_t res = f32_to_f64((float32_t)inst.frs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_D_S] fr[%ld](%f) = f32_to_f64(%f)\n", inst.rd, reg2d(res.v), reg2f(inst.frs1));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
+}
+
+// double to float
+writeback_t fpu::fcvt_s_d() {
+    softfloat_roundingMode = get_rounding_mode();
+
+    float32_t res = f64_to_f32((float64_t)inst.frs1);
+
+    set_fp_exceptions();
+
+    FPU_INFO("[FCVT_S_D] fr[%ld](%f) = f64_to_f32(%f)\n", inst.rd, reg2f(res.v), reg2d(inst.frs1));
+
+    return writeback_t {inst.frd, (uint64_t)res.v};
+}
+
+writeback_t fpu::fclass_s() {
+    uint64_t res = f32_classify((float32_t)inst.frs1);
+
+    FPU_INFO("[FCLASS_S] r[%ld](%ld) = f32_classify(%f)\n", inst.rd, res, reg2f(inst.frs1));
+
+    return writeback_t {inst.rd, res};
+}
+
+writeback_t fpu::fclass_d() {
+    uint64_t res = f64_classify((float64_t)inst.frs1);
+
+    FPU_INFO("[FCLASS_D] r[%ld](%ld) = f64_classify(%f)\n", inst.rd, res, reg2d(inst.frs1));
 
     return writeback_t {inst.rd, res};
 }

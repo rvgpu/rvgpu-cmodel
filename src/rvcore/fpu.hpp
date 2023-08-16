@@ -83,6 +83,10 @@ private:
     writeback_t fcvt_lu_d();
     writeback_t fcvt_w_d();
     writeback_t fcvt_wu_d();
+    writeback_t fcvt_d_s();
+    writeback_t fcvt_s_d();
+    writeback_t fclass_s();
+    writeback_t fclass_d();
     writeback_t feq_s();
     writeback_t feq_d();
     writeback_t fle_s();
