@@ -1,3 +1,9 @@
+#
+# build binary file:
+#   riscv64-linux-gnu-gcc -c ${fname}.c -o ${fname}.o -march=rv64imafd -mcmodel=medany
+#   riscv64-linux-gnu-ld ${fname}.o -o ${fname} -egpumain
+#
+
 COMPILER=riscv64-linux-gnu-gcc
 LINKER=riscv64-linux-gnu-ld
 CFLAGS=-march=rv64imafd -mcmodel=medany
@@ -17,4 +23,4 @@ ${TARGETS}:%:%.o
 .PHONY: clean
 
 clean:
-	rm -f ${OBJECTS}
+	rm -f ${OBJECTS} ${TARGETS}
