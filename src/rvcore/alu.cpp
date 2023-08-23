@@ -184,37 +184,37 @@ writeback_t alu::addi() {
 
 writeback_t alu::addiw() {
     uint64_t res = sext32(inst.i_imm + inst.rs1);
-    ALU_INFO("[ADDIW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, res, rs1, imm);
+    ALU_INFO("[ADDIW] r[%ld](0x%lx) = 0x%lx + %ld\n", inst.rd, res, inst.rs1, inst.i_imm);
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::addw() {
     uint64_t res = sext32(inst.rs1 + inst.rs2);
-    ALU_INFO("[ADDW] r[%ld](0x%lx) = 0x%x + %d\n", inst.rd, res, rs1, rs2);
+    ALU_INFO("[ADDW] r[%ld](0x%lx) = 0x%lx + %ld\n", inst.rd, res, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::div() {
     uint64_t res = proc_div(inst.rs1, inst.rs2);
-    ALU_INFO("[DIV] r[%ld](0x%lx) = 0x%x / %d\n", inst.rd, res, rs1, rs2);
+    ALU_INFO("[DIV] r[%ld](0x%lx) = 0x%lx / %ld\n", inst.rd, res, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::divu() {
     uint64_t res = proc_divu(inst.rs1, inst.rs2);
-    ALU_INFO("[DIVU] r[%ld](0x%lx) = 0x%x / %d\n", inst.rd, res, rs1, rs2);
+    ALU_INFO("[DIVU] r[%ld](0x%lx) = 0x%lx / %ld\n", inst.rd, res, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::divw() {
     uint64_t res = proc_divw(inst.rs1, inst.rs2);
-    ALU_INFO("[DIVW] r[%ld](0x%lx) = 0x%x / %d\n", inst.rd, res, rs1, rs2);
+    ALU_INFO("[DIVW] r[%ld](0x%lx) = 0x%lx / %ld\n", inst.rd, res, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::divuw() {
     uint64_t res = proc_divuw(inst.rs1, inst.rs2);
-    ALU_INFO("[DIVUW] r[%ld](0x%lx) = 0x%x / %d\n", inst.rd, res, rs1, rs2);
+    ALU_INFO("[DIVUW] r[%ld](0x%lx) = 0x%lx / %ld\n", inst.rd, res, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, res};
 }
 
@@ -232,31 +232,31 @@ writeback_t alu::mul() {
 
 writeback_t alu::mulw() {
     uint64_t res = sext32(inst.rs1 * inst.rs2);
-    ALU_INFO("[MULW] r[%ld](0x%lx) = 0x%x * %d\n", inst.rd, res, rs1, rs2);
+    ALU_INFO("[MULW] r[%ld](0x%lx) = 0x%lx * %ld\n", inst.rd, res, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::mulh() {
     uint64_t res = proc_mulh(inst.rs1, inst.rs2);
-    ALU_INFO("[MULH] r[%ld](0x%lx) = 0x%ld * %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
+    ALU_INFO("[MULH] r[%ld](0x%lx) = 0x%ld * %ld\n", inst.rd, res, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::mulhsu() {
     uint64_t res = proc_mulhsu(inst.rs1, inst.rs2);
-    ALU_INFO("[MULHSU] r[%ld](0x%lx) = 0x%ld * %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
+    ALU_INFO("[MULHSU] r[%ld](0x%lx) = 0x%ld * %ld\n", inst.rd, res, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::mulhu() {
     uint64_t res = proc_mulhu(inst.rs1, inst.rs2);
-    ALU_INFO("[MULHSU] r[%ld](0x%lx) = 0x%ld * %ld\n", inst.rd, ret, inst.rs1, inst.rs2);
+    ALU_INFO("[MULHSU] r[%ld](0x%lx) = 0x%ld * %ld\n", inst.rd, res, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::sltu() {
     uint64_t res = (inst.rs1 < inst.rs2);
-    ALU_INFO("[SLTU] r[%ld](0x%lx) = (0x%lx < 0x%lx) ? 1 : 0\n", inst.rd, res, rs1, rs2);
+    ALU_INFO("[SLTU] r[%ld](0x%lx) = (0x%lx < 0x%lx) ? 1 : 0\n", inst.rd, res, inst.rs1, inst.rs2);
     return writeback_t {inst.rd, res};
 }
 
@@ -273,7 +273,7 @@ writeback_t alu::sltiu() {
 }
 
 writeback_t alu::slliw() {
-    uint64_t res = sext32(inst.rs1 << SHAMT)
+    uint64_t res = sext32(inst.rs1 << SHAMT);
     ALU_INFO("[SLLIW] r[%ld](0x%lx) = 0x%lx << %ld\n", inst.rd, res, inst.rs1, (inst.i_imm & 0x3F));
     return writeback_t {inst.rd, res};
 }
@@ -327,7 +327,7 @@ writeback_t alu::sra() {
 }
 
 writeback_t alu::srai() {
-    uint64_t res = sext_xlen(sext_xlen(inst.rs1) >> SHAMT)
+    uint64_t res = sext_xlen(sext_xlen(inst.rs1) >> SHAMT);
     ALU_INFO("[SRAI] r[%ld](0x%lx) = 0x%lx >> %ld\n", inst.rd, res, inst.rs1, SHAMT);
     return writeback_t {inst.rd, res};
 }
@@ -364,25 +364,25 @@ writeback_t alu::subw() {
 
 writeback_t alu::rem() {
     uint64_t res = proc_rem(inst.rs1, inst.rs2);
-    ALU_INFO("[REM] r[%ld](0x%lx) = 0x%lx % %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
+    ALU_INFO("[REM] r[%ld](0x%lx) = 0x%lx %% %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::remu() {
     uint64_t res = proc_remu(inst.rs1, inst.rs2);
-    ALU_INFO("[REMU] r[%ld](0x%lx) = 0x%lx % %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
+    ALU_INFO("[REMU] r[%ld](0x%lx) = 0x%lx %% %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::remw() {
     uint64_t res = proc_remw(inst.rs1, inst.rs2);
-    ALU_INFO("[REMW] r[%ld](0x%lx) = 0x%lx % %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
+    ALU_INFO("[REMW] r[%ld](0x%lx) = 0x%lx %% %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
     return writeback_t {inst.rd, res};
 }
 
 writeback_t alu::remuw() {
     uint64_t res = proc_remuw(inst.rs1, inst.rs2);
-    ALU_INFO("[REMUW] r[%ld](0x%lx) = 0x%lx % %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
+    ALU_INFO("[REMUW] r[%ld](0x%lx) = 0x%lx %% %ld\n", inst.rd, res, int64_t(inst.rs1), int64_t(inst.rs2));
     return writeback_t {inst.rd, res};
 }
 
