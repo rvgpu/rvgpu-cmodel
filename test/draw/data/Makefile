@@ -1,26 +1,31 @@
 #
 # build binary file:
-#   riscv64-linux-gnu-gcc -c ${fname}.c -o ${fname}.o -march=rv64imafd -mcmodel=medany
-#   riscv64-linux-gnu-ld ${fname}.o -o ${fname} -egpumain
+#   riscv64-linux-gnu-gcc ${fname}.c -o ${fname} -march=rv64imafd -mcmodel=medany -lm -e gpumain -nostartfiles -static
 #
 
-COMPILER=riscv64-linux-gnu-gcc
-LINKER=riscv64-linux-gnu-ld
-CFLAGS=-march=rv64imafd -mcmodel=medany
+CC=riscv64-linux-gnu-gcc
+CPP=riscv64-linux-gnu-g++
+CFLAGS=-march=rv64imafd -mcmodel=medany -lm -e gpumain -nostartfiles -static
 
-SOURCES=$(wildcard *.c)
-OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
-TARGETS=$(patsubst %.c,%,$(SOURCES))
+CSOURCES=$(wildcard *.c)
+CTARGETS=$(patsubst %.c,%,$(CSOURCES))
 
-ALL:${TARGETS}
+CPPSOURCES=$(wildcard *.cpp)
+CPPTARGETS=$(patsubst %.cpp,%,$(CPPSOURCES))
 
-${TARGETS}:%:%.o
-	${LINKER} $^ -o $@ -egpumain
+ALL:${CTARGETS} ${CPPTARGETS}
 
-%.o:%.c
-	${COMPILER} -c $^ -o $@ ${CFLAGS}
+${CTARGETS}:%:%.c
+	echo "C" $^
+	${CC} $^ -o $@ ${CFLAGS}
+
+
+${CPPTARGETS}:%:%.cpp
+	echo "CPP" $^
+	${CPP} $^ -o $@ ${CFLAGS}
 
 .PHONY: clean
 
 clean:
-	rm -f ${OBJECTS} ${TARGETS}
+	rm -f ${CTARGETS}
+	rm -f ${CPPTARGETS}
