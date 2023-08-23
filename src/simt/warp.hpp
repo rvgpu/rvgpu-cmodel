@@ -55,7 +55,7 @@ private:
     dec *m_dec;
     branch *m_branch;
 
-    uint32_t startpc;
+    uint64_t startpc;
     uint64_t pc;
     uint64_t npc[WARP_THREAD_N];
     std::stack<struct warpstore> warpstack;
