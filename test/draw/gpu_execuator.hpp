@@ -157,5 +157,5 @@ private:
     rvgpu *gpu;
     std::vector<rvgpu_command> commands;
     uint64_t stack_pointer;
-    uint32_t instmem[0x20000];
+    uint32_t instmem[0x2000000];
 };
