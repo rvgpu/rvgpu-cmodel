@@ -5,7 +5,7 @@
 
 CC=riscv64-linux-gnu-gcc
 CPP=riscv64-linux-gnu-g++
-CFLAGS=-march=rv64imafd -mcmodel=medany -lm -e gpumain -nostartfiles -static
+CFLAGS=-march=rv64imafd -mcmodel=medany -lm -e gpumain -nostartfiles -static -fno-PIC
 
 CSOURCES=$(wildcard *.c)
 CTARGETS=$(patsubst %.c,%,$(CSOURCES))
