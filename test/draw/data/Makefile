@@ -16,12 +16,12 @@ CPPTARGETS=$(patsubst %.cpp,%,$(CPPSOURCES))
 ALL:${CTARGETS} ${CPPTARGETS}
 
 ${CTARGETS}:%:%.c
-	echo "C" $^
+	@echo "# To compiler file:" $^
 	${CC} $^ -o $@ ${CFLAGS}
 
 
 ${CPPTARGETS}:%:%.cpp
-	echo "CPP" $^
+	@echo "# To compiler file:" $^
 	${CPP} $^ -o $@ ${CFLAGS}
 
 .PHONY: clean
