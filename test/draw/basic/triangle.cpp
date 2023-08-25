@@ -15,14 +15,14 @@ TEST_F(GPUExecuator, triangle) {
     float *vsout_position = (float *) malloc(count * 12 * sizeof(float));
     float *vsout_color = (float *) malloc(count * 12 * sizeof(float));
 
-    LoadELF("vertex_shader_vt14");
+    LoadELF("basic", "vertex_shader_vt14");
     PushParam(0); // vid
     PushParam((uint64_t)vsout_position);
     PushParam((uint64_t)vsout_color);
     PushParam((uint64_t)vp);
     run1d(count);
 
-    LoadELF("fragment_shader_vt14");
+    LoadELF("basic", "fragment_shader_vt14");
     char *fb = (char *)malloc(800 * 600 * 4);
     char *testfb = (char *)malloc(800 * 600 * 4);
     // long gpumain(long pixel, float *in_position, float *in_color, float *out_color_buffer, int v0_id, int v1_id, int v2_id)

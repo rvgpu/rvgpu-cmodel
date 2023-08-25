@@ -6,7 +6,7 @@ TEST_F(GPUExecuator, branch_if) {
     uint32_t *in = (uint32_t *)malloc(count * sizeof(int));
     uint32_t *out = (uint32_t *)malloc(count * sizeof(int));
 
-    LoadELF("branch_if");
+    LoadELF("basic", "branch_if");
     PushParam(0);
     PushParam((uint64_t)in);
     PushParam((uint64_t)out);
@@ -33,7 +33,7 @@ TEST_F(GPUExecuator, branch_ifelse) {
     uint32_t *in = (uint32_t *)malloc(count * sizeof(int));
     uint32_t *out = (uint32_t *)malloc(count * sizeof(int));
 
-    LoadELF("branch_ifelse");
+    LoadELF("basic", "branch_ifelse");
     PushParam(0);
     PushParam((uint64_t)in);
     PushParam((uint64_t)out);
@@ -60,7 +60,7 @@ TEST_F(GPUExecuator, branch_ifif) {
     uint32_t *in = (uint32_t *)malloc(count * sizeof(int));
     uint32_t *out = (uint32_t *)malloc(count * sizeof(int));
 
-    LoadELF("branch_ifif");
+    LoadELF("basic", "branch_ifif");
     PushParam(0);
     PushParam((uint64_t)in);
     PushParam((uint64_t)out);
@@ -91,7 +91,7 @@ TEST_F(GPUExecuator, branch_for) {
     uint32_t *in = (uint32_t *)malloc(count * sizeof(int));
     uint32_t *out = (uint32_t *)malloc(count * sizeof(int));
 
-    LoadELF("branch_for");
+    LoadELF("basic", "branch_for");
     PushParam(0);
     PushParam((uint64_t)in);
     PushParam((uint64_t)out);

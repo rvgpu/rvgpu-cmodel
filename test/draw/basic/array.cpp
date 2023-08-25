@@ -6,7 +6,7 @@ TEST_F(GPUExecuator, vertex_shader_array_add) {
     uint32_t *in = (uint32_t *)malloc(count * sizeof(int));
     uint32_t *out = (uint32_t *)malloc(count * sizeof(int));
 
-    LoadELF("array_add");
+    LoadELF("basic", "array_add");
     // long gpumain(long tid, int *input, int* output)
     PushParam(0);
     PushParam((uint64_t)in);
@@ -31,7 +31,7 @@ TEST_F(GPUExecuator, vertex_shader_multi_array_add) {
     uint32_t *in2 = (uint32_t *)malloc(count * 4);
     uint32_t *out = (uint32_t *)malloc(count * 4);
 
-    LoadELF("multi_array_add");
+    LoadELF("basic", "multi_array_add");
     // long vs_main(long tid, int *input1, int *input2, int *output)
     PushParam(0);
     PushParam((uint64_t)in1);
@@ -58,7 +58,7 @@ TEST_F(GPUExecuator, vertex_shader_multi_array_mul) {
     uint32_t *in2 = (uint32_t *)malloc(count * 4);
     uint32_t *out = (uint32_t *)malloc(count * 4);
 
-    LoadELF("multi_array_mul");
+    LoadELF("basic", "multi_array_mul");
     // long gpumain(long tid, int *input1, int *input2, int *output)
     PushParam(0);
     PushParam((uint64_t)in1);
@@ -86,7 +86,7 @@ TEST_F(GPUExecuator, vertex_shader_multi_array_muladd) {
     uint32_t *in3 = (uint32_t *)malloc(count * 4);
     uint32_t *out = (uint32_t *)malloc(count * 4);
 
-    LoadELF("multi_array_muladd");
+    LoadELF("basic", "multi_array_muladd");
     // long gpumain(long tid, int *input1, int *input2, int *output)
     PushParam(0);
     PushParam((uint64_t)in1);
@@ -117,7 +117,7 @@ TEST_F(GPUExecuator, vertex_shader_multi_array_fmuladd) {
     float *in3 = (float *)malloc(count * 4);
     float *out = (float *)malloc(count * 4);
 
-    LoadELF("multi_array_fmuladd");
+    LoadELF("basic", "multi_array_fmuladd");
     // long gpumain(long tid, int *input1, int *input2, int *output)
     PushParam(0);
     PushParam((uint64_t)in1);

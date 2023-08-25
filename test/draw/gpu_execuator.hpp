@@ -62,10 +62,12 @@ protected:
         params.push_back(data);
     }
 
-    void LoadELF(const char *fname) {
+    void LoadELF(const char *testname, const char *fname) {
         std::string fpath;
-        fpath += PROJECT_TEST_DRAW_SHADER_DATA_PATH;
+        fpath += PROJECT_TEST_DRAW_PATH;
         fpath += "/";
+        fpath += testname;
+        fpath += "/data/";
         fpath += fname;
 
         std::filebuf *fbuf;

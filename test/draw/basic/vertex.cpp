@@ -14,7 +14,7 @@ TEST_F(GPUExecuator, vertex_shader_vt14) {
     float *out_position = (float *) malloc(count * 12 * sizeof(float));
     float *out_color = (float *) malloc(count * 12 * sizeof(float));
 
-    LoadELF("vertex_shader_vt14");
+    LoadELF("basic", "vertex_shader_vt14");
     PushParam(0); // vid
     PushParam((uint64_t)out_position);
     PushParam((uint64_t)out_color);

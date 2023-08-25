@@ -7,7 +7,7 @@ TEST_F(GPUExecuator, vertex_shader_vt14) {
     float *data = (float *)malloc(sizeof(float) * 16);
     float *result = (float *)malloc(sizeof(float) * 16);
 
-    LoadELF("matrix_model");
+    LoadELF("basic", "matrix_model");
     PushParam(0); // tid
     PushParam((uint64_t)data);
     run1d(1);
