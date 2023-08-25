@@ -1,4 +1,0 @@
-config PCIEMU
-    bool
-    default y if TEST_DEVICES
-    depends on PCI_EXPRESS && MSI_NONBROKEN
