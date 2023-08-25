@@ -64,7 +64,7 @@ protected:
 
     void LoadELF(const char *testname, const char *fname) {
         std::string fpath;
-        fpath += PROJECT_TEST_DRAW_PATH;
+        fpath += PROJECT_TEST_DRAW_BINARY_PATH;
         fpath += "/";
         fpath += testname;
         fpath += "/data/";

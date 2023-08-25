@@ -1,2 +1,1 @@
-execute_process(COMMAND make -f ${CMAKE_CURRENT_SOURCE_DIR}/Makefile
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+rvgpu_cxx(games101_hw1_vertex_shader)

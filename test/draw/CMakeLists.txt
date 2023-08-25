@@ -7,5 +7,17 @@ function(rvsim_test_draw target testname)
     add_test(NAME ${target} COMMAND ${target})
 endfunction()
 
+set(DEVICE_C_FLAGS -xc -march=rv64imafd -mcmodel=medany -lm -e gpumain -nostartfiles -static -fno-PIC)
+set(DEVICE_CPP_FLAGS -xc++ -march=rv64imafd -mcmodel=medany -lm -e gpumain -nostartfiles -static -fno-PIC)
+function(rvgpu_cxx target)
+    message("Generate ${CMAKE_CURRENT_BINARY_DIR}/${target}")
+    execute_process(COMMAND riscv64-linux-gnu-g++ ${DEVICE_CPP_FLAGS} ${CMAKE_CURRENT_SOURCE_DIR}/${target}.hpp -o ${CMAKE_CURRENT_BINARY_DIR}/${target})
+endfunction()
+function(rvgpu_cc target)
+    message("Generate ${CMAKE_CURRENT_BINARY_DIR}/${target}")
+    execute_process(COMMAND riscv64-linux-gnu-gcc ${DEVICE_C_FLAGS} ${CMAKE_CURRENT_SOURCE_DIR}/${target}.h -o ${CMAKE_CURRENT_BINARY_DIR}/${target})
+endfunction()
+
+
 add_subdirectory(basic)
 add_subdirectory(games101)

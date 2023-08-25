@@ -1,5 +1,5 @@
 #include "gpu_execuator.hpp"
-#include "data/matrix_model.cpp"
+#include "data/matrix_model.hpp"
 
 #include <eigen3/Eigen/Eigen>
 

@@ -2,7 +2,9 @@
 #define RVGSIM_GENERATE_CONFIGS
 
 #define PROJECT_TOP_PATH                    "@project_top_path@"
-#define PROJECT_TEST_DRAW_PATH  PROJECT_TOP_PATH"/test/draw"
+#define PROJECT_TEST_DRAW_PATH              PROJECT_TOP_PATH"/test/draw"
+#define PROJECT_BINARY_PATH                 "@project_binary_path@"
+#define PROJECT_TEST_DRAW_BINARY_PATH       PROJECT_BINARY_PATH"/test/draw"
 
 /* Configure STREAM PROCESSOR */
 #define SP_WARP_N                   1

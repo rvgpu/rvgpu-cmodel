@@ -1,6 +1,6 @@
 #include "gpu_execuator.hpp"
 
-#include "data/vertex_shader_vt14.c"
+#include "data/vertex_shader_vt14.h"
 
 TEST_F(GPUExecuator, vertex_shader_vt14) {
     int32_t count = 3;
