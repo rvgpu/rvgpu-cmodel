@@ -25,8 +25,8 @@
 
 #include <vector>
 
-#include "sm/stream_multiprocessor.h"
-#include "cp/command_processor.h"
+class command_processor;
+class sm;
 
 class rvgpu {
 public:

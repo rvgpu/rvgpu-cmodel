@@ -22,6 +22,8 @@
  */
 
 #include "common/command_stream.h"
+#include "sm/stream_multiprocessor.h"
+#include "cp/command_processor.h"
 
 #include "rvgpu.h"
 
