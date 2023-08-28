@@ -27,7 +27,7 @@
 #include <bitset>
 #include <stack>
 
-#include "common/command_stream.h"
+#include "top/command_stream.h"
 #include "common/configs.h"
 #include "rvcore/inst_issue.hpp"
 #include "rvcore/decoder.hpp"

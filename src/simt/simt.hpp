@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "common/command_stream.h"
+#include "top/command_stream.h"
 
 #include "warp.hpp"
 #include "register_file.hpp"

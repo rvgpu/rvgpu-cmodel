@@ -4,7 +4,7 @@
 #include <fstream>
 #include <elf.h>
 
-#include "common/command_stream.h"
+#include "top/command_stream.h"
 #include "common/configs.h"
 #include "top/rvgpu.h"
 

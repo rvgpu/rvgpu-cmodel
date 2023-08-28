@@ -23,7 +23,7 @@
 
 #pragma once
 
-#include "common/command_stream.h"
+#include "top/command_stream.h"
 #include "simt/simt.hpp"
 
 class sm {

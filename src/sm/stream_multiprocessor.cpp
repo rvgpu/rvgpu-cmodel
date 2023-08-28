@@ -22,7 +22,7 @@
  */
 
 #include <cstdio>
-#include "common/command_stream.h"
+#include "top/command_stream.h"
 #include "stream_multiprocessor.h"
 #include "simt/simt.hpp"
 

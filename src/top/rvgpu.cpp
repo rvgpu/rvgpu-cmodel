@@ -21,10 +21,10 @@
  * IN THE SOFTWARE.
  */
 
-#include "common/command_stream.h"
 #include "sm/stream_multiprocessor.h"
 #include "cp/command_processor.h"
 
+#include "command_stream.h"
 #include "rvgpu.h"
 
 rvgpu::rvgpu() {

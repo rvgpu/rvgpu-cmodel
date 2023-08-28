@@ -23,7 +23,10 @@
 
 #pragma once
 
+#include <cstdint>
 #include <vector>
+
+#include "command_stream.h"
 
 class command_processor;
 class sm;
