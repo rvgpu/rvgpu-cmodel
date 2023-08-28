@@ -21,25 +21,23 @@
  * IN THE SOFTWARE.
  */
 
-#include "vram/vram.hpp"
-#include "sm/stream_multiprocessor.h"
-#include "cp/command_processor.h"
-#include "common/configs.h"
+#pragma once
+#include <cstdint>
 
-#include "command_stream.h"
-#include "rvgpu.h"
+class vram {
+public:
+    vram(uint64_t size);
 
-rvgpu::rvgpu() {
-    m_vram = new vram(VRAM_SIZE);
-    m_cp = new command_processor();
-    m_sm = new sm();
-}
-
-void rvgpu::run(uint64_t cmds) {
-    std::vector<message> msg;
-    m_cp->run(cmds, msg);
-
-    for (auto m : msg) {
-        m_sm->run(m);
+    template<typename T>
+    T read(uint64_t addr) {
+        return *(T *)(m_mem + addr);
     }
-}
+
+    template<typename T>
+    void write(uint64_t addr, T data) {
+        *(T *)(m_mem + addr) = data;
+    }
+
+private:
+    uint64_t m_mem;
+};

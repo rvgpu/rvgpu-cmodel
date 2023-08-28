@@ -21,25 +21,10 @@
  * IN THE SOFTWARE.
  */
 
-#include "vram/vram.hpp"
-#include "sm/stream_multiprocessor.h"
-#include "cp/command_processor.h"
-#include "common/configs.h"
+#include <cstdlib>
 
-#include "command_stream.h"
-#include "rvgpu.h"
+#include "vram.hpp"
 
-rvgpu::rvgpu() {
-    m_vram = new vram(VRAM_SIZE);
-    m_cp = new command_processor();
-    m_sm = new sm();
-}
-
-void rvgpu::run(uint64_t cmds) {
-    std::vector<message> msg;
-    m_cp->run(cmds, msg);
-
-    for (auto m : msg) {
-        m_sm->run(m);
-    }
+vram::vram(uint64_t size) {
+    m_mem = (uint64_t)malloc(size);
 }

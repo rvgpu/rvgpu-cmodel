@@ -1,6 +1,7 @@
 #ifndef RVGSIM_GENERATE_CONFIGS
 #define RVGSIM_GENERATE_CONFIGS
 
+/* Global String Macro */
 #define PROJECT_TOP_PATH                    "@project_top_path@"
 #define PROJECT_TEST_DRAW_PATH              PROJECT_TOP_PATH"/test/draw"
 #define PROJECT_BINARY_PATH                 "@project_binary_path@"
@@ -17,6 +18,12 @@
 #define WARP_THREAD_N               16
 #define WARP_THREAD_N_LOG2          4
 #define WARP_THREAD_N_MASK          0xF
+
+/* Configure VRAM */
+#define KBYTE(x)                    (x * 1024)
+#define MBYTE(x)                    (1024 * KBYTE(x))
+#define GBYTE(x)                    (1024 * MBYTE(x))
+#define VRAM_SIZE                   GBYTE(1)
 
 #define RVGPU_DEBUG                 0
 

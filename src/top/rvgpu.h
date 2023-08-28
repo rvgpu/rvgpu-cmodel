@@ -30,6 +30,7 @@
 
 class command_processor;
 class sm;
+class vram;
 
 class rvgpu {
 public:
@@ -39,6 +40,7 @@ public:
 private:
     command_processor *m_cp;
     sm *m_sm;
+    vram *m_vram;
 
     std::vector<message> m_messages;
 };
