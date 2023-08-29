@@ -43,3 +43,55 @@ void rvgpu::run(uint64_t cmds) {
         m_sm->run(m);
     }
 }
+
+void rvgpu::write_register(uint64_t addr, uint32_t data) {
+    regs[addr] = data;
+}
+
+uint32_t rvgpu::read_register(uint64_t addr) {
+    return regs[addr];
+}
+
+void rvgpu::write_vram(uint64_t addr, uint64_t data, uint32_t size) {
+    switch (size) {
+    case 8:
+        m_vram->write<uint64_t>(addr, uint64_t(data));
+        break;
+    case 4:
+        m_vram->write<uint32_t>(addr, uint32_t(data));
+        break;
+    case 2:
+        m_vram->write<uint16_t>(addr, uint16_t(data));
+        break;
+    case 1:
+        m_vram->write<uint8_t>(addr, uint8_t(data));
+        break;
+    default:
+        RVGPU_ERROR_PRINT("[TOP] write rvgpu.vram with error size: %d\n", size);
+        break;
+    }
+}
+
+uint64_t rvgpu::read_vram(uint64_t addr, uint32_t size) {
+    uint64_t rdata = 0;
+
+    switch (size) {
+    case 8:
+        rdata = (uint64_t)m_vram->read<uint64_t>(addr);
+        break;
+    case 4:
+        rdata = (uint64_t)m_vram->read<uint32_t>(addr);
+        break;
+    case 2:
+        rdata = (uint64_t)m_vram->read<uint16_t>(addr);
+        break;
+    case 1:
+        rdata = (uint64_t)m_vram->read<uint8_t>(addr);
+        break;
+    default:
+        RVGPU_ERROR_PRINT("[TOP] read rvgpu.vram with error size: %d\n", size);
+        break;
+    }
+
+    return rdata;
+}

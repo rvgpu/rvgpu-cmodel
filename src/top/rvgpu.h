@@ -36,11 +36,18 @@ class rvgpu {
 public:
     rvgpu();
 
+    // Interface of register and vram
+    void write_vram(uint64_t addr, uint64_t data, uint32_t size);
+    uint64_t read_vram(uint64_t addr, uint32_t size);
+    void write_register(uint64_t addr, uint32_t data);
+    uint32_t read_register(uint64_t addr);
+
     void run(uint64_t cmd);
 private:
     command_processor *m_cp;
     sm *m_sm;
     vram *m_vram;
 
+    uint32_t regs[MBYTE(2)];
     std::vector<message> m_messages;
 };
