@@ -33,6 +33,8 @@ rvgpu::rvgpu() {
     m_vram = new vram(VRAM_SIZE);
     m_cp = new command_processor();
     m_sm = new sm();
+
+    regs = (uint32_t *)malloc(MBYTE(2));
 }
 
 void rvgpu::run(uint64_t cmds) {

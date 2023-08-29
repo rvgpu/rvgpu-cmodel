@@ -48,6 +48,6 @@ private:
     sm *m_sm;
     vram *m_vram;
 
-    uint32_t regs[MBYTE(2)];
+    uint32_t *regs;
     std::vector<message> m_messages;
 };
