@@ -85,7 +85,7 @@ protected:
         Loader();
     }
 
-    void WritePPM(const char *fname, uint32_t w, uint32_t h, char *fb) {
+    void WritePPM(const char *fname, uint32_t w, uint32_t h, unsigned char *fb) {
         std::string fpath;
         fpath += fname;
         fpath += ".ppm";

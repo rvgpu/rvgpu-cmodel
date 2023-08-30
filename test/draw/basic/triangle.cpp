@@ -23,8 +23,8 @@ TEST_F(GPUExecuator, triangle) {
     run1d(count);
 
     LoadELF("basic", "fragment_shader_vt14");
-    char *fb = (char *)malloc(800 * 600 * 4);
-    char *testfb = (char *)malloc(800 * 600 * 4);
+    unsigned char *fb = (unsigned char *)malloc(800 * 600 * 4);
+    unsigned char *testfb = (unsigned char *)malloc(800 * 600 * 4);
     // long gpumain(long pixel, float *in_position, float *in_color, float *out_color_buffer, int v0_id, int v1_id, int v2_id)
     PushParam(0);
     PushParam((uint64_t)vsout_position);
