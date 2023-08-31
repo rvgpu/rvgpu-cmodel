@@ -17,7 +17,7 @@ struct box_info {
     uint32_t box_width;
 };
 
-TEST_F(GPUExecuator, games101_hw1) {
+TEST_F(GPUExecuator, games101_hw2) {
     // 1. Data preparation
     // 1.1 Vertices
     Eigen::Vector3f vertex_positions[VERTEX_COUNT] = {

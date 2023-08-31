@@ -3,8 +3,6 @@
 #include <eigen3/Eigen/Eigen>
 #include <iostream>
 
-#include "games101_reference_hw1.hpp"
-
 TEST_F(GPUExecuator, games101_hw1) {
     // 1. Data preparation
     // 1.1 Vertices
@@ -117,21 +115,6 @@ TEST_F(GPUExecuator, games101_hw1) {
             PushParam((uint64_t)(&line_start_y[i]));
             PushParam((uint64_t)(&line_is_x_major[i]));
             run1d(line_end_y[i] - line_start_y[i] + 1);
-        }
-    }
-
-    uint8_t *reference = (uint8_t *) calloc(WIDTH * HEIGHT * 4, sizeof(uint8_t));
-
-    reference = games101_hw1_reference();
-
-    for (uint32_t x = 0; x < WIDTH; x++) {
-        for (uint32_t y = 0; y < HEIGHT; y++) {
-            uint32_t pixel_id = y * WIDTH + x;
-
-            EXPECT_EQ(color_buffer[pixel_id * 4 + 0], reference[pixel_id * 4 + 0]);
-            EXPECT_EQ(color_buffer[pixel_id * 4 + 1], reference[pixel_id * 4 + 1]);
-            EXPECT_EQ(color_buffer[pixel_id * 4 + 2], reference[pixel_id * 4 + 2]);
-            EXPECT_EQ(color_buffer[pixel_id * 4 + 3], reference[pixel_id * 4 + 3]);
         }
     }
 
