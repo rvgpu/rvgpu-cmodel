@@ -1,18 +1,9 @@
 #include "gpu_execuator.hpp"
 #include "games101_common.hpp"
-#include "games101_reference.hpp"
 #include <eigen3/Eigen/Eigen>
 #include <iostream>
 
-#define WIDTH 800
-#define HEIGHT 600
-
-struct viewport {
-    float x;
-    float y;
-    float w;
-    float h;
-};
+#include "games101_reference_hw1.hpp"
 
 TEST_F(GPUExecuator, games101_hw1) {
     // 1. Data preparation
@@ -31,13 +22,6 @@ TEST_F(GPUExecuator, games101_hw1) {
     Eigen::Matrix4f view = get_view_matrix(eye_pos);
     Eigen::Matrix4f projection = get_projection_matrix(45, 1, 0.1, 50);
 
-    // 1.3 Viewport
-    struct viewport *vp = (struct viewport *) malloc(sizeof(struct viewport));
-    vp->x = 0.0f;
-    vp->y = 0.0f;
-    vp->w = WIDTH;
-    vp->h = HEIGHT;
-
 
 
 // --------------------
@@ -54,7 +38,6 @@ TEST_F(GPUExecuator, games101_hw1) {
     PushParam((uint64_t)(&model));
     PushParam((uint64_t)(&view));
     PushParam((uint64_t)(&projection));
-    PushParam((uint64_t)vp);
     run1d(3);
 
 
@@ -108,8 +91,6 @@ TEST_F(GPUExecuator, games101_hw1) {
             float line_endpoints[2] = {p0, p1};
             float line_attributes[2] = {a0, a1};
 
-            uint32_t width = (uint32_t)(vp->w);
-
             LoadELF("games101", "games101_hw1_rasterization");
             PushParam(0); // tid
             PushParam((uint64_t)line_endpoints);
@@ -117,7 +98,6 @@ TEST_F(GPUExecuator, games101_hw1) {
             PushParam((uint64_t)color_buffer);
             PushParam((uint64_t)(&line_start_x[i]));
             PushParam((uint64_t)(&line_is_x_major[i]));
-            PushParam((uint64_t)(&width));
             run1d(line_end_x[i] - line_start_x[i] + 1);
         } else {
             // y-major
@@ -129,8 +109,6 @@ TEST_F(GPUExecuator, games101_hw1) {
             float line_endpoints[2] = {p0, p1};
             float line_attributes[2] = {a0, a1};
 
-            uint32_t width = (uint32_t)(vp->w);
-
             LoadELF("games101", "games101_hw1_rasterization");
             PushParam(0); // tid
             PushParam((uint64_t)line_endpoints);
@@ -138,7 +116,6 @@ TEST_F(GPUExecuator, games101_hw1) {
             PushParam((uint64_t)color_buffer);
             PushParam((uint64_t)(&line_start_y[i]));
             PushParam((uint64_t)(&line_is_x_major[i]));
-            PushParam((uint64_t)(&width));
             run1d(line_end_y[i] - line_start_y[i] + 1);
         }
     }

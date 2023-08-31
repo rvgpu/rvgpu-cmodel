@@ -1,2 +1,4 @@
 rvgpu_cxx(games101_hw1_vertex_shader)
 rvgpu_cxx(games101_hw1_rasterization)
+rvgpu_cxx(games101_hw2_vertex_shader)
+rvgpu_cxx(games101_hw2_rasterization)

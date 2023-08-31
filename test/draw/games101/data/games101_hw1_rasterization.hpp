@@ -1,11 +1,5 @@
+#include "../games101_config.hpp"
 #include <eigen3/Eigen/Eigen>
-
-struct viewport {
-    float x;
-    float y;
-    float w;
-    float h;
-};
 
 extern "C" {
 
@@ -15,8 +9,7 @@ void gpumain(
     float *in_line_attributes,
     uint8_t *out_color_buffer,
     uint32_t *aux_start,
-    uint8_t *aux_is_x_major,    
-    uint32_t *aux_width
+    uint8_t *aux_is_x_major
 ) {
     uint32_t axis = tid + (*aux_start);
 
@@ -31,14 +24,14 @@ void gpumain(
 
     if (*aux_is_x_major) {
         // axis is x, result is y
-        uint32_t pixel_id = result * (*aux_width) + axis;
+        uint32_t pixel_id = result * WIDTH + axis;
         out_color_buffer[pixel_id * 4 + 0] = 255;
         out_color_buffer[pixel_id * 4 + 1] = 255;
         out_color_buffer[pixel_id * 4 + 2] = 255;
         out_color_buffer[pixel_id * 4 + 3] = 255;
     } else {
         // axis is y, result is x
-        uint32_t pixel_id = axis * (*aux_width) + result;
+        uint32_t pixel_id = axis * WIDTH + result;
         out_color_buffer[pixel_id * 4 + 0] = 255;
         out_color_buffer[pixel_id * 4 + 1] = 255;
         out_color_buffer[pixel_id * 4 + 2] = 255;
