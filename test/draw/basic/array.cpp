@@ -1,5 +1,38 @@
 #include "gpu_execuator.hpp"
 
+TEST_F(GPUExecuator, float_times_int) {
+    int32_t count = 16;
+    int i = 0;
+    uint32_t *in_int = (uint32_t *)malloc(count * sizeof(uint32_t));
+    float *in_float = (float *)malloc(count * sizeof(float));
+
+    int *out = (int *)malloc(count * sizeof(int));
+
+    LoadELF("basic", "float_times_int");
+    // long gpumain(long tid, int *in_int, float *in_float, int* output)
+    PushParam(0);
+    PushParam((uint64_t)in_int);
+    PushParam((uint64_t)in_float);
+    PushParam((uint64_t)out);
+
+    for (i=0; i<count; i++) {
+        in_int[i] = i;
+        in_float[i] = 1.3;
+
+        // int test = in_int[i] * (-1.3);
+        // printf("test: %d\n", test);
+    }
+
+    run1d(count);
+
+    for (i=0; i<16; i++) {
+        printf("%d\n", out[i]);
+        // std::cout<<out[i]<<" --> out[i]\n";
+
+        // EXPECT_EQ(out[i], in[i] + 100);
+    }
+}
+
 TEST_F(GPUExecuator, vertex_shader_array_add) {
     int32_t count = 16;
     int i = 0;

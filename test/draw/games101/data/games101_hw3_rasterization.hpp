@@ -3,13 +3,20 @@
 
 struct triangle {
     Eigen::Vector4f v[3];
-    Eigen::Vector3f color[3];
+    Eigen::Vector2f tex_coords[3];
+    Eigen::Vector3f normal[3];
 };
 
 struct box_info {
     uint32_t box_l;
     uint32_t box_b;
     uint32_t box_width;
+};
+
+struct tex_info {
+    uint8_t *tex_buffer;
+    uint32_t tex_width;
+    uint32_t tex_height;
 };
 
 extern "C" {
@@ -19,6 +26,7 @@ void gpumain(
     struct triangle *in_triangle,
     uint8_t *out_color_buffer,
     float *out_depth_buffer,
+    struct tex_info *tex,
     struct box_info *aux_box
 ) {
     uint32_t box_l = aux_box->box_l;
@@ -49,7 +57,7 @@ void gpumain(
     int pixel_in_triangle = (bary0 >= 0) && (bary1 >= 0) && (bary2 >= 0);
 
     // In-triangle test
-    if (pixel_in_triangle) {        
+    if (pixel_in_triangle) {
         float v0_z = t.v[0][2];
         float v1_z = t.v[1][2];
         float v2_z = t.v[2][2];
@@ -62,37 +70,38 @@ void gpumain(
         if (z > out_depth_buffer[(pixel_y * WIDTH) + pixel_x]) {
             out_depth_buffer[(pixel_y * WIDTH) + pixel_x] = z;
 
-            float v0_r = t.color[0][0];
-            float v0_g = t.color[0][1];
-            float v0_b = t.color[0][2];
-            float v1_r = t.color[1][0];
-            float v1_g = t.color[1][1];
-            float v1_b = t.color[1][2];
-            float v2_r = t.color[2][0];
-            float v2_g = t.color[2][1];
-            float v2_b = t.color[2][2];
+            uint8_t *tex_buffer = tex->tex_buffer;
+            uint32_t tex_width = tex->tex_width;
+            uint32_t tex_height = tex->tex_height;
 
-            // Since attributes (such as color) have not gone through perspective projection, we use perspective-corrected interpolation here
-            float v0_w = t.v[0][3];
-            float v1_w = t.v[1][3];
-            float v2_w = t.v[2][3];            
-            float a = bary0 / v0_w;
-            float b = bary1 / v1_w;
-            float c = bary2 / v2_w;
-            bary0 = a / (a + b + c);
-            bary1 = b / (a + b + c);
-            bary2 = c / (a + b + c);
+            float v0_u = t.tex_coords[0][0];
+            float v0_v = t.tex_coords[0][1];
+            float v1_u = t.tex_coords[1][0];
+            float v1_v = t.tex_coords[1][1];
+            float v2_u = t.tex_coords[2][0];
+            float v2_v = t.tex_coords[2][1];
 
-            float color_r = bary0 * v0_r + bary1 * v1_r + bary2 * v2_r;
-            float color_g = bary0 * v0_g + bary1 * v1_g + bary2 * v2_g;
-            float color_b = bary0 * v0_b + bary1 * v1_b + bary2 * v2_b;
+            int u_img = 0;
+            int v_img = 0;
+
+            float tex_u = bary0 * v0_u + bary1 * v1_u + bary2 * v2_u;
+            float tex_v = bary0 * v0_v + bary1 * v1_v + bary2 * v2_v;
+
+            u_img = (int)(tex_u * tex_width);
+            v_img = (int)((1 - tex_v) * tex_height);
+
+            uint8_t color_r = tex_buffer[(v_img * tex_width + u_img) * 4 + 0];
+            uint8_t color_g = tex_buffer[(v_img * tex_width + u_img) * 4 + 1];
+            uint8_t color_b = tex_buffer[(v_img * tex_width + u_img) * 4 + 2];
             
-            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 0] = (uint8_t)color_r;
-            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 1] = (uint8_t)color_g;
-            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 2] = (uint8_t)color_b;
+            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 0] = color_r;
+            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 1] = color_g;
+            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 2] = color_b;
             out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 3] = 255;
         }
+
     }
+
 
     return;
 }

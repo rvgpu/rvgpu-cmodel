@@ -1,5 +1,5 @@
 #include "gpu_execuator.hpp"
-#include "games101_common.hpp"
+#include "games101_config.hpp"
 #include <eigen3/Eigen/Eigen>
 #include <iostream>
 

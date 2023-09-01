@@ -5,4 +5,3 @@
 #define HEIGHT 600
 
 #endif // GAMES101_CONFIG_HPP
-

@@ -1,7 +1,6 @@
 #ifndef GAMES101_COMMON_HPP
 #define GAMES101_COMMON_HPP
 
-#include "games101_config.hpp"
 #include <eigen3/Eigen/Eigen>
 
 constexpr double MY_PI = 3.1415926;
@@ -74,6 +73,30 @@ Eigen::Matrix4f get_projection_matrix(float eye_fov, float aspect_ratio, float z
     projection = perspective_proj * projection;
 
     return projection;
+}
+
+Eigen::Matrix4f get_model_matrix_hw3(float angle)
+{
+    Eigen::Matrix4f rotation;
+    angle = angle * MY_PI / 180.f;
+    rotation << cos(angle), 0, sin(angle), 0,
+                0, 1, 0, 0,
+                -sin(angle), 0, cos(angle), 0,
+                0, 0, 0, 1;
+
+    Eigen::Matrix4f scale;
+    scale << 2.5, 0, 0, 0,
+              0, 2.5, 0, 0,
+              0, 0, 2.5, 0,
+              0, 0, 0, 1;
+
+    Eigen::Matrix4f translate;
+    translate << 1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 1;
+
+    return translate * rotation * scale;
 }
 
 #endif // GAMES101_COMMON_HPP
