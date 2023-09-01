@@ -9,7 +9,6 @@ set(project_binary_path ${CMAKE_BINARY_DIR})
 add_subdirectory(softfloat)
 
 enable_testing()
-include(compile_options.cmake)
 add_subdirectory(src)
 add_subdirectory(libdrm)
 add_subdirectory(test)

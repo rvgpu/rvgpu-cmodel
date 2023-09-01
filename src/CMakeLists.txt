@@ -1,6 +1,7 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${project_top_path})
+include(compile_options.cmake)
 
 configure_file(top/librvgpu.pc.in librvgpu.pc @ONLY)
 
