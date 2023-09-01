@@ -9,28 +9,13 @@ function(rvsim_test_draw target testname)
     add_test(NAME ${target} COMMAND ${target})
 endfunction()
 
-<<<<<<< HEAD
-find_package(PkgConfig)
-pkg_search_module(opencv_lib REQUIRED opencv4)
-
-set(DEVICE_C_FLAGS -xc -march=rv64imafd -mcmodel=medany -lm -e gpumain -nostartfiles -static -fno-PIC)
-set(DEVICE_CPP_FLAGS -xc++ -march=rv64imafd -mcmodel=medany -lm -e gpumain -nostartfiles -static -fno-PIC)
-
-function(rvgpu_cxx target)
-=======
 set(DEVICE_C_FLAGS -xc -march=rv64imafd -mcmodel=medany -lm -nostartfiles -static -fno-PIC)
 set(DEVICE_CPP_FLAGS -xc++ -march=rv64imafd -mcmodel=medany -lm -nostartfiles -static -fno-PIC)
 function(rvgpu_cxx target mainfunc)
->>>>>>> 9acaa61 (fix: build device function use a custom funcname)
     message("Generate ${CMAKE_CURRENT_BINARY_DIR}/${target}")
     execute_process(COMMAND riscv64-linux-gnu-g++ ${DEVICE_CPP_FLAGS} -e ${mainfunc} ${CMAKE_CURRENT_SOURCE_DIR}/${target}.hpp -o ${CMAKE_CURRENT_BINARY_DIR}/${target})
 endfunction()
-<<<<<<< HEAD
-
-function(rvgpu_cc target)
-=======
 function(rvgpu_cc target mainfunc)
->>>>>>> 9acaa61 (fix: build device function use a custom funcname)
     message("Generate ${CMAKE_CURRENT_BINARY_DIR}/${target}")
     execute_process(COMMAND riscv64-linux-gnu-gcc ${DEVICE_C_FLAGS} -e ${mainfunc} ${CMAKE_CURRENT_SOURCE_DIR}/${target}.h -o ${CMAKE_CURRENT_BINARY_DIR}/${target})
 endfunction()

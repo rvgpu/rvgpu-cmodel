@@ -1,15 +1,6 @@
-<<<<<<< HEAD
-# rvgpu_cxx(games101_hw1_vertex_shader)
-# rvgpu_cxx(games101_hw1_rasterization)
-# rvgpu_cxx(games101_hw2_vertex_shader)
-# rvgpu_cxx(games101_hw2_rasterization)
-rvgpu_cxx(games101_hw3_vertex_shader)
-rvgpu_cxx(games101_hw3_rasterization)
-# rvgpu_cxx(games101_hw4_naive_bazier)
-=======
+
 rvgpu_cxx(games101_hw1_vertex_shader gpumain)
 rvgpu_cxx(games101_hw1_rasterization gpumain)
 rvgpu_cxx(games101_hw2_vertex_shader gpumain)
 rvgpu_cxx(games101_hw2_rasterization gpumain)
 rvgpu_cxx(games101_hw4_naive_bazier gpumain)
->>>>>>> 9acaa61 (fix: build device function use a custom funcname)
