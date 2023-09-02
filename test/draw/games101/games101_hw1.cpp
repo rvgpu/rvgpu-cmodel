@@ -4,6 +4,9 @@
 #include <eigen3/Eigen/Eigen>
 #include <iostream>
 
+#include "data/games101_hw1_vertex_shader.hpp"
+#include "data/games101_hw1_rasterization.hpp"
+
 TEST_F(GPUExecuator, games101_hw1) {
     // 1. Data preparation
     // 1.1 Vertices
@@ -30,6 +33,7 @@ TEST_F(GPUExecuator, games101_hw1) {
     // 2. Vertex shader
     Eigen::Vector4f vs_out_positions[3];
 
+#if RUN_ON_GPU
     LoadELF("games101", "games101_hw1_vertex_shader");
     PushParam(0); // tid
     PushParam((uint64_t)vertex_positions);
@@ -38,7 +42,11 @@ TEST_F(GPUExecuator, games101_hw1) {
     PushParam((uint64_t)(&view));
     PushParam((uint64_t)(&projection));
     run1d(3);
-
+#else
+    for (long tid = 0; tid < 3; tid++) {
+        vertex_shader(tid, vertex_positions, vs_out_positions, &model, &view, &projection);
+    }
+#endif
 
 
 // --------------------
@@ -90,6 +98,7 @@ TEST_F(GPUExecuator, games101_hw1) {
             float line_endpoints[2] = {p0, p1};
             float line_attributes[2] = {a0, a1};
 
+#if RUN_ON_GPU
             LoadELF("games101", "games101_hw1_rasterization");
             PushParam(0); // tid
             PushParam((uint64_t)line_endpoints);
@@ -98,6 +107,11 @@ TEST_F(GPUExecuator, games101_hw1) {
             PushParam((uint64_t)(&line_start_x[i]));
             PushParam((uint64_t)(&line_is_x_major[i]));
             run1d(line_end_x[i] - line_start_x[i] + 1);
+#else
+            for (long tid = 0; tid < line_end_x[i] - line_start_x[i] + 1; tid++) {
+                rasterization(tid, line_endpoints, line_attributes, color_buffer, &line_start_x[i], &line_is_x_major[i]);
+            }
+#endif
         } else {
             // y-major
             float p0 = vs_out_positions[i % 3].y();
@@ -108,6 +122,7 @@ TEST_F(GPUExecuator, games101_hw1) {
             float line_endpoints[2] = {p0, p1};
             float line_attributes[2] = {a0, a1};
 
+#if RUN_ON_GPU
             LoadELF("games101", "games101_hw1_rasterization");
             PushParam(0); // tid
             PushParam((uint64_t)line_endpoints);
@@ -116,6 +131,11 @@ TEST_F(GPUExecuator, games101_hw1) {
             PushParam((uint64_t)(&line_start_y[i]));
             PushParam((uint64_t)(&line_is_x_major[i]));
             run1d(line_end_y[i] - line_start_y[i] + 1);
+#else
+            for (long tid = 0; tid < line_end_y[i] - line_start_y[i] + 1; tid++) {
+                rasterization(tid, line_endpoints, line_attributes, color_buffer, &line_start_y[i], &line_is_x_major[i]);
+            }
+#endif
         }
     }
 

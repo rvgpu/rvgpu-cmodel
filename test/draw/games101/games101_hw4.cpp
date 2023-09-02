@@ -3,6 +3,8 @@
 #include <eigen3/Eigen/Eigen>
 #include <iostream>
 
+#include "data/games101_hw4_naive_bazier.hpp"
+
 TEST_F(GPUExecuator, games101_hw4) {
     // 1. Data preparation
     Eigen::Vector2f vertex_positions[4] = {
@@ -21,11 +23,17 @@ TEST_F(GPUExecuator, games101_hw4) {
     // 2. Rasterization
     uint8_t *color_buffer = (uint8_t *) calloc(WIDTH * HEIGHT * 4, sizeof(uint8_t));
 
+#if RUN_ON_GPU
     LoadELF("games101", "games101_hw4_naive_bazier");
     PushParam(0); // tid
     PushParam((uint64_t)vertex_positions);
     PushParam((uint64_t)color_buffer);
     run1d(1000);
+#else
+    for (long tid = 0; tid < 1000; tid++) {
+        naive_bazier(tid, vertex_positions, color_buffer);
+    }
+#endif
     
 
 

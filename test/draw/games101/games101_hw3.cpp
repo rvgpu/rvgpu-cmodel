@@ -101,6 +101,7 @@ TEST_F(GPUExecuator, games101_hw3) {
     // 2. Vertex shader
     Eigen::Vector4f *vs_out_positions = (Eigen::Vector4f *) malloc(vertex_num * sizeof(Eigen::Vector4f));
 
+#if RUN_ON_GPU
     LoadELF("games101", "games101_hw3_vertex_shader");
     PushParam(0); // tid
     PushParam((uint64_t)vertex_positions);
@@ -109,6 +110,11 @@ TEST_F(GPUExecuator, games101_hw3) {
     PushParam((uint64_t)(&view));
     PushParam((uint64_t)(&projection));
     run1d(vertex_num);
+#else
+    for (long tid = 0; tid < vertex_num; tid++) {
+        vertex_shader(tid, vertex_positions, vs_out_positions, &model, &view, &projection);
+    }
+#endif
 
 
 
@@ -159,6 +165,7 @@ TEST_F(GPUExecuator, games101_hw3) {
         struct box_info box = {box_l, box_b, box_width};
 
         // Iterate over bounding box
+#if RUN_ON_GPU
         LoadELF("games101", "games101_hw3_rasterization");
         PushParam(0); // tid
         PushParam((uint64_t)(&t));
@@ -167,6 +174,11 @@ TEST_F(GPUExecuator, games101_hw3) {
         PushParam((uint64_t)(&tex));        
         PushParam((uint64_t)(&box));
         run1d(box_width * box_height);
+#else
+        for (long tid = 0; tid < box_width * box_height; tid++) {
+            rasterization(tid, &t, color_buffer, depth_buffer, &tex, &box);
+        }
+#endif
     }
 
 
