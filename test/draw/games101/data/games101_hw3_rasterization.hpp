@@ -21,7 +21,7 @@ struct tex_info {
 
 extern "C" {
 
-void gpumain(
+void rasterization(
     long tid,
     struct triangle *in_triangle,
     uint8_t *out_color_buffer,
@@ -81,14 +81,11 @@ void gpumain(
             float v2_u = t.tex_coords[2][0];
             float v2_v = t.tex_coords[2][1];
 
-            int u_img = 0;
-            int v_img = 0;
-
             float tex_u = bary0 * v0_u + bary1 * v1_u + bary2 * v2_u;
             float tex_v = bary0 * v0_v + bary1 * v1_v + bary2 * v2_v;
 
-            u_img = (int)(tex_u * tex_width);
-            v_img = (int)((1 - tex_v) * tex_height);
+            int u_img = (int)(tex_u * tex_width);
+            int v_img = (int)((1 - tex_v) * tex_height);
 
             uint8_t color_r = tex_buffer[(v_img * tex_width + u_img) * 4 + 0];
             uint8_t color_g = tex_buffer[(v_img * tex_width + u_img) * 4 + 1];
@@ -99,9 +96,7 @@ void gpumain(
             out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 2] = color_b;
             out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 3] = 255;
         }
-
     }
-
 
     return;
 }

@@ -3,7 +3,7 @@
 
 extern "C" {
 
-void gpumain(
+void vertex_shader(
     long tid,
     Eigen::Vector4f *in_positions,
     Eigen::Vector4f *out_positions,
