@@ -14,7 +14,7 @@ struct box_info {
 
 extern "C" {
 
-void gpumain(
+void rasterization(
     long tid,
     struct triangle *in_triangle,
     uint8_t *out_color_buffer,
