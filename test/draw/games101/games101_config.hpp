@@ -1,8 +1,8 @@
 #ifndef GAMES101_CONFIG_HPP
 #define GAMES101_CONFIG_HPP
 
-#define WIDTH 800
-#define HEIGHT 600
+#define WIDTH 700
+#define HEIGHT 700
 
 #define RUN_ON_GPU 1
 
