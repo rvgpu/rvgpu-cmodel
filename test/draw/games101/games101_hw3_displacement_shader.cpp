@@ -7,9 +7,9 @@
 #include <iostream>
 
 #include "data/games101_hw3_vertex_shader.hpp"
-#include "data/games101_hw3_phong_shader.hpp"
+#include "data/games101_hw3_displacement_shader.hpp"
 
-TEST_F(GPUExecuator, games101_hw3_phong_shader) {
+TEST_F(GPUExecuator, games101_hw3_displacement_shader) {
     // 1. Data preparation
     // 1.1 Matrices
     float angle = 140.0;
@@ -70,7 +70,7 @@ TEST_F(GPUExecuator, games101_hw3_phong_shader) {
     }
 
     // 1.3 Texture
-    auto texture_path = "hmap.png";
+    auto texture_path = "hmap.jpg";
     std::string tex_name = obj_path + texture_path;
 
     cv::Mat image_data = cv::imread(tex_name);
@@ -173,18 +173,18 @@ TEST_F(GPUExecuator, games101_hw3_phong_shader) {
 
         // Iterate over bounding box
 #if RUN_ON_GPU
-        LoadELF("games101", "games101_hw3_phong_shader");
+        LoadELF("games101", "games101_hw3_displacement_shader");
         PushParam(0); // tid
         PushParam((uint64_t)(&t));
         PushParam((uint64_t)color_buffer);
         PushParam((uint64_t)depth_buffer);
-        PushParam((uint64_t)(&tex));
+        PushParam((uint64_t)(&tex));        
         PushParam((uint64_t)(&box));
         PushParam((uint64_t)viewspace_pos);
         run1d(box_width * box_height);
 #else
         for (long tid = 0; tid < box_width * box_height; tid++) {
-            phong_shader(tid, &t, color_buffer, depth_buffer, &tex, &box, viewspace_pos);
+            displacement_shader(tid, &t, color_buffer, depth_buffer, &tex, &box, viewspace_pos);
         }
 #endif
     }
@@ -212,5 +212,5 @@ TEST_F(GPUExecuator, games101_hw3_phong_shader) {
         }
     }
 
-    WritePPM("games101_hw3_phong_shader", WIDTH, HEIGHT, image);
+    WritePPM("games101_hw3_displacement_shader", WIDTH, HEIGHT, image);
 }

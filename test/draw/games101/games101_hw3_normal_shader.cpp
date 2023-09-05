@@ -70,7 +70,7 @@ TEST_F(GPUExecuator, games101_hw3_normal_shader) {
     }
 
     // 1.3 Texture
-    auto texture_path = "spot_texture.png";
+    auto texture_path = "hmap.jpg";
     std::string tex_name = obj_path + texture_path;
 
     cv::Mat image_data = cv::imread(tex_name);
