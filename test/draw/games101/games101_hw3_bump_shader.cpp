@@ -4,7 +4,6 @@
 #include "OBJ_Loader.h"
 #include <eigen3/Eigen/Eigen>
 #include <opencv2/opencv.hpp>
-#include <iostream>
 
 #include "data/games101_hw3_vertex_shader.hpp"
 #include "data/games101_hw3_bump_shader.hpp"
@@ -57,7 +56,6 @@ TEST_F(GPUExecuator, games101_hw3_bump_shader) {
         }
     }
 
-
     int triangle_num = TriangleList.size();
     int vertex_num = triangle_num * 3;
 
@@ -92,12 +90,6 @@ TEST_F(GPUExecuator, games101_hw3_bump_shader) {
         }
     }
 
-
-
-// --------------------
-
-
-
     // 2. Vertex shader
     Eigen::Vector4f *vs_out_positions = (Eigen::Vector4f *) malloc(vertex_num * sizeof(Eigen::Vector4f));
 
@@ -115,12 +107,6 @@ TEST_F(GPUExecuator, games101_hw3_bump_shader) {
         vertex_shader(tid, vertex_positions, vs_out_positions, &model, &view, &projection);
     }
 #endif
-
-
-
-// --------------------
-
-
 
     // 3. Rasterization
     uint8_t *color_buffer = (uint8_t *) calloc(WIDTH * HEIGHT * 4, sizeof(uint8_t));
@@ -184,12 +170,6 @@ TEST_F(GPUExecuator, games101_hw3_bump_shader) {
         }
 #endif
     }
-
-
-
-// --------------------
-
-
 
     // 4. Write to image
     uint8_t *image = (uint8_t *) calloc(WIDTH * HEIGHT * 4, sizeof(uint8_t));

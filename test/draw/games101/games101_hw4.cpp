@@ -1,7 +1,6 @@
 #include "gpu_execuator.hpp"
 #include "games101_config.hpp"
 #include <eigen3/Eigen/Eigen>
-#include <iostream>
 
 #include "data/games101_hw4_naive_bazier.hpp"
 
@@ -13,12 +12,6 @@ TEST_F(GPUExecuator, games101_hw4) {
         {541.0f, 331.0f},
         {524.0f, 526.0f}
     };
-    
-    
-
-// --------------------
-
-
 
     // 2. Rasterization
     uint8_t *color_buffer = (uint8_t *) calloc(WIDTH * HEIGHT * 4, sizeof(uint8_t));
@@ -34,12 +27,6 @@ TEST_F(GPUExecuator, games101_hw4) {
         naive_bazier(tid, vertex_positions, color_buffer);
     }
 #endif
-    
-
-
-// --------------------
-
-
 
     // 3. Write to image
     uint8_t *image = (uint8_t *) calloc(WIDTH * HEIGHT * 4, sizeof(uint8_t));

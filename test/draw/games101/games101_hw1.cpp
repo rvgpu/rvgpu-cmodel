@@ -2,7 +2,6 @@
 #include "games101_common.hpp"
 #include "games101_config.hpp"
 #include <eigen3/Eigen/Eigen>
-#include <iostream>
 
 #include "data/games101_hw1_vertex_shader.hpp"
 #include "data/games101_hw1_rasterization.hpp"
@@ -24,12 +23,6 @@ TEST_F(GPUExecuator, games101_hw1) {
     Eigen::Matrix4f view = get_view_matrix(eye_pos);
     Eigen::Matrix4f projection = get_projection_matrix(45, 1, 0.1, 50);
 
-
-
-// --------------------
-
-
-
     // 2. Vertex shader
     Eigen::Vector4f vs_out_positions[3];
 
@@ -47,11 +40,6 @@ TEST_F(GPUExecuator, games101_hw1) {
         vertex_shader(tid, vertex_positions, vs_out_positions, &model, &view, &projection);
     }
 #endif
-
-
-// --------------------
-
-
 
     // 3. Rasterization
     uint8_t *color_buffer = (uint8_t *) calloc(WIDTH * HEIGHT * 4, sizeof(uint8_t));
@@ -138,12 +126,6 @@ TEST_F(GPUExecuator, games101_hw1) {
 #endif
         }
     }
-
-
-
-// --------------------
-
-
 
     // 4. Write to image
     uint8_t *image = (uint8_t *) calloc(WIDTH * HEIGHT * 4, sizeof(uint8_t));
