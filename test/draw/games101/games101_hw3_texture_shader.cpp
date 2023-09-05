@@ -7,9 +7,9 @@
 #include <iostream>
 
 #include "data/games101_hw3_vertex_shader.hpp"
-#include "data/games101_hw3_rasterization.hpp"
+#include "data/games101_hw3_texture_shader.hpp"
 
-TEST_F(GPUExecuator, games101_hw3) {
+TEST_F(GPUExecuator, games101_hw3_texture_shader) {
     // 1. Data preparation
     // 1.1 Matrices
     float angle = 140.0;
@@ -135,23 +135,30 @@ TEST_F(GPUExecuator, games101_hw3) {
     tex.tex_width = tex_width;
     tex.tex_height = tex_height;
 
+    Eigen::Matrix4f view_model = view * model;
+    Eigen::Matrix4f inv_trans = view_model.inverse().transpose();
+
     // Iterate over triangles
     for (int i = 0; i < triangle_num; i++) {
-        Eigen::Vector4f v0 = vs_out_positions[i * 3 + 0];
-        Eigen::Vector4f v1 = vs_out_positions[i * 3 + 1];
-        Eigen::Vector4f v2 = vs_out_positions[i * 3 + 2];
-
         struct triangle t;
-        t.v[0] = v0;
-        t.v[1] = v1;
-        t.v[2] = v2;
 
-        t.tex_coords[0] = TriangleList[i]->tex_coords[0];
-        t.tex_coords[1] = TriangleList[i]->tex_coords[1];
-        t.tex_coords[2] = TriangleList[i]->tex_coords[2];
+        Eigen::Vector4f viewspace_normal[3];
+        Eigen::Vector4f viewspace_pos[3];
 
-        Eigen::Vector3f triangle_x(v0.x(), v1.x(), v2.x());
-        Eigen::Vector3f triangle_y(v0.y(), v1.y(), v2.y());
+        for (int j = 0; j < 3; j++) {
+            t.v[j] = vs_out_positions[i * 3 + j];
+            t.color[j] = {148.0 / 255.0, 121.0 / 255.0, 92.0 / 255.0};
+            t.tex_coords[j] = TriangleList[i]->tex_coords[j];
+
+            viewspace_normal[j] << TriangleList[i]->normal[j], 0.0f;
+            viewspace_normal[j] = inv_trans * viewspace_normal[j];
+            t.normal[j] = viewspace_normal[j].head<3>();
+
+            viewspace_pos[j] = view_model * TriangleList[i]->v[j];
+        }
+
+        Eigen::Vector3f triangle_x(t.v[0].x(), t.v[1].x(), t.v[2].x());
+        Eigen::Vector3f triangle_y(t.v[0].y(), t.v[1].y(), t.v[2].y());
 
         // Bounding box
         uint32_t box_l = (uint32_t)triangle_x.minCoeff();
@@ -166,17 +173,18 @@ TEST_F(GPUExecuator, games101_hw3) {
 
         // Iterate over bounding box
 #if RUN_ON_GPU
-        LoadELF("games101", "games101_hw3_rasterization");
+        LoadELF("games101", "games101_hw3_texture_shader");
         PushParam(0); // tid
         PushParam((uint64_t)(&t));
         PushParam((uint64_t)color_buffer);
         PushParam((uint64_t)depth_buffer);
         PushParam((uint64_t)(&tex));        
         PushParam((uint64_t)(&box));
+        PushParam((uint64_t)viewspace_pos);
         run1d(box_width * box_height);
 #else
         for (long tid = 0; tid < box_width * box_height; tid++) {
-            rasterization(tid, &t, color_buffer, depth_buffer, &tex, &box);
+            texture_shader(tid, &t, color_buffer, depth_buffer, &tex, &box, viewspace_pos);
         }
 #endif
     }
@@ -204,5 +212,5 @@ TEST_F(GPUExecuator, games101_hw3) {
         }
     }
 
-    WritePPM("games101_hw3", WIDTH, HEIGHT, image);
+    WritePPM("games101_hw3_texture_shader", WIDTH, HEIGHT, image);
 }

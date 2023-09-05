@@ -3,6 +3,7 @@
 
 struct triangle {
     Eigen::Vector4f v[3];
+    Eigen::Vector3f color[3];
     Eigen::Vector2f tex_coords[3];
     Eigen::Vector3f normal[3];
 };
