@@ -9,6 +9,9 @@ function(rvsim_test_draw target testname)
     add_test(NAME ${target} COMMAND ${target})
 endfunction()
 
+find_package(PkgConfig)
+pkg_search_module(opencv_lib REQUIRED)
+
 set(DEVICE_C_FLAGS -xc -march=rv64imafd -mcmodel=medany -lm -nostartfiles -static -fno-PIC)
 set(DEVICE_CPP_FLAGS -xc++ -march=rv64imafd -mcmodel=medany -lm -nostartfiles -static -fno-PIC)
 
