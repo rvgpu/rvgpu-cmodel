@@ -24,9 +24,14 @@ void vertex_shader(
     pos[2] /= pos[3];
 
     // Viewport transform
+    // (x, y) is in the screen space
     float x = pos[0] * (WIDTH / 2) + (WIDTH / 2);
     float y = pos[1] * (HEIGHT / 2) + (HEIGHT / 2);
+
+    // z is between -1.0 (far) and 1.0 (near)
     float z = pos[2];
+
+    // w is the original z before perspective projection
     float w = pos[3];
 
     Eigen::Vector4f xyzw;
