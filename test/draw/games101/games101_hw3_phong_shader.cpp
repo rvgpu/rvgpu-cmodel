@@ -7,9 +7,9 @@
 #include <iostream>
 
 #include "data/games101_hw3_vertex_shader.hpp"
-#include "data/games101_hw3_bump_shader.hpp"
+#include "data/games101_hw3_phong_shader.hpp"
 
-TEST_F(GPUExecuator, games101_hw3_bump_shader) {
+TEST_F(GPUExecuator, games101_hw3_phong_shader) {
     // 1. Data preparation
     // 1.1 Matrices
     float angle = 140.0;
@@ -70,7 +70,7 @@ TEST_F(GPUExecuator, games101_hw3_bump_shader) {
     }
 
     // 1.3 Texture
-    auto texture_path = "hmap.jpg";
+    auto texture_path = "spot_texture.png";
     std::string tex_name = obj_path + texture_path;
 
     cv::Mat image_data = cv::imread(tex_name);
@@ -143,15 +143,18 @@ TEST_F(GPUExecuator, games101_hw3_bump_shader) {
         struct triangle t;
 
         Eigen::Vector4f viewspace_normal[3];
+        Eigen::Vector4f viewspace_pos[3];
 
         for (int j = 0; j < 3; j++) {
             t.v[j] = vs_out_positions[i * 3 + j];
-
+            t.color[j] = {148.0 / 255.0, 121.0 / 255.0, 92.0 / 255.0};
             t.tex_coords[j] = TriangleList[i]->tex_coords[j];
 
             viewspace_normal[j] << TriangleList[i]->normal[j], 0.0f;
             viewspace_normal[j] = inv_trans * viewspace_normal[j];
             t.normal[j] = viewspace_normal[j].head<3>();
+
+            viewspace_pos[j] = view_model * TriangleList[i]->v[j];
         }
 
         Eigen::Vector3f triangle_x(t.v[0].x(), t.v[1].x(), t.v[2].x());
@@ -170,17 +173,18 @@ TEST_F(GPUExecuator, games101_hw3_bump_shader) {
 
         // Iterate over bounding box
 #if RUN_ON_GPU
-        LoadELF("games101", "games101_hw3_bump_shader");
+        LoadELF("games101", "games101_hw3_phong_shader");
         PushParam(0); // tid
         PushParam((uint64_t)(&t));
         PushParam((uint64_t)color_buffer);
         PushParam((uint64_t)depth_buffer);
-        PushParam((uint64_t)(&tex));        
+        PushParam((uint64_t)(&tex));
         PushParam((uint64_t)(&box));
+        PushParam((uint64_t)viewspace_pos);
         run1d(box_width * box_height);
 #else
         for (long tid = 0; tid < box_width * box_height; tid++) {
-            bump_shader(tid, &t, color_buffer, depth_buffer, &tex, &box);
+            phong_shader(tid, &t, color_buffer, depth_buffer, &tex, &box, viewspace_pos);
         }
 #endif
     }
@@ -208,5 +212,5 @@ TEST_F(GPUExecuator, games101_hw3_bump_shader) {
         }
     }
 
-    WritePPM("games101_hw3_bump_shader", WIDTH, HEIGHT, image);
+    WritePPM("games101_hw3_phong_shader", WIDTH, HEIGHT, image);
 }
