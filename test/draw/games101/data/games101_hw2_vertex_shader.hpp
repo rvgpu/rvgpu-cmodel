@@ -3,7 +3,7 @@
 
 extern "C" {
 
-void gpumain(
+void vertex_shader(
     long tid,
     Eigen::Vector3f *in_positions,
     Eigen::Vector4f *out_positions,
@@ -28,7 +28,7 @@ void gpumain(
     float x = pos[0] * (WIDTH / 2) + (WIDTH / 2);
     float y = pos[1] * (HEIGHT / 2) + (HEIGHT / 2);
 
-    // z is between 0.0 and 1.0
+    // z is between -1.0 (far) and 1.0 (near)
     float z = pos[2];
 
     // w is the original z before perspective projection

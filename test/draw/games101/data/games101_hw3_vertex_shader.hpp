@@ -5,7 +5,7 @@ extern "C" {
 
 void vertex_shader(
     long tid,
-    Eigen::Vector3f *in_positions,
+    Eigen::Vector4f *in_positions,
     Eigen::Vector4f *out_positions,
     Eigen::Matrix4f *aux_model,
     Eigen::Matrix4f *aux_view,
@@ -15,7 +15,7 @@ void vertex_shader(
     
     // MVP
     Eigen::Vector4f pos;
-    pos << in_positions[vertex_id], 1.0;
+    pos << in_positions[vertex_id];
     pos = (*aux_projection) * (*aux_view) * (*aux_model) * pos;
 
     // Homogeneous division

@@ -3,7 +3,7 @@
 
 extern "C" {
 
-void gpumain(
+void naive_bazier(
     long tid,
     Eigen::Vector2f *in_positions,
     uint8_t *out_color_buffer

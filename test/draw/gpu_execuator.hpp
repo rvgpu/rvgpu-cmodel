@@ -91,7 +91,7 @@ protected:
         fpath += ".ppm";
         FILE *wf = fopen(fpath.c_str(), "w");
         fprintf(wf, "P3\n");
-        fprintf(wf, "800 600\n");
+        fprintf(wf, "%u %u\n", w, h);
         fprintf(wf, "255\n");
         for (uint32_t i=0; i<h; i++) {
             for (uint32_t j=0; j<w; j++) {

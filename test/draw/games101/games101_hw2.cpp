@@ -1,21 +1,13 @@
 #include "gpu_execuator.hpp"
 #include "games101_common.hpp"
+#include "games101_config.hpp"
 #include <eigen3/Eigen/Eigen>
-#include <iostream>
+
+#include "data/games101_hw2_vertex_shader.hpp"
+#include "data/games101_hw2_rasterization.hpp"
 
 #define VERTEX_COUNT 6
 #define TRIANGLE_COUNT (VERTEX_COUNT / 3)
-
-struct triangle {
-    Eigen::Vector4f v[3];
-    Eigen::Vector3f color[3];
-};
-
-struct box_info {
-    uint32_t box_l;
-    uint32_t box_b;
-    uint32_t box_width;
-};
 
 TEST_F(GPUExecuator, games101_hw2) {
     // 1. Data preparation
@@ -45,14 +37,10 @@ TEST_F(GPUExecuator, games101_hw2) {
     Eigen::Matrix4f view = get_view_matrix(eye_pos);
     Eigen::Matrix4f projection = get_projection_matrix(45, 1, 0.1, 50);
 
-
-
-// --------------------
-
-
-
     // 2. Vertex shader
     Eigen::Vector4f vs_out_positions[VERTEX_COUNT];
+
+#if RUN_ON_GPU
     LoadELF("games101", "games101_hw2_vertex_shader");
     PushParam(0); // tid
     PushParam((uint64_t)vertex_positions);
@@ -61,12 +49,11 @@ TEST_F(GPUExecuator, games101_hw2) {
     PushParam((uint64_t)(&view));
     PushParam((uint64_t)(&projection));
     run1d(VERTEX_COUNT);
-
-
-
-// --------------------
-
-
+#else
+    for (long tid = 0; tid < VERTEX_COUNT; tid++) {
+        vertex_shader(tid, vertex_positions, vs_out_positions, &model, &view, &projection);
+    }
+#endif
 
     // 3. Rasterization
     struct triangle triangles[TRIANGLE_COUNT];
@@ -104,20 +91,20 @@ TEST_F(GPUExecuator, games101_hw2) {
         struct box_info box = {box_l, box_b, box_width};
         
         // Iterate over bounding box
+#if RUN_ON_GPU
         LoadELF("games101", "games101_hw2_rasterization");
         PushParam(0); // tid
         PushParam((uint64_t)(&t));
         PushParam((uint64_t)color_buffer);
         PushParam((uint64_t)depth_buffer);
         PushParam((uint64_t)(&box));
-        run1d(box_width * box_height);        
+        run1d(box_width * box_height);
+#else
+        for (long tid = 0; tid < box_width * box_height; tid++) {
+            rasterization(tid, &t, color_buffer, depth_buffer, &box);
+        }
+#endif
     }
-
-
-
-// --------------------
-
-
 
     // 4. Write to image
     uint8_t *image = (uint8_t *) calloc(WIDTH * HEIGHT * 4, sizeof(uint8_t));

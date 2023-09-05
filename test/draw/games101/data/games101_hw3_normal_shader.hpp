@@ -4,6 +4,8 @@
 struct triangle {
     Eigen::Vector4f v[3];
     Eigen::Vector3f color[3];
+    Eigen::Vector2f tex_coords[3];
+    Eigen::Vector3f normal[3];
 };
 
 struct box_info {
@@ -12,13 +14,20 @@ struct box_info {
     uint32_t box_width;
 };
 
+struct tex_info {
+    uint8_t *tex_buffer;
+    uint32_t tex_width;
+    uint32_t tex_height;
+};
+
 extern "C" {
 
-void rasterization(
+void normal_shader(
     long tid,
     struct triangle *in_triangle,
     uint8_t *out_color_buffer,
     float *out_depth_buffer,
+    struct tex_info *tex,
     struct box_info *aux_box
 ) {
     uint32_t box_l = aux_box->box_l;
@@ -49,7 +58,7 @@ void rasterization(
     int pixel_in_triangle = (bary0 >= 0) && (bary1 >= 0) && (bary2 >= 0);
 
     // In-triangle test
-    if (pixel_in_triangle) {        
+    if (pixel_in_triangle) {
         float v0_z = t.v[0][2];
         float v1_z = t.v[1][2];
         float v2_z = t.v[2][2];
@@ -61,12 +70,16 @@ void rasterization(
         // We use the convention 0 > n > f in projection, so nearer objects have larger z
         if (z > out_depth_buffer[(pixel_y * WIDTH) + pixel_x]) {
             out_depth_buffer[(pixel_y * WIDTH) + pixel_x] = z;
-            
-            Eigen::Vector3f color = bary0 * t.color[0] + bary1 * t.color[1] + bary2 * t.color[2];
 
-            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 0] = (uint8_t)color[0];
-            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 1] = (uint8_t)color[1];
-            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 2] = (uint8_t)color[2];
+            Eigen::Vector3f interpolated_normal = bary0 * t.normal[0] + bary1 * t.normal[1] + bary2 * t.normal[2];
+
+            interpolated_normal = interpolated_normal.normalized();
+
+            Eigen::Vector3f color = (interpolated_normal + Eigen::Vector3f(1.0f, 1.0f, 1.0f)) / 2.0f;
+            
+            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 0] = (uint8_t)(color[0] * 255);
+            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 1] = (uint8_t)(color[1] * 255);
+            out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 2] = (uint8_t)(color[2] * 255);
             out_color_buffer[(pixel_y * WIDTH + pixel_x) * 4 + 3] = 255;
         }
     }

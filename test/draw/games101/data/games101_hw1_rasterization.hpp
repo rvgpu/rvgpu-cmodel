@@ -3,7 +3,7 @@
 
 extern "C" {
 
-void gpumain(
+void rasterization(
     long tid,
     float *in_line_endpoints,
     float *in_line_attributes,
