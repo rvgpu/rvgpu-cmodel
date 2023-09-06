@@ -15,3 +15,6 @@ typedef uint64_t reg_t;
 
 #define F32_SIGN ((uint32_t)1 << 31)
 #define F64_SIGN ((uint64_t)1 << 63)
+
+#define COMPRESSED_INSTRUCT_MASK 3
+#define IS_COMPRESSED_INST(code)   ((code & COMPRESSED_INSTRUCT_MASK) != 3)
