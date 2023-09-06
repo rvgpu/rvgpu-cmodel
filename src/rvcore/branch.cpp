@@ -33,7 +33,8 @@ branch::branch() {
 writeback_t branch::run(inst_issue inst, uint64_t &retpc) {
     writeback_t res = {0, 0};
     uint64_t pc = inst.currpc;
-    retpc = pc + 4;
+    uint8_t pc_step = (inst.code & 0xff) ? 4 : 2;
+    retpc = pc + pc_step;
 
     switch (inst.code) {
         case encoding::INST_BRANCH_AUIPC: {
@@ -85,13 +86,13 @@ writeback_t branch::run(inst_issue inst, uint64_t &retpc) {
         case encoding::INST_BRANCH_JAL: {
             retpc = (pc + inst.uj_imm);
             RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JAL] jump to %lx\n", retpc);
-            res = writeback_t {inst.rd, pc + 4};
+            res = writeback_t {inst.rd, pc + pc_step};
             break;
         }
         case encoding::INST_BRANCH_JALR: {
             retpc = (inst.rs1 + inst.i_imm) & ~(uint64_t)(1);
             RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JALR] jump to %lx\n", retpc);
-            res = writeback_t {inst.rd, pc + 4};
+            res = writeback_t {inst.rd, pc + pc_step};
             break;
         }
         default:

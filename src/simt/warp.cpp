@@ -69,6 +69,7 @@ void warp::setup(message msg) {
 inst_issue warp::schedule() {
     uint32_t instcode = *((uint32_t *)pc);
     RVGPU_DEBUG_PRINT("Fetch inst: [%lx (0x%lx)] 0x%08x\n", (uint64_t(pc) - uint64_t(startpc)), pc, instcode);
+    uint8_t pc_step = (instcode & 0xff) ? 4 : 2;
     inst_issue to_issue = m_dec->decode_inst(instcode);
     to_issue.lanes = lanes.to_ulong();
     to_issue.currpc = pc;
@@ -88,7 +89,7 @@ inst_issue warp::schedule() {
         to_issue.type = encoding::INST_TYPE_NOP;
         to_issue.lanes = lanes.to_ulong();
     } else {
-        pc = pc + 4;
+        pc = pc + pc_step;
     }
 
     return to_issue;
