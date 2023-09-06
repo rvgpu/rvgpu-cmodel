@@ -44,14 +44,8 @@ dec::dec() {
 
 }
 
-inst_issue dec::decode_inst(uint32_t instcode) {
-    inst_issue to_issue;
-
-    to_issue.bits = instcode;
-    to_issue.code = match(instcode);
-    to_issue.type = to_issue.code & encoding::INST_TYPE_MASK;
-
-    bits = instcode;
+void dec::fill_issues(inst_issue &to_issue) {
+    bits = to_issue.bits;
     to_issue.rd = xget(7, 5);
     to_issue.rs1_id = xget(15, 5);
     to_issue.rs2_id = xget(20, 5);
@@ -68,6 +62,18 @@ inst_issue dec::decode_inst(uint32_t instcode) {
     to_issue.frs1_id = to_issue.rs1_id + 32;
     to_issue.frs2_id = to_issue.rs2_id + 32;
     to_issue.frs3_id = to_issue.rs3_id + 32;
+}
+
+inst_issue dec::decode_inst(uint32_t instcode) {
+    inst_issue to_issue;
+
+    // Match instruction
+    to_issue.bits = instcode;
+    to_issue.code = match(instcode);
+    to_issue.type = to_issue.code & encoding::INST_TYPE_MASK;
+
+    fill_issues(to_issue);
+
     return to_issue;
 }
 

@@ -38,6 +38,7 @@ private:
     [[nodiscard]] uint64_t xget(int lo, int len) const { return (bits >> lo) & ((uint64_t(1) << len) - 1); }
     [[nodiscard]] uint64_t xsget(int lo, int len) const { return int64_t(bits) << (64 - lo - len) >> (64 - len); }
     [[nodiscard]] uint64_t imm_sign() { return xsget(31, 1); }
+    void fill_issues(inst_issue &to_issue);
 
     uint32_t bits;
 
