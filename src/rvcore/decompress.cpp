@@ -25,6 +25,7 @@
 
 #include "decompress.hpp"
 
+// reference: https://github.com/kaeteyaruyo/rv32emu-next.git
 // instruction decode masks
 enum {
     //                ....xxxx....xxxx
@@ -89,19 +90,19 @@ uint32_t decompress::translate(uint32_t instcode) {
     // CI type: Immediate
     uint8_t  CI_rd =  (instcode >> 7) & 0x1f;
     uint8_t  CI_rs1 = CI_rd;
-    uint32_t nzimm = 0;
-    nzimm |= (instcode & 0x1000) >> 7;
-    nzimm |= (instcode & 0x7c) >> 2;
-    nzimm = sign_extend(nzimm, 5);
+    uint32_t CI_nzimm = dec_ci_nzimm(instcode);
 
     // CJ type: Jump
     uint32_t CJ_imm = dec_cj_imm(instcode);
 
+    // TODO. decoder with search table
+    // f3  op
+    // xxx_xx
     switch ((funct3 << 2) | op) {
-        case 0x1: // 000_01: CI c.nop and c.addi. c.nop is: c.addi x0, x0, 0
-            ret = encode_itype(nzimm, CI_rs1, funct3, CI_rd, 0b0010011);
+        case 0b00001: // 000_01: CI c.nop and c.addi. c.nop is: c.addi x0, x0, 0
+            ret = encode_itype(CI_nzimm, CI_rs1, funct3, CI_rd, 0b0010011);
             break;
-        case 0x5: // 001_01: CI c.jal, jal x1, offset[11:1]
+        case 0b00101: // 001_01: CI c.jal, jal x1, offset[11:1]
             ret = encode_jtype(CJ_imm, 1, 0b1101111);
             break;
         default:
@@ -119,6 +120,15 @@ uint32_t decompress::sign_extend(uint32_t x, uint8_t sign_position)
     for (uint8_t i = sign_position + 1; i < 32; ++i)
         x |= sign << i;
     return x;
+}
+
+// decode CI-format instruction uz immediate
+uint32_t decompress::dec_ci_nzimm(uint16_t inst) {
+    uint32_t nzimm = 0;
+    nzimm |= (inst & CI_MASK_12) >> 7;
+    nzimm |= (inst & (CI_MASK_6_4 | CI_MASK_3_2)) >> 2;
+    nzimm = sign_extend(nzimm, 5);
+    return nzimm;
 }
 
 // decode CJ-format instruction immediate
