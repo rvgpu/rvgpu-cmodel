@@ -39,4 +39,5 @@ private:
     uint8_t  dec_rd(uint16_t inst);
     uint32_t dec_cj_imm(uint16_t inst);
     uint32_t dec_ci_imm(uint16_t inst);
+    uint32_t dec_ci_imm94(uint16_t inst);
 };
