@@ -17,4 +17,11 @@ public:
         ExecuateInst();
         EXPECT_EQ(GetPC(), pc + imm);
     }
+
+    void check_cli(uint32_t inst, reg rd, uint64_t result) {
+        insts.push_back(inst);
+        ExecuateInst();
+        uint64_t res = GetIReg(rd);
+        EXPECT_EQ(res, result);
+    }
 };

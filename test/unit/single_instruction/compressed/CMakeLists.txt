@@ -4,3 +4,4 @@ endfunction()
 
 rvsim_ut_compress(caddi)
 rvsim_ut_compress(cjal)
+rvsim_ut_compress(cli)

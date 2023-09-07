@@ -36,6 +36,7 @@ private:
 
     uint32_t sign_extend(uint32_t x, uint8_t sign_position);
 
+    uint8_t  dec_rd(uint16_t inst);
     uint32_t dec_cj_imm(uint16_t inst);
-    uint32_t dec_ci_nzimm(uint16_t inst);
+    uint32_t dec_ci_imm(uint16_t inst);
 };

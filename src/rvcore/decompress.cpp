@@ -88,9 +88,9 @@ uint32_t decompress::translate(uint32_t instcode) {
     }
 
     // CI type: Immediate
-    uint8_t  CI_rd =  (instcode >> 7) & 0x1f;
+    uint8_t  CI_rd =  dec_rd(instcode);
     uint8_t  CI_rs1 = CI_rd;
-    uint32_t CI_nzimm = dec_ci_nzimm(instcode);
+    uint32_t CI_imm =dec_ci_imm(instcode);
 
     // CJ type: Jump
     uint32_t CJ_imm = dec_cj_imm(instcode);
@@ -100,10 +100,13 @@ uint32_t decompress::translate(uint32_t instcode) {
     // xxx_xx
     switch ((funct3 << 2) | op) {
         case 0b00001: // 000_01: CI c.nop and c.addi. c.nop is: c.addi x0, x0, 0
-            ret = encode_itype(CI_nzimm, CI_rs1, funct3, CI_rd, 0b0010011);
+            ret = encode_itype(CI_imm, CI_rs1, funct3, CI_rd, 0b0010011);
             break;
-        case 0b00101: // 001_01: CI c.jal, jal x1, offset[11:1]
+        case 0b00101: // 001_01: CJ c.jal, jal x1, offset[11:1]
             ret = encode_jtype(CJ_imm, 1, 0b1101111);
+            break;
+        case 0b01001: // 010_01: CI c.li, convert to addi rd, x0, imm[5:0]
+            ret = encode_itype(CI_imm, 0, 0b000, CI_rd, 0b0010011);
             break;
         default:
             printf("[Decompressed] error instruction %x...%x\n", funct3, op);
@@ -122,8 +125,14 @@ uint32_t decompress::sign_extend(uint32_t x, uint8_t sign_position)
     return x;
 }
 
+// decode rd field
+uint8_t decompress::dec_rd(uint16_t inst)
+{
+    return (inst & C_RD) >> 7;
+}
+
 // decode CI-format instruction uz immediate
-uint32_t decompress::dec_ci_nzimm(uint16_t inst) {
+uint32_t decompress::dec_ci_imm(uint16_t inst) {
     uint32_t nzimm = 0;
     nzimm |= (inst & CI_MASK_12) >> 7;
     nzimm |= (inst & (CI_MASK_6_4 | CI_MASK_3_2)) >> 2;
