@@ -22,28 +22,15 @@
  */
 
 #pragma once
-
 #include <cstdint>
 
-#include "decompress.hpp"
-#include "encoding.hpp"
-#include "inst_issue.hpp"
-
-class dec {
+class decompress {
 public:
-    dec();
+    decompress();
 
-    inst_issue decode_inst(uint32_t instcode);
+    uint32_t translate(uint32_t instcode);
 
 private:
-    decompress *m_decompress;
-
-    [[nodiscard]] uint64_t xget(int lo, int len) const { return (bits >> lo) & ((uint64_t(1) << len) - 1); }
-    [[nodiscard]] uint64_t xsget(int lo, int len) const { return int64_t(bits) << (64 - lo - len) >> (64 - len); }
-    [[nodiscard]] uint64_t imm_sign() { return xsget(31, 1); }
-    void fill_issues(inst_issue &to_issue);
-
-    uint32_t bits;
-
-    encoding::INST match(uint32_t instcode);
+    uint32_t encoder_itype(uint32_t imm, uint32_t rs1, uint32_t funct3, uint32_t rd, uint32_t opcode);
+    uint32_t sign_extend(uint32_t x, uint8_t sign_position);
 };

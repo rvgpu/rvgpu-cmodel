@@ -80,6 +80,7 @@ protected:
         }
 
         m_reg->write(0, wb.rid, wb.wdata);
+        insts.clear();
     }
 
     uint64_t GetPC() {

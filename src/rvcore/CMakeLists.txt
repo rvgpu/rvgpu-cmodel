@@ -9,6 +9,8 @@ set(RVCORE_FILES
     load_store.hpp
     branch.cpp
     branch.hpp
+    decompress.cpp
+    decompress.hpp
     )
 
 add_library(rvcore OBJECT ${RVCORE_FILES})
