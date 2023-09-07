@@ -3,3 +3,4 @@ function(rvsim_ut_compress testname)
 endfunction()
 
 rvsim_ut_compress(caddi)
+rvsim_ut_compress(cjal)
