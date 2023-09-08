@@ -26,11 +26,57 @@
 #include "stream_multiprocessor.h"
 #include "simt/simt.hpp"
 
-sm::sm() {
+void * sm::multithread_runner(void *arg) {
+    sm *this_sm = (sm *)arg;
+
+    while (1) {
+        pthread_mutex_t *msg_list_mutex = this_sm->get_mutex();
+
+        pthread_mutex_lock(msg_list_mutex);
+
+        if (this_sm->has_msg()) {
+            message msg = this_sm->get_msg();
+
+            this_sm->run(msg);
+            this_sm->send_response();
+        }
+
+        pthread_mutex_unlock(msg_list_mutex);
+    }
+
+    return nullptr;
+}
+
+sm::sm(int id, command_processor *cp) {
+    m_id = id;
+    m_cp = cp;
     m_simt = new simt();
+    pthread_create(&m_thread, nullptr, multithread_runner, this);
+}
+
+sm::~sm() {
+    delete m_simt;
+    pthread_join(m_thread, nullptr);
 }
 
 void sm::run(message msg) {
     m_simt->setup(msg);
     m_simt->run();
+}
+
+bool sm::has_msg() {
+    return m_cp->has_msg();
+}
+
+message sm::get_msg() {
+    return m_cp->get_msg();
+}
+
+pthread_mutex_t * sm::get_mutex() {
+    return m_cp->get_mutex();
+}
+
+void sm::send_response() {
+    m_cp->receive_response();
+    return;
 }

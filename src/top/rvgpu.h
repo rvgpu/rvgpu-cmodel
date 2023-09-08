@@ -24,7 +24,7 @@
 #pragma once
 
 #include <cstdint>
-#include <vector>
+#include "common/configs.h"
 
 #include "command_stream.h"
 
@@ -35,19 +35,18 @@ class vram;
 class rvgpu {
 public:
     rvgpu();
+    ~rvgpu();
+
+    void run(uint64_t cmd);
 
     // Interface of register and vram
     void write_vram(uint64_t addr, uint64_t data, uint32_t size);
     uint64_t read_vram(uint64_t addr, uint32_t size);
     void write_register(uint64_t addr, uint32_t data);
     uint32_t read_register(uint64_t addr);
-
-    void run(uint64_t cmd);
 private:
-    command_processor *m_cp;
-    sm *m_sm;
     vram *m_vram;
-
+    command_processor *m_cp;
+    sm *m_sm[SM_NUM];
     uint32_t *regs;
-    std::vector<message> m_messages;
 };

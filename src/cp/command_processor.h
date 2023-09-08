@@ -23,7 +23,8 @@
 
 #pragma once
 
-#include <vector>
+#include <list>
+#include <pthread.h>
 
 #include "top/command_stream.h"
 
@@ -32,8 +33,20 @@ class rvgpu;
 class command_processor {
 public:
     command_processor();
-    void run(uint64_t cmds, std::vector<message> &msg);
+    ~command_processor();
+
+    void run(uint64_t cmds);
+
+    bool has_msg();
+    message get_msg();
+    pthread_mutex_t * get_mutex();
+    void receive_response();
+    bool finished();
 
 private:
-    void command_split_1d(rvgpu_command *cs, std::vector<message> &msg);
+    int m_message_size;
+    std::list<message> m_message;
+    pthread_mutex_t m_message_mutex;
+
+    void command_split_1d(rvgpu_command *cs);
 };

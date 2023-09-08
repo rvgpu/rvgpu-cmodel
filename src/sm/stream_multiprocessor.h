@@ -24,13 +24,24 @@
 #pragma once
 
 #include "top/command_stream.h"
+#include "cp/command_processor.h"
 #include "simt/simt.hpp"
 
 class sm {
 public:
-    sm();
-    void run(message msg);
+    sm(int id, command_processor *cp);
+    ~sm();
 
+    static void * multithread_runner(void *arg);
+    void run(message msg);
 private:
+    int m_id;
+    command_processor *m_cp;
     simt *m_simt;
+    pthread_t m_thread;
+
+    bool has_msg();
+    message get_msg();
+    pthread_mutex_t * get_mutex();
+    void send_response();
 };

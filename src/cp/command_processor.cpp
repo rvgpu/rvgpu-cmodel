@@ -25,16 +25,22 @@
 #include "common/debug.hpp"
 
 command_processor::command_processor() {
+    m_message_size = 0;
+    pthread_mutex_init(&m_message_mutex, nullptr);
 }
 
-void command_processor::run(uint64_t cmds, std::vector<message> &msg) {
+command_processor::~command_processor() {
+    pthread_mutex_destroy(&m_message_mutex);
+}
+
+void command_processor::run(uint64_t cmds) {
     rvgpu_command *cs = (rvgpu_command *)cmds;
     switch (cs->type) {
         case RVGPU_COMMAND_TYPE_1D:
-            command_split_1d(cs, msg);
+            command_split_1d(cs);
             break;
         case RVGPU_COMMAND_TYPE_2D:
-            // command_split_2d(cs, msg);
+            // command_split_2d(cs);
             break;
         default:
             RVGPU_ERROR_PRINT("COMMAND TYPE TODO\n");
@@ -42,9 +48,11 @@ void command_processor::run(uint64_t cmds, std::vector<message> &msg) {
     }
 }
 
-void command_processor::command_split_1d(rvgpu_command *cs, std::vector<message> &msgs) {
+void command_processor::command_split_1d(rvgpu_command *cs) {
     int32_t tcount = cs->range.x;
     uint32_t start = 0;
+
+    pthread_mutex_lock(&m_message_mutex);
 
     while (tcount > 0) {
         message msg = {};
@@ -60,6 +68,33 @@ void command_processor::command_split_1d(rvgpu_command *cs, std::vector<message>
         start += 16;
         tcount = tcount - msg.count;
 
-        msgs.push_back(std::move(msg));
+        m_message.push_back(std::move(msg));
     }
+
+    m_message_size = m_message.size();
+
+    pthread_mutex_unlock(&m_message_mutex);
+}
+
+bool command_processor::has_msg() {
+    return m_message_size > 0;
+}
+
+message command_processor::get_msg() {
+    message msg = m_message.front();
+    m_message.pop_front();
+    return msg;
+}
+
+pthread_mutex_t * command_processor::get_mutex() {
+    return &m_message_mutex;
+}
+
+void command_processor::receive_response() {
+    m_message_size--;
+    return;
+}
+
+bool command_processor::finished() {
+    return m_message_size == 0;
 }

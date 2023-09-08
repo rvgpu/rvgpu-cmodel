@@ -7,6 +7,9 @@
 #define PROJECT_BINARY_PATH                 "@project_binary_path@"
 #define PROJECT_TEST_DRAW_BINARY_PATH       PROJECT_BINARY_PATH"/test/draw"
 
+/* Configure STREAM MULTIPROCESSOR */
+#define SM_NUM                      8
+
 /* Configure STREAM PROCESSOR */
 #define SP_WARP_N                   1
 #define SP_REGFILE_REGWIDTH         64

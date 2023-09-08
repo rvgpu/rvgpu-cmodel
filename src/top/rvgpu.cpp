@@ -32,17 +32,30 @@
 rvgpu::rvgpu() {
     m_vram = new vram(VRAM_SIZE);
     m_cp = new command_processor();
-    m_sm = new sm();
+
+    for (int i = 0; i < SM_NUM; i++) {
+        m_sm[i] = new sm(i, m_cp);
+    }
 
     regs = (uint32_t *)malloc(MBYTE(2));
 }
 
-void rvgpu::run(uint64_t cmds) {
-    std::vector<message> msg;
-    m_cp->run(cmds, msg);
+rvgpu::~rvgpu() {
+    delete m_vram;
+    delete m_cp;
 
-    for (auto m : msg) {
-        m_sm->run(m);
+    for (int i = 0; i < SM_NUM; i++) {
+        delete m_sm[i];
+    }
+
+    free(regs);
+}
+
+void rvgpu::run(uint64_t cmds) {
+    m_cp->run(cmds);
+
+    while (!m_cp->finished()) {
+        // Wait
     }
 }
 
