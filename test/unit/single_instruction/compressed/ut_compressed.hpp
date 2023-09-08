@@ -20,10 +20,15 @@ public:
         EXPECT_EQ(GetPC(), pc + imm);
     }
 
-    void check_cli(uint32_t inst, reg rd, uint64_t result) {
+    void check_one_src(uint32_t inst, pair<reg, uint64_t> in, pair<reg, uint64_t>reference) {
         insts.push_back(inst);
+        SetIReg(in.first, in.second);
         ExecuateInst();
-        uint64_t res = GetIReg(rd);
-        EXPECT_EQ(res, result);
+        uint64_t result = GetIReg(reference.first);
+        EXPECT_EQ(result, reference.second);
+    }
+
+    void check_csrla() {
+
     }
 };
