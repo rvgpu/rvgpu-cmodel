@@ -40,11 +40,11 @@ std::vector<struct instlist> insts = {
 #include "declare_inst.h"
 };
 
-dec::dec() {
+decoder::decoder() {
     m_decompress = new decompress();
 }
 
-void dec::fill_issues(inst_issue &to_issue) {
+void decoder::fill_issues(inst_issue &to_issue) {
     to_issue.rd = xget(7, 5);
     to_issue.rs1_id = xget(15, 5);
     to_issue.rs2_id = xget(20, 5);
@@ -63,7 +63,7 @@ void dec::fill_issues(inst_issue &to_issue) {
     to_issue.frs3_id = to_issue.rs3_id + 32;
 }
 
-inst_issue dec::decode_inst(uint32_t instcode) {
+inst_issue decoder::decode_inst(uint32_t instcode) {
     inst_issue to_issue;
     to_issue.bits = instcode;
 
@@ -80,7 +80,7 @@ inst_issue dec::decode_inst(uint32_t instcode) {
     return to_issue;
 }
 
-encoding::INST dec::match(uint32_t instcode) {
+encoding::INST decoder::match(uint32_t instcode) {
     for (auto iter : insts) {
         if ((instcode & iter.mask) == iter.match) {
             return iter.code;

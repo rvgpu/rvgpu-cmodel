@@ -1,7 +1,7 @@
 class rvcore {
 public:
     rvcore() {
-        m_dec = new dec();
+        m_dec = new decoder();
         m_alu = new alu(0);
         m_fpu = new fpu(0);
         m_ls = new load_store();
@@ -69,7 +69,7 @@ public:
     }
 
 private:
-    dec *m_dec;
+    decoder *m_dec;
     alu *m_alu;
     fpu *m_fpu;
     branch *m_branch;

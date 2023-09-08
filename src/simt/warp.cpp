@@ -31,7 +31,7 @@
 
 warp::warp(register_file *reg) {
     m_reg = reg;
-    m_dec = new dec();
+    m_dec = new decoder();
     m_branch = new branch();
 }
 

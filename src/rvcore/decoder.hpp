@@ -29,9 +29,9 @@
 #include "encoding.hpp"
 #include "inst_issue.hpp"
 
-class dec {
+class decoder {
 public:
-    dec();
+    decoder();
 
     inst_issue decode_inst(uint32_t instcode);
 

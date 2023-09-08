@@ -52,7 +52,7 @@ public:
 
 private:
     register_file *m_reg;
-    dec *m_dec;
+    decoder *m_dec;
     branch *m_branch;
 
     uint64_t startpc;

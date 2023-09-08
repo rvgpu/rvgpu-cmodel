@@ -13,7 +13,7 @@ protected:
         stack_pointer += 0x1000;
 
         m_cpu = new rvcore();
-        m_dec = new dec();
+        m_dec = new decoder();
         m_alu = new alu(0);
         m_fpu = new fpu(0);
         m_ls = new load_store();
@@ -129,7 +129,7 @@ protected:
     }
 
     rvcore *m_cpu;
-    dec *m_dec;
+    decoder *m_dec;
     alu *m_alu;
     fpu *m_fpu;
     branch *m_branch;
