@@ -93,7 +93,7 @@ protected:
         return stack_pointer;
     }
 
-    void check_result(uint32_t inst, std::pair<reg, uint64_t> in, std::pair<reg, uint64_t>reference) {
+    void test_instruction(uint32_t inst, std::pair<reg, uint64_t> in, std::pair<reg, uint64_t>reference) {
         // Initialize Instruction and register
         insts.push_back(inst);
         m_cpu->SetReg(static_cast<uint32_t>(in.first), in.second);
@@ -106,7 +106,7 @@ protected:
         insts.clear();
     }
 
-    void check_result(uint32_t inst, std::pair<reg, uint64_t>reference) {
+    void test_instruction(uint32_t inst, std::pair<reg, uint64_t>reference) {
         // Initialize Instruction
         insts.push_back(inst);
 
