@@ -91,8 +91,8 @@ uint32_t decompress::translate(uint32_t instcode) {
     uint8_t  CI_rd      =  dec_rd(instcode);
     uint8_t  CI_rs1     = CI_rd;
     uint32_t CI_uimm    = dec_ci_uimm(instcode);
-    uint32_t CI_imm     = sign_extend(CI_uimm, 5);
     uint32_t CI_imm94   = dec_ci_imm94(instcode);
+    uint32_t CI_imm     = sign_extend(CI_uimm, 5);
 
     // CJ type: Jump
     uint32_t CJ_imm     = dec_cj_imm(instcode);
@@ -121,6 +121,16 @@ uint32_t decompress::translate(uint32_t instcode) {
             CI_imm = (CI_rd == 2) ? CI_imm94 : CI_imm;
             CI_rs1 = (CI_rd == 2) ? CI_rd : 0;
             ret = encode_itype(CI_imm, CI_rs1, 0b000, CI_rd, 0b0010011);
+            break;
+        }
+        case 0b10001: {
+            // 100_01: CI c.srli and c.srai
+            // rd & 0b1000 == false is c.srli   ==>  srli rd, rd, uimm
+            // rd & 0b1000 == true is c.srai    ==>  srai rd, rd, uimm
+            CI_imm  = (CI_rd & 0b1000) ? CI_uimm : CI_uimm | 0x400;  // 010_0000_00000
+            CI_rd   = (CI_rd & 0b0111) | 0b1000;
+            CI_rs1  = CI_rd;
+            ret = encode_itype(CI_imm, CI_rs1, 0b101, CI_rd, 0b0010011);   // srli or srai
             break;
         }
         default:
