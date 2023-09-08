@@ -33,11 +33,9 @@ public:
 private:
     uint32_t encode_itype(uint32_t imm, uint32_t rs1, uint32_t funct3, uint32_t rd, uint32_t opcode);
     uint32_t encode_jtype(uint32_t imm, uint32_t rd, uint32_t opcode);
-
     uint32_t sign_extend(uint32_t x, uint8_t sign_position);
-
     uint8_t  dec_rd(uint16_t inst);
     uint32_t dec_cj_imm(uint16_t inst);
-    uint32_t dec_ci_imm(uint16_t inst);
+    uint32_t dec_ci_uimm(uint16_t inst);
     uint32_t dec_ci_imm94(uint16_t inst);
 };

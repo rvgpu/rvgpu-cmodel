@@ -88,13 +88,14 @@ uint32_t decompress::translate(uint32_t instcode) {
     }
 
     // CI type: Immediate
-    uint8_t  CI_rd =  dec_rd(instcode);
-    uint8_t  CI_rs1 = CI_rd;
-    uint32_t CI_imm = dec_ci_imm(instcode);
-    uint32_t CI_imm94 = dec_ci_imm94(instcode);
+    uint8_t  CI_rd      =  dec_rd(instcode);
+    uint8_t  CI_rs1     = CI_rd;
+    uint32_t CI_uimm    = dec_ci_uimm(instcode);
+    uint32_t CI_imm     = sign_extend(CI_uimm, 5);
+    uint32_t CI_imm94   = dec_ci_imm94(instcode);
 
     // CJ type: Jump
-    uint32_t CJ_imm = dec_cj_imm(instcode);
+    uint32_t CJ_imm     = dec_cj_imm(instcode);
 
     // TODO. decoder with search table
     // f3  op
@@ -131,7 +132,7 @@ uint32_t decompress::translate(uint32_t instcode) {
 }
 
 // sign extend from specific position to MSB
-uint32_t decompress::sign_extend(uint32_t x, uint8_t sign_position)
+inline uint32_t decompress::sign_extend(uint32_t x, uint8_t sign_position)
 {
     uint32_t sign = (x >> sign_position) & 1;
     for (uint8_t i = sign_position + 1; i < 32; ++i)
@@ -140,35 +141,34 @@ uint32_t decompress::sign_extend(uint32_t x, uint8_t sign_position)
 }
 
 // decode rd field
-uint8_t decompress::dec_rd(uint16_t inst)
+inline uint8_t decompress::dec_rd(uint16_t inst)
 {
     return (inst & C_RD) >> 7;
 }
 
 // decode CI-format instruction immediate
-uint32_t decompress::dec_ci_imm(uint16_t inst) {
-    uint32_t nzimm = 0;
-    nzimm |= (inst & CI_MASK_12) >> 7;
-    nzimm |= (inst & (CI_MASK_6_4 | CI_MASK_3_2)) >> 2;
-    nzimm = sign_extend(nzimm, 5);
-    return nzimm;
+inline uint32_t decompress::dec_ci_uimm(uint16_t inst) {
+    uint32_t imm = 0;
+    imm |= (inst & CI_MASK_12) >> 7;
+    imm |= (inst & (CI_MASK_6_4 | CI_MASK_3_2)) >> 2;
+    return imm;
 }
 
 // decode CI-format instruction immediate[9:4]
-uint32_t decompress::dec_ci_imm94(uint16_t inst) {
+inline uint32_t decompress::dec_ci_imm94(uint16_t inst) {
     // decode nzimm
-    uint32_t nzimm = 0;
-    nzimm |= (inst & 0x1000) >> 3;
-    nzimm |= (inst & 0x0018) << 4;
-    nzimm |= (inst & 0x0020) << 1;
-    nzimm |= (inst & 0x0004) << 3;
-    nzimm |= (inst & 0x0040) >> 2;
-    nzimm = sign_extend(nzimm, 9);
-    return nzimm;
+    uint32_t imm94 = 0;
+    imm94 |= (inst & 0x1000) >> 3;
+    imm94 |= (inst & 0x0018) << 4;
+    imm94 |= (inst & 0x0020) << 1;
+    imm94 |= (inst & 0x0004) << 3;
+    imm94 |= (inst & 0x0040) >> 2;
+    imm94 = sign_extend(imm94, 9);
+    return imm94;
 }
 
 // decode CJ-format instruction immediate
-uint32_t decompress::dec_cj_imm(uint16_t inst) {
+inline uint32_t decompress::dec_cj_imm(uint16_t inst) {
     // sign-extended offset, scaled by 2
     uint32_t imm = 0;
     imm |= (inst & CJ_OFFSET_11) >> 1;
@@ -183,7 +183,7 @@ uint32_t decompress::dec_cj_imm(uint16_t inst) {
     return imm;
 }
 
-uint32_t decompress::encode_itype(uint32_t imm, uint32_t rs1, uint32_t funct3, uint32_t rd, uint32_t opcode) {
+inline uint32_t decompress::encode_itype(uint32_t imm, uint32_t rs1, uint32_t funct3, uint32_t rd, uint32_t opcode) {
     uint32_t inst = 0;
     inst |= imm << 20;
     inst |= rs1 << 15;
@@ -193,7 +193,7 @@ uint32_t decompress::encode_itype(uint32_t imm, uint32_t rs1, uint32_t funct3, u
     return inst;
 }
 
-uint32_t decompress::encode_jtype(uint32_t imm, uint32_t rd, uint32_t opcode)
+inline uint32_t decompress::encode_jtype(uint32_t imm, uint32_t rd, uint32_t opcode)
 {
     uint32_t inst = 0;
     inst |= (imm & 0x00100000) << 11;
