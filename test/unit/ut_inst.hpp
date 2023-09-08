@@ -96,6 +96,20 @@ protected:
         return stack_pointer;
     }
 
+    void test_instruction(uint32_t inst, IN in1, IN in2, RES reference) {
+        // Initialize Instruction and register
+        insts.push_back(inst);
+        m_cpu->SetReg(static_cast<uint32_t>(in1.first), in1.second);
+        m_cpu->SetReg(static_cast<uint32_t>(in2.first), in2.second);
+
+        // Execuate one instruction
+        npc = m_cpu->execuate((uint64_t)insts.data());
+
+        // Check Result
+        check_register(reference);
+        insts.clear();
+    }
+
     void test_instruction(uint32_t inst, IN in, RES reference) {
         // Initialize Instruction and register
         insts.push_back(inst);

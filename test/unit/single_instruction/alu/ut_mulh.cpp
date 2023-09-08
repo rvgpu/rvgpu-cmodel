@@ -2,11 +2,8 @@
 
 TEST_F(ut_inst, decode_and_execute_rv64im_mul) {
     // 0x02a59633       mulh    a2, a1, a0
-    insts.push_back(0x02a59633);
-    SetIReg(reg::a1, 0x1000000000);
-    SetIReg(reg::a0, 0x2000000000);
+    int64_t a = 0x1000000000;
+    int64_t b = 0x2000000000;
     // 0x200 00000000 00000000
-    ExecuateInst();
-    uint64_t res = GetIReg(reg::a2);
-    EXPECT_EQ(res, 0x200);
+    test_instruction(0x02a59633, IN(reg::a1, a), IN(reg::a0, b), RES(reg::a2, 0x200));
 }

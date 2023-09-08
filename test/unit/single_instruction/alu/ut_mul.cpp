@@ -9,10 +9,15 @@
 
 TEST_F(ut_inst, decode_and_execute_rv64im_mul) {
     // 0x02b50533 : mul	a0, a0, a1
-    insts.push_back(0x02b50533);
-    CHECK_MUL(reg::a0, 2, reg::a1, 1, reg::a0);
-    CHECK_MUL(reg::a0, 1, reg::a1, 2, reg::a0);
-    CHECK_MUL(reg::a0, -11, reg::a1, 12, reg::a0);
-    CHECK_MUL(reg::a0, 11, reg::a1, -12, reg::a0);
-    CHECK_MUL(reg::a0, -11, reg::a1, -12, reg::a0);
+    int64_t a, b;
+    a = 2; b = 1;
+    test_instruction(0x02b50533, IN(reg::a0, a), IN(reg::a1, b), RES(reg::a0, a * b));
+    a = 1; b = 2;
+    test_instruction(0x02b50533, IN(reg::a0, a), IN(reg::a1, b), RES(reg::a0, a * b));
+    a = -11; b = 12;
+    test_instruction(0x02b50533, IN(reg::a0, a), IN(reg::a1, b), RES(reg::a0, a * b));
+    a = 11; b = -12;
+    test_instruction(0x02b50533, IN(reg::a0, a), IN(reg::a1, b), RES(reg::a0, a * b));
+    a = -11; b = -12;
+    test_instruction(0x02b50533, IN(reg::a0, a), IN(reg::a1, b), RES(reg::a0, a * b));
 }
