@@ -1,13 +1,15 @@
 #include "ut_inst.hpp"
 
+using namespace std;
+
 class ut_compressed : public ut_inst {
 public:
-    void check_caddi(uint32_t inst, reg rd, uint64_t data, uint64_t result) {
+    void check_addi(uint32_t inst, pair<reg, uint64_t> in, pair<reg, uint64_t>result) {
         insts.push_back(inst);
-        SetIReg(rd, data);
+        SetIReg(in.first, in.second);
         ExecuateInst();
-        uint64_t res = GetIReg(rd);
-        EXPECT_EQ(res, result);
+        uint64_t res = GetIReg(result.first);
+        EXPECT_EQ(res, result.second);
     }
 
     void check_cjal(uint32_t inst, int32_t imm) {

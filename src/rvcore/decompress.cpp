@@ -100,18 +100,28 @@ uint32_t decompress::translate(uint32_t instcode) {
     // f3  op
     // xxx_xx
     switch ((funct3 << 2) | op) {
-        case 0b00001: // 000_01: CI c.nop and c.addi. c.nop is: c.addi x0, x0, 0
+        case 0b00001: { // 000_01: CI c.nop and c.addi. c.nop is: c.addi x0, x0, 0
             ret = encode_itype(CI_imm, CI_rs1, funct3, CI_rd, 0b0010011);
             break;
-        case 0b00101: // 001_01: CJ c.jal, jal x1, offset[11:1]
+        }
+        case 0b00101: { // 001_01: CJ c.jal, jal x1, offset[11:1]
             ret = encode_jtype(CJ_imm, 1, 0b1101111);
             break;
-        case 0b01001: // 010_01: CI c.li, convert to addi rd, x0, imm[5:0]
+        }
+        case 0b01001: {
+            // 010_01: CI c.li, convert to addi rd, x0, imm[5:0]
             ret = encode_itype(CI_imm, 0, 0b000, CI_rd, 0b0010011);
             break;
-        case 0b01101: // 011_01: CI c.addi16sp, convert to addi x2, x2, nzimm[9:4]
-            ret = encode_itype(CI_imm94, 2, 0b000, 2, 0b0010011);
+        }
+        case 0b01101: {
+            // 011_01: CI c.addi16sp and c.lui
+            // c.addi16sp  ==>  addi x2, x2, CI_imm94
+            // c.lui       ==>  addi CI_rd, x0, CI_imm    or convert to LUI (TODO. which one is more convenient?)
+            CI_imm = (CI_rd == 2) ? CI_imm94 : CI_imm;
+            CI_rs1 = (CI_rd == 2) ? CI_rd : 0;
+            ret = encode_itype(CI_imm, CI_rs1, 0b000, CI_rd, 0b0010011);
             break;
+        }
         default:
             printf("[Decompressed] error instruction %x...%x\n", funct3, op);
             break;
