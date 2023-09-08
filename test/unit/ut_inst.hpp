@@ -6,6 +6,9 @@
 #include "ut_rvcore.hpp"
 #include "ut_inst_ref.hpp"
 
+typedef std::pair<reg, uint64_t> IN;
+typedef std::pair<reg, uint64_t> RES;
+
 class ut_inst : public ::testing::Test {
 protected:
     void SetUp() override {
@@ -93,7 +96,7 @@ protected:
         return stack_pointer;
     }
 
-    void test_instruction(uint32_t inst, std::pair<reg, uint64_t> in, std::pair<reg, uint64_t>reference) {
+    void test_instruction(uint32_t inst, IN in, RES reference) {
         // Initialize Instruction and register
         insts.push_back(inst);
         m_cpu->SetReg(static_cast<uint32_t>(in.first), in.second);
@@ -106,7 +109,7 @@ protected:
         insts.clear();
     }
 
-    void test_instruction(uint32_t inst, std::pair<reg, uint64_t>reference) {
+    void test_instruction(uint32_t inst, RES reference) {
         // Initialize Instruction
         insts.push_back(inst);
 
@@ -117,7 +120,7 @@ protected:
         check_register(reference);
     }
 
-    void check_register(std::pair<reg, uint64_t>reference) {
+    void check_register(RES reference) {
         uint32_t regid = static_cast<uint32_t>(reference.first);
         if (regid <= 31) {
             // Compare to register
