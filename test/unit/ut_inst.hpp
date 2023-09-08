@@ -3,7 +3,8 @@
 #include "simt/simt.hpp"
 #include "common/regid.hpp"
 
-#define STACK_SIZE  2000
+#include "ut_rvcore.hpp"
+#include "ut_inst_ref.hpp"
 
 class ut_inst : public ::testing::Test {
 protected:
@@ -11,6 +12,7 @@ protected:
         stack_pointer = (uint64_t)malloc(0x2000);
         stack_pointer += 0x1000;
 
+        m_cpu = new rvcore();
         m_dec = new dec();
         m_alu = new alu(0);
         m_fpu = new fpu(0);
@@ -87,6 +89,46 @@ protected:
         return npc;
     }
 
+    uint64_t GetSP() {
+        return stack_pointer;
+    }
+
+    void check_result(uint32_t inst, std::pair<reg, uint64_t> in, std::pair<reg, uint64_t>reference) {
+        // Initialize Instruction and register
+        insts.push_back(inst);
+        m_cpu->SetReg(static_cast<uint32_t>(in.first), in.second);
+
+        // Execuate one instruction
+        npc = m_cpu->execuate((uint64_t)insts.data());
+
+        // Check Result
+        check_register(reference);
+        insts.clear();
+    }
+
+    void check_result(uint32_t inst, std::pair<reg, uint64_t>reference) {
+        // Initialize Instruction
+        insts.push_back(inst);
+
+        // Execuate one instruction
+        npc = m_cpu->execuate((uint64_t)insts.data());
+
+        // Check Result
+        check_register(reference);
+    }
+
+    void check_register(std::pair<reg, uint64_t>reference) {
+        uint32_t regid = static_cast<uint32_t>(reference.first);
+        if (regid <= 31) {
+            // Compare to register
+            EXPECT_EQ(m_cpu->GetReg(regid), reference.second);
+        } else if (regid == 65){
+            // Compare npc
+            EXPECT_EQ(npc, reference.second);
+        }
+    }
+
+    rvcore *m_cpu;
     dec *m_dec;
     alu *m_alu;
     fpu *m_fpu;

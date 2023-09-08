@@ -88,7 +88,7 @@ uint32_t decompress::translate(uint32_t instcode) {
     }
 
     // CI type: Immediate
-    uint8_t  CI_rd      =  dec_rd(instcode);
+    uint8_t  CI_rd      = dec_rd(instcode);
     uint8_t  CI_rs1     = CI_rd;
     uint32_t CI_uimm    = dec_ci_uimm(instcode);
     uint32_t CI_imm94   = dec_ci_imm94(instcode);
