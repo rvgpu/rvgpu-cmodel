@@ -2,12 +2,6 @@
 
 TEST_F(ut_inst, decode_and_execute_rv64i_auipc) {
     //auipc bits: 0x97; auipc  ra, 0
-    insts.push_back(0x97);
-    ExecuateInst();
-
-    // ra = pc + 4
-    // pc = pc + 0
-    auto pc = (uint64_t)insts.data();
-    EXPECT_EQ(GetIReg(reg::ra), pc + 0);
-    EXPECT_EQ(GetPC(), pc + 4);
+    test_instruction(0x97, RES(reg::ra, uint64_t(single_inst) + 0));
+    test_instruction(0x97, RES(reg::pc, uint64_t(single_inst) + 4));
 }

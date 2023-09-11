@@ -1,29 +1,11 @@
 #include "ut_inst.hpp"
 
-#define CHECK_BRANCH(a, b) do {         \
-        SetIReg(rs1, a);                \
-        SetIReg(rs2, b);                \
-        ExecuateInst();                 \
-        auto next_pc = GetPC();         \
-        if (a >= b) { \
-            EXPECT_EQ(next_pc, pc + 76); \
-        } else { \
-            EXPECT_EQ(next_pc, pc + 4); \
-        } \
-    } while(0)
-
-
 TEST_F(ut_inst, decode_and_execute_rv64i_bgeu) {
     // 0x0496f663 : bgeu a3, s1, 76
-    insts.push_back(0x0496f663);
-    reg rs1 = reg::a3;
-    reg rs2 = reg::s1;
-    auto pc = (uint64_t)insts.data();
-
-    CHECK_BRANCH(1, 2);
-    CHECK_BRANCH(2, 2);
-    CHECK_BRANCH(3, 2);
-    CHECK_BRANCH(2, 0);
-    CHECK_BRANCH(0, 2);
-    CHECK_BRANCH(0, 0);
+    test_instruction(0x0496f663, IN(reg::a3, 1), IN(reg::s1, 2), RES(reg::pc, int64_t(single_inst) + 4));
+    test_instruction(0x0496f663, IN(reg::a3, 2), IN(reg::s1, 2), RES(reg::pc, int64_t(single_inst) + 76));
+    test_instruction(0x0496f663, IN(reg::a3, 3), IN(reg::s1, 2), RES(reg::pc, int64_t(single_inst) + 76));
+    test_instruction(0x0496f663, IN(reg::a3, 2), IN(reg::s1, 0), RES(reg::pc, int64_t(single_inst) + 76));
+    test_instruction(0x0496f663, IN(reg::a3, 0), IN(reg::s1, 2), RES(reg::pc, int64_t(single_inst) + 4));
+    test_instruction(0x0496f663, IN(reg::a3, 0), IN(reg::s1, 0), RES(reg::pc, int64_t(single_inst) + 76));
 }
