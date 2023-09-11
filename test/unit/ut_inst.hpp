@@ -10,8 +10,6 @@
 #include "ut_inst_ref.hpp"
 #include "ut_inst_io.hpp"
 
-using namespace utils;
-
 class ut_inst : public ::testing::Test {
 protected:
     void SetUp() override {
@@ -159,7 +157,7 @@ protected:
             EXPECT_EQ(m_cpu->GetReg(regid), reference.second);
         } else if (regid <= 63) {
             // Compare to float register
-            EXPECT_DOUBLE_EQ(ul2d(m_cpu->GetReg(regid)), ul2d(reference.second));
+            EXPECT_DOUBLE_EQ(utils::ul2d(m_cpu->GetReg(regid)), utils::ul2d(reference.second));
         } else if (regid == 64){
             // Compare npc
             EXPECT_EQ(npc, reference.second);
