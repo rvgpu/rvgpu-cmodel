@@ -90,11 +90,11 @@ uint32_t decompress::translate(uint32_t instcode) {
     // Command bits
     uint8_t  C_rd       = dec_rd(instcode);
     uint8_t  C_rs1      = C_rd;
-    // uint8_t  C_rs2      = dec_rs2(instcode);
+    uint8_t  C_rs2      = dec_rs2(instcode);
     // 3-bit short register, need mapping to  to a0~a8, so need to or 0b1000
     uint8_t  C_rds      = (C_rd & 0b0111) | 0b1000;
     uint8_t  C_rs1s     = C_rds;
-    // uint8_t  C_rs2s     = (C_rs2 & 0b0111) | 0b1000;
+    uint8_t  C_rs2s     = (C_rs2 & 0b0111) | 0b1000;
 
     // CI type: Immediate
     uint32_t CI_uimm    = dec_ci_uimm(instcode);
@@ -142,6 +142,21 @@ uint32_t decompress::translate(uint32_t instcode) {
                 case 0b10:  // c.andi
                     ret = encode_itype(CI_imm, C_rs1s, 0b111, C_rds, 0b0010011);
                     break;
+                case 0b11: { // R-type  c.sub, c.xor, c.or, c.and
+                    uint8_t sel = ((C_rs2 >> 3) & 0b11);
+                    if (sel == 0b00) {
+                        ret = encode_rtype(0b0100000, C_rs2s, C_rs1s, 0b000, C_rds, 0b0110011); // c.sub
+                    } else if (sel == 0b01) {
+                        ret = encode_rtype(0b0000000, C_rs2s, C_rs1s, 0b100, C_rds, 0b0110011); // c.xor
+                    } else if (sel == 0b10) {
+                        ret = encode_rtype(0b0000000, C_rs2s, C_rs1s, 0b110, C_rds, 0b0110011); // c.or
+                    } else if (sel == 0b11) {
+                        ret = encode_rtype(0b0000000, C_rs2s, C_rs1s, 0b111, C_rds, 0b0110011); // c.and
+                    } else {
+                        printf("encoding error\n");
+                    }
+                    break;
+                }
                 default:
                     printf("TODO decompress\n");
                     break;
@@ -231,6 +246,18 @@ inline uint32_t decompress::encode_jtype(uint32_t imm, uint32_t rd, uint32_t opc
     inst |= (imm & 0x000007FE) << 20;
     inst |= (imm & 0x00000800) << 9;
     inst |= (imm & 0x000FF000);
+    inst |= rd << 7;
+    inst |= opcode;
+    return inst;
+}
+
+inline uint32_t decompress::encode_rtype(uint32_t funct7, uint32_t rs2, uint32_t rs1, uint32_t funct3, uint32_t rd, uint32_t opcode)
+{
+    uint32_t inst = 0;
+    inst |= funct7 << 25;
+    inst |= rs2 << 20;
+    inst |= rs1 << 15;
+    inst |= funct3 << 12;
     inst |= rd << 7;
     inst |= opcode;
     return inst;
