@@ -98,12 +98,12 @@ protected:
 
     void test_instruction(uint32_t inst, IN in1, IN in2, RES reference) {
         // Initialize Instruction and register
-        insts.push_back(inst);
+        single_inst[0] = inst;
         m_cpu->SetReg(static_cast<uint32_t>(in1.first), in1.second);
         m_cpu->SetReg(static_cast<uint32_t>(in2.first), in2.second);
 
         // Execuate one instruction
-        npc = m_cpu->execuate((uint64_t)insts.data());
+        npc = m_cpu->execuate((uint64_t)single_inst);
 
         // Check Result
         check_register(reference);
@@ -112,11 +112,11 @@ protected:
 
     void test_instruction(uint32_t inst, IN in, RES reference) {
         // Initialize Instruction and register
-        insts.push_back(inst);
+        single_inst[0] = inst;
         m_cpu->SetReg(static_cast<uint32_t>(in.first), in.second);
 
         // Execuate one instruction
-        npc = m_cpu->execuate((uint64_t)insts.data());
+        npc = m_cpu->execuate((uint64_t)single_inst);
 
         // Check Result
         check_register(reference);
@@ -125,10 +125,10 @@ protected:
 
     void test_instruction(uint32_t inst, RES reference) {
         // Initialize Instruction
-        insts.push_back(inst);
+        single_inst[0] = inst;
 
         // Execuate one instruction
-        npc = m_cpu->execuate((uint64_t)insts.data());
+        npc = m_cpu->execuate((uint64_t)single_inst);
 
         // Check Result
         check_register(reference);
@@ -155,6 +155,7 @@ protected:
 
     uint64_t npc;
     std::vector<uint32_t> insts;
+    uint32_t single_inst[1];
 
     uint64_t stack_pointer;
 };
