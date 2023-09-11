@@ -1,6 +1,9 @@
 #pragma once
 
+#define FRID(x)  (x + 32)
+
 enum class reg {
+    // General Registers: x0 ~ x31 (0 ~ 31)
     x0   = 0,   zero = 0,
     x1   = 1,   ra   = 1,
     x2   = 2,   sp   = 2,
@@ -33,10 +36,43 @@ enum class reg {
     x29  = 29,  t4   = 29,
     x30  = 30,  t5   = 30,
     x31  = 31,  t6   = 31,
+    // Float Registers: f0 ~ f31 (31 ~ 63)
+    f0 = FRID(0),     ft0 = FRID(0),
+    f1 = FRID(1),     ft1 = FRID(1),
+    f2 = FRID(2),     ft2 = FRID(2),
+    f3 = FRID(3),     ft3 = FRID(3),
+    f4 = FRID(4),     ft4 = FRID(4),
+    f5 = FRID(5),     ft5 = FRID(5),
+    f6 = FRID(6),     ft6 = FRID(6),
+    f7 = FRID(7),     ft7 = FRID(7),
+    f8 = FRID(8),     fs0 = FRID(8),
+    f9 = FRID(9),     fs1 = FRID(9),
+    f10 = FRID(10),   fa0 = FRID(10),
+    f11 = FRID(11),   fa1 = FRID(11),
+    f12 = FRID(12),   fa2 = FRID(12),
+    f13 = FRID(13),   fa3 = FRID(13),
+    f14 = FRID(14),   fa4 = FRID(14),
+    f15 = FRID(15),   fa5 = FRID(15),
+    f16 = FRID(16),   fa6 = FRID(16),
+    f17 = FRID(17),   fa7 = FRID(17),
+    f18 = FRID(18),   fs2 = FRID(18),
+    f19 = FRID(19),   fs3 = FRID(19),
+    f20 = FRID(20),   fs4 = FRID(20),
+    f21 = FRID(21),   fs5 = FRID(21),
+    f22 = FRID(22),   fs6 = FRID(22),
+    f23 = FRID(23),   fs7 = FRID(23),
+    f24 = FRID(24),   fs8 = FRID(24),
+    f25 = FRID(25),   fs9 = FRID(25),
+    f26 = FRID(26),   fs10 = FRID(26),
+    f27 = FRID(27),   fs11 = FRID(27),
+    f28 = FRID(28),   ft8 = FRID(28),
+    f29 = FRID(29),   ft9 = FRID(29),
+    f30 = FRID(30),   ft10 = FRID(30),
+    f31 = FRID(31),   ft11 = FRID(31),
+    // PC Register: 64
     pc   = 64,
 };
 
-#define FRID(x)  (x + 32)
 enum class fpreg {
     f0 = FRID(0),     ft0 = FRID(0),
     f1 = FRID(1),     ft1 = FRID(1),
