@@ -8,10 +8,9 @@
 
 #include "ut_rvcore.hpp"
 #include "ut_inst_ref.hpp"
+#include "ut_inst_io.hpp"
 
 using namespace utils;
-typedef std::pair<reg, uint64_t> IN;
-typedef std::pair<reg, uint64_t> RES;
 
 class ut_inst : public ::testing::Test {
 protected:
