@@ -124,13 +124,23 @@ uint32_t decompress::translate(uint32_t instcode) {
             break;
         }
         case 0b10001: {
-            // 100_01: CI c.srli and c.srai
-            // rd & 0b1000 == false is c.srli   ==>  srli rd, rd, uimm
-            // rd & 0b1000 == true is c.srai    ==>  srai rd, rd, uimm
-            CI_imm  = (CI_rd & 0b1000) ? CI_uimm : CI_uimm | 0x400;  // 010_0000_00000
-            CI_rd   = (CI_rd & 0b0111) | 0b1000;
-            CI_rs1  = CI_rd;
-            ret = encode_itype(CI_imm, CI_rs1, 0b101, CI_rd, 0b0010011);   // srli or srai
+            uint8_t rd = CI_rd >> 3;
+            CI_rd  = (CI_rd & 0b0111) | 0b1000;
+            CI_rs1 = CI_rd;
+            switch (rd) {
+                case 0b00:  // c.srli
+                    ret = encode_itype(CI_uimm, CI_rs1, 0b101, CI_rd, 0b0010011);
+                    break;
+                case 0b01:  // c.srai
+                    ret = encode_itype(CI_uimm | 0x400, CI_rs1, 0b101, CI_rd, 0b0010011);
+                    break;
+                case 0b10:  // c.andi
+                    ret = encode_itype(CI_imm, CI_rs1, 0b111, CI_rd, 0b0010011);
+                    break;
+                default:
+                    printf("TODO decompress\n");
+                    break;
+             }
             break;
         }
         default:
