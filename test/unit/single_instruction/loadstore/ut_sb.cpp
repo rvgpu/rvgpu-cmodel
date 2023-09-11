@@ -2,7 +2,6 @@
 
 TEST_F(ut_inst, decode_and_execute_rv64i_sw){
     // 0x00a58023       sb  a0, 0(a1)
-    insts.push_back(0x00a58023);
     auto sp = (uint64_t)malloc(32);
     ((uint32_t *)sp)[0] = 0;
     exec_instruction(0x00a58023, IN(reg::a0, 0x12345678), IN(reg::a1, uint64_t(sp)));

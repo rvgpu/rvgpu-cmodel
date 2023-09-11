@@ -17,6 +17,13 @@ public:
 
         m_reg[0] = 0;
     }
+    ~rvcore() {
+        delete m_dec;
+        delete m_alu;
+        delete m_fpu;
+        delete m_ls;
+        delete m_branch;
+    }
 
     void SetReg(uint32_t regid, uint64_t data) {
         if (regid != 0) {
