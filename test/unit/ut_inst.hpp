@@ -6,6 +6,7 @@
 #include "ut_rvcore.hpp"
 #include "ut_inst_ref.hpp"
 
+using namespace utils;
 typedef std::pair<reg, uint64_t> IN;
 typedef std::pair<reg, uint64_t> RES;
 
@@ -96,6 +97,21 @@ protected:
         return stack_pointer;
     }
 
+    void test_instruction(uint32_t inst, IN in1, IN in2, IN in3, RES reference) {
+        // Initialize Instruction and register
+        single_inst[0] = inst;
+        m_cpu->SetReg(static_cast<uint32_t>(in1.first), in1.second);
+        m_cpu->SetReg(static_cast<uint32_t>(in2.first), in2.second);
+        m_cpu->SetReg(static_cast<uint32_t>(in3.first), in3.second);
+
+        // Execuate one instruction
+        npc = m_cpu->execuate((uint64_t)single_inst);
+
+        // Check Result
+        check_register(reference);
+        insts.clear();
+    }
+
     void test_instruction(uint32_t inst, IN in1, IN in2, RES reference) {
         // Initialize Instruction and register
         single_inst[0] = inst;
@@ -137,11 +153,17 @@ protected:
     void check_register(RES reference) {
         uint32_t regid = static_cast<uint32_t>(reference.first);
         if (regid <= 31) {
-            // Compare to register
+            // Compare to inerger register
             EXPECT_EQ(m_cpu->GetReg(regid), reference.second);
-        } else if (regid == 65){
+        } else if (regid <= 63) {
+            // Compare to float register
+            EXPECT_DOUBLE_EQ(ul2d(m_cpu->GetReg(regid)), ul2d(reference.second));
+        } else if (regid == 64){
             // Compare npc
             EXPECT_EQ(npc, reference.second);
+        } else {
+            printf("error to check regid\n");
+            EXPECT_EQ(0, 1);            // here should be failed
         }
     }
 
