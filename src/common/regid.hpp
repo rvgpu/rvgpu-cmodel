@@ -70,7 +70,9 @@ enum class reg {
     f30 = FRID(30),   ft10 = FRID(30),
     f31 = FRID(31),   ft11 = FRID(31),
     // PC Register: 64
-    pc   = 64,
+    pc  = 64,
+    // non register
+    non = 65,
 };
 
 enum class fpreg {

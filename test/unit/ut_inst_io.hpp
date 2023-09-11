@@ -25,7 +25,9 @@ public:
     RES(reg regid, int32_t  data) : first(regid), second(uint64_t(data)) {}
     RES(reg regid, double ddata)  : first(regid), second(utils::d2ul(ddata)) {}
     RES(reg regid, float ddata)   : first(regid), second(utils::f2ul(ddata)) {}
+    RES(uint64_t resaddr, uint64_t data) : memaddr(resaddr), second(data) {};
 
-    reg first;
-    uint64_t second;
+    reg first = reg::non;
+    uint64_t memaddr = 0;
+    uint64_t second = 0;
 };
