@@ -39,6 +39,7 @@ writeback_t branch::run(inst_issue inst, uint64_t &retpc) {
     switch (inst.code) {
         case encoding::INST_BRANCH_AUIPC: {
             res = writeback_t {inst.rd, (pc + inst.u_imm)};
+            RVGPU_DEBUG_PRINT("[EXEC.AUIPC] r[%ld] = %lx\n", res.rid, res.wdata);
             break;
         }
         case encoding::INST_BRANCH_BEQ: {
