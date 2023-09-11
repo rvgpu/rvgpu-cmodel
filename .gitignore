@@ -1,5 +1,5 @@
 .idea
-build
+build*
 install
 cmake-build-debug
 cscope*
