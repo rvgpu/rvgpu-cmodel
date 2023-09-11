@@ -1,7 +1,10 @@
+#pragma once
+
 #include <gtest/gtest.h>
 
-#include "simt/simt.hpp"
 #include "common/regid.hpp"
+#include "common/utils.hpp"
+#include "simt/simt.hpp"
 
 #include "ut_rvcore.hpp"
 #include "ut_inst_ref.hpp"

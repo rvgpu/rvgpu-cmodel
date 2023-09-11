@@ -1,3 +1,11 @@
+#pragma once
+
+#include "rvcore/alu.hpp"
+#include "rvcore/fpu.hpp"
+#include "rvcore/load_store.hpp"
+#include "rvcore/decoder.hpp"
+#include "rvcore/branch.hpp"
+
 class rvcore {
 public:
     rvcore() {
