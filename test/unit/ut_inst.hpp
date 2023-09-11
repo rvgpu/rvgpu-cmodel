@@ -46,10 +46,6 @@ protected:
         return m_reg->read(0, static_cast<uint32_t>(id));
     }
 
-    uint64_t GetStackPointer() {
-        return stack_pointer;
-    }
-
     void ExecuateInst() {
         m_reg->write(0, static_cast<uint32_t>(reg::sp), stack_pointer);
 
