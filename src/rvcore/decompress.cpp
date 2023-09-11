@@ -87,9 +87,16 @@ uint32_t decompress::translate(uint32_t instcode) {
         return instcode;        // not compressed instcode, return directly
     }
 
+    // Command bits
+    uint8_t  C_rd       = dec_rd(instcode);
+    uint8_t  C_rs1      = C_rd;
+    // uint8_t  C_rs2      = dec_rs2(instcode);
+    // 3-bit short register, need mapping to  to a0~a8, so need to or 0b1000
+    uint8_t  C_rds      = (C_rd & 0b0111) | 0b1000;
+    uint8_t  C_rs1s     = C_rds;
+    // uint8_t  C_rs2s     = (C_rs2 & 0b0111) | 0b1000;
+
     // CI type: Immediate
-    uint8_t  CI_rd      = dec_rd(instcode);
-    uint8_t  CI_rs1     = CI_rd;
     uint32_t CI_uimm    = dec_ci_uimm(instcode);
     uint32_t CI_imm94   = dec_ci_imm94(instcode);
     uint32_t CI_imm     = sign_extend(CI_uimm, 5);
@@ -102,7 +109,7 @@ uint32_t decompress::translate(uint32_t instcode) {
     // xxx_xx
     switch ((funct3 << 2) | op) {
         case 0b00001: { // 000_01: CI c.nop and c.addi. c.nop is: c.addi x0, x0, 0
-            ret = encode_itype(CI_imm, CI_rs1, funct3, CI_rd, 0b0010011);
+            ret = encode_itype(CI_imm, C_rs1, funct3, C_rd, 0b0010011);
             break;
         }
         case 0b00101: { // 001_01: CJ c.jal, jal x1, offset[11:1]
@@ -111,31 +118,29 @@ uint32_t decompress::translate(uint32_t instcode) {
         }
         case 0b01001: {
             // 010_01: CI c.li, convert to addi rd, x0, imm[5:0]
-            ret = encode_itype(CI_imm, 0, 0b000, CI_rd, 0b0010011);
+            ret = encode_itype(CI_imm, 0, 0b000, C_rd, 0b0010011);
             break;
         }
         case 0b01101: {
             // 011_01: CI c.addi16sp and c.lui
             // c.addi16sp  ==>  addi x2, x2, CI_imm94
             // c.lui       ==>  addi CI_rd, x0, CI_imm    or convert to LUI (TODO. which one is more convenient?)
-            CI_imm = (CI_rd == 2) ? CI_imm94 : CI_imm;
-            CI_rs1 = (CI_rd == 2) ? CI_rd : 0;
-            ret = encode_itype(CI_imm, CI_rs1, 0b000, CI_rd, 0b0010011);
+            CI_imm = (C_rd == 2) ? CI_imm94 : CI_imm;
+            C_rs1 = (C_rd == 2) ? C_rd : 0;
+            ret = encode_itype(CI_imm, C_rs1, 0b000, C_rd, 0b0010011);
             break;
         }
         case 0b10001: {
-            uint8_t rd = CI_rd >> 3;
-            CI_rd  = (CI_rd & 0b0111) | 0b1000;
-            CI_rs1 = CI_rd;
+            uint8_t rd = C_rd >> 3;
             switch (rd) {
                 case 0b00:  // c.srli
-                    ret = encode_itype(CI_uimm, CI_rs1, 0b101, CI_rd, 0b0010011);
+                    ret = encode_itype(CI_uimm, C_rs1s, 0b101, C_rds, 0b0010011);
                     break;
                 case 0b01:  // c.srai
-                    ret = encode_itype(CI_uimm | 0x400, CI_rs1, 0b101, CI_rd, 0b0010011);
+                    ret = encode_itype(CI_uimm | 0x400, C_rs1s, 0b101, C_rds, 0b0010011);
                     break;
                 case 0b10:  // c.andi
-                    ret = encode_itype(CI_imm, CI_rs1, 0b111, CI_rd, 0b0010011);
+                    ret = encode_itype(CI_imm, C_rs1s, 0b111, C_rds, 0b0010011);
                     break;
                 default:
                     printf("TODO decompress\n");
@@ -164,6 +169,12 @@ inline uint32_t decompress::sign_extend(uint32_t x, uint8_t sign_position)
 inline uint8_t decompress::dec_rd(uint16_t inst)
 {
     return (inst & C_RD) >> 7;
+}
+
+// decode rs2 field
+inline uint8_t decompress::dec_rs2(uint16_t inst)
+{
+    return (inst & C_RS2) >> 2;
 }
 
 // decode CI-format instruction immediate
