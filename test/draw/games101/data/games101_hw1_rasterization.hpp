@@ -20,7 +20,7 @@ void rasterization(
     
     // Line interpolation of attributes
     float t = (axis - p0) / (p1 - p0);
-    uint32_t result = (uint32_t)((1.0 - t) * a0 + t * a1);
+    uint32_t result = (uint32_t)(a0 + t * (a1 - a0));
 
     if (*aux_is_x_major) {
         // axis is x, result is y

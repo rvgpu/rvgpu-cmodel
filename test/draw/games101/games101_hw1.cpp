@@ -16,7 +16,7 @@ TEST_F(GPUExecuator, games101_hw1) {
     };
     
     // 1.2 Matrices
-    float angle = 20;
+    float angle = 0;
     Eigen::Vector3f eye_pos = {0, 0, 5};
 
     Eigen::Matrix4f model = get_model_matrix(angle);
