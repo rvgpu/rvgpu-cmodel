@@ -53,6 +53,7 @@ enum {
     CLWSW_IMM_5_3 = 0b0001110000000000, // C.LW, C.SW
     CLWSW_IMM_2   = 0b0000000001000000,
     CLWSW_IMM_6   = 0b0000000000100000,
+    CLDSD_IMM_7_6 = 0b0000000001100000,
     //                ....xxxx....xxxx
     CS_FUNCT6     = 0b1111110000000000, // CS-format
     CS_FUNCT2     = 0b0000000001100000,
@@ -107,6 +108,10 @@ uint32_t decompress::translate(uint32_t instcode) {
 
     // CIW type
     uint32_t CIW_imm    = dec_ciw_imm(instcode);
+
+    // CL type
+    uint32_t CLW_imm    = dec_clsw_imm(instcode);
+    uint32_t CLD_imm    = dec_clsd_imm(instcode);
 
     // TODO. decoder with search table
     // f3  op
@@ -185,6 +190,30 @@ uint32_t decompress::translate(uint32_t instcode) {
             ret = encode_itype(CIW_imm, 2, 0b000, C_rs2s, 0b0010011);
             break;
         }
+        case 0b00100: { // c.fld ==>
+            ret = encode_itype(CLD_imm, C_rs1s, 0b011, C_rs2s, 0b0000111);
+            break;
+        }
+        case 0b01000: { // c.lw
+            ret = encode_itype(CLW_imm, C_rs1s, 0b010, C_rs2s, 0b0000011);
+            break;
+        }
+        case 0b01100: { // c.flw
+            ret = encode_itype(CLW_imm, C_rs1s, 0b010, C_rs2s, 0b0000111);
+            break;
+        }
+        case 0b10100: { // c.fsd
+            ret = encode_stype(CLD_imm, C_rs2s, C_rs1s, 0b011, 0b0100111);
+            break;
+        }
+        case 0b11000: { // c.sw
+            ret = encode_stype(CLW_imm, C_rs2s, C_rs1s, 0b010, 0b0100011);
+            break;
+        }
+        case 0b11100: { // c.fsw
+            ret = encode_stype(CLW_imm, C_rs2s, C_rs1s, 0b010, 0b0100111);
+            break;
+        }
         default:
             printf("[Decompressed] error instruction %x...%x\n", funct3, op);
             break;
@@ -219,6 +248,27 @@ inline uint32_t decompress::dec_ci_uimm(uint16_t inst) {
     uint32_t imm = 0;
     imm |= (inst & CI_MASK_12) >> 7;
     imm |= (inst & (CI_MASK_6_4 | CI_MASK_3_2)) >> 2;
+    return imm;
+}
+
+// decode immediate of C.LW and C.SW
+inline uint32_t decompress::dec_clsd_imm(uint16_t inst)
+{
+    // zero-extended offset, scaled by 4
+    uint32_t imm = 0;
+    imm |= (inst & CLDSD_IMM_7_6) << 1;
+    imm |= (inst & CLWSW_IMM_5_3) >> 7;
+    return imm;
+}
+
+// decode immediate of C.LW and C.SW
+inline uint32_t decompress::dec_clsw_imm(uint16_t inst)
+{
+    // zero-extended offset, scaled by 4
+    uint32_t imm = 0;
+    imm |= (inst & CLWSW_IMM_6) << 1;
+    imm |= (inst & CLWSW_IMM_5_3) >> 7;
+    imm |= (inst & CLWSW_IMM_2) >> 4;
     return imm;
 }
 
@@ -311,7 +361,6 @@ inline uint32_t decompress::encode_rtype(uint32_t funct7, uint32_t rs2, uint32_t
     return inst;
 }
 
-// encode B-type instruction
 inline uint32_t decompress::encode_btype(uint32_t imm, uint32_t rs2, uint32_t rs1, uint32_t funct3, uint32_t opcode)
 {
     uint32_t inst = 0;
@@ -322,6 +371,18 @@ inline uint32_t decompress::encode_btype(uint32_t imm, uint32_t rs2, uint32_t rs
     inst |= funct3 << 12;
     inst |= (imm & 0b0000000011110) << 7;
     inst |= (imm & 0b0100000000000) >> 4;
+    inst |= opcode;
+    return inst;
+}
+
+inline uint32_t decompress::encode_stype(uint32_t imm, uint32_t rs2, uint32_t rs1, uint32_t funct3, uint32_t opcode)
+{
+    uint32_t inst = 0;
+    inst |= (imm & 0b111111100000) << 20;
+    inst |= rs2 << 20;
+    inst |= rs1 << 15;
+    inst |= funct3 << 12;
+    inst |= (imm & 0b000000011111) << 7;
     inst |= opcode;
     return inst;
 }

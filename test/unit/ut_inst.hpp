@@ -41,6 +41,7 @@ protected:
         // Execuate one instruction
         npc = m_cpu->execuate((uint64_t)single_inst);
     }
+
     void test_instruction(uint32_t inst, IN in1, IN in2, IN in3, RES reference) {
         // Initialize Instruction and register
         single_inst[0] = inst;
