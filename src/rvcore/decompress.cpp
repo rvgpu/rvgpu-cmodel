@@ -105,10 +105,14 @@ uint32_t decompress::translate(uint32_t instcode) {
     uint32_t CJ_imm     = dec_cj_imm(instcode);
     uint32_t CB_imm     = dec_branch_imm(instcode);
 
+    // CIW type
+    uint32_t CIW_imm    = dec_ciw_imm(instcode);
+
     // TODO. decoder with search table
     // f3  op
     // xxx_xx
     switch ((funct3 << 2) | op) {
+        /* bit[1:0] = 0b01 */
         case 0b00001: { // 000_01: CI c.nop and c.addi. c.nop is: c.addi x0, x0, 0
             ret = encode_itype(CI_imm, C_rs1, funct3, C_rd, 0b0010011);
             break;
@@ -174,6 +178,11 @@ uint32_t decompress::translate(uint32_t instcode) {
         }
         case 0b11101: { // c.bnez  ==> bne rs1', x0, offset[8:1]
             ret = encode_btype(CB_imm, 0, C_rs1s, 0b001, 0b1100011);
+            break;
+        }
+        /* bit[1:0] = 0b00 */
+        case 0b00000: { // 000_00: c.addi4spn  ==> addi rd' x2 nzuimm[9:2]
+            ret = encode_itype(CIW_imm, 2, 0b000, C_rs2s, 0b0010011);
             break;
         }
         default:
@@ -253,6 +262,18 @@ inline uint32_t decompress::dec_branch_imm(uint16_t inst)
     imm |= (inst & CB_OFFSET_4_3) >> 7;
     imm |= (inst & CB_OFFSET_2_1) >> 2;
     imm = sign_extend(imm, 8);
+    return imm;
+}
+
+// decode CIW-format instruction immediate
+inline uint32_t decompress::dec_ciw_imm(uint16_t inst)
+{
+    // zero-extended non-zero immediate, scaled by 4
+    uint32_t imm = 0;
+    imm |= (inst & CIW_IMM_9_6) >> 1;
+    imm |= (inst & CIW_IMM_5_4) >> 7;
+    imm |= (inst & CIW_IMM_3) >> 2;
+    imm |= (inst & CIW_IMM_2) >> 4;
     return imm;
 }
 
