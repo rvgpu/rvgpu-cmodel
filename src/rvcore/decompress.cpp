@@ -214,6 +214,32 @@ uint32_t decompress::translate(uint32_t instcode) {
             ret = encode_stype(CLW_imm, C_rs2s, C_rs1s, 0b010, 0b0100111);
             break;
         }
+        /* bit[1:0] = 0x10 */
+        case 0b00010: { // 000_10: c.slli, c.slli64  ==> slli rd, rd, shamt[5:0]
+            ret = encode_itype(CI_uimm, C_rs1, 0b001, C_rd, 0b0010011);
+            break;
+        }
+        case 0b00110: { // 001_10: c.fldsp
+            break;
+        }
+        case 0b01010: { // 010_10: c.lwsp
+            break;
+        }
+        case 0b01110: { // 011_10: c.flwsp
+            break;
+        }
+        case 0b10010: { // 100_10: c.jr\c.mv\c.ebreak\c.jalr\c.add
+            break;
+        }
+        case 0b10110: { // 101_10: c.fsdsp
+            break;
+        }
+        case 0b11010: { // 110_10: c.swsp
+            break;
+        }
+        case 0b11110: { // 111_10: c.fswsp
+            break;
+        }
         default:
             printf("[Decompressed] error instruction %x...%x\n", funct3, op);
             break;
