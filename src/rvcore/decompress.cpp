@@ -103,6 +103,7 @@ uint32_t decompress::translate(uint32_t instcode) {
 
     // CJ type: Jump
     uint32_t CJ_imm     = dec_cj_imm(instcode);
+    uint32_t CB_imm     = dec_branch_imm(instcode);
 
     // TODO. decoder with search table
     // f3  op
@@ -161,6 +162,18 @@ uint32_t decompress::translate(uint32_t instcode) {
                     printf("TODO decompress\n");
                     break;
              }
+            break;
+        }
+        case 0b10101: { // c.j
+            ret = encode_jtype(CJ_imm, 0, 0b1101111);
+            break;
+        }
+        case 0b11001: { // c.beqz  ==> beq rs1', x0, offset[8:1]
+            ret = encode_btype(CB_imm, 0, C_rs1s, 0b000, 0b1100011);
+            break;
+        }
+        case 0b11101: { // c.bnez  ==> bne rs1', x0, offset[8:1]
+            ret = encode_btype(CB_imm, 0, C_rs1s, 0b001, 0b1100011);
             break;
         }
         default:
@@ -229,6 +242,20 @@ inline uint32_t decompress::dec_cj_imm(uint16_t inst) {
     return imm;
 }
 
+// decode immediate of branch instruction
+inline uint32_t decompress::dec_branch_imm(uint16_t inst)
+{
+    // sign-extended offset, scaled by 2
+    uint32_t imm = 0;
+    imm |= (inst & CB_OFFSET_8) >> 4;
+    imm |= (inst & CB_OFFSET_7_6) << 1;
+    imm |= (inst & CB_OFFSET_5) << 3;
+    imm |= (inst & CB_OFFSET_4_3) >> 7;
+    imm |= (inst & CB_OFFSET_2_1) >> 2;
+    imm = sign_extend(imm, 8);
+    return imm;
+}
+
 inline uint32_t decompress::encode_itype(uint32_t imm, uint32_t rs1, uint32_t funct3, uint32_t rd, uint32_t opcode) {
     uint32_t inst = 0;
     inst |= imm << 20;
@@ -259,6 +286,21 @@ inline uint32_t decompress::encode_rtype(uint32_t funct7, uint32_t rs2, uint32_t
     inst |= rs1 << 15;
     inst |= funct3 << 12;
     inst |= rd << 7;
+    inst |= opcode;
+    return inst;
+}
+
+// encode B-type instruction
+inline uint32_t decompress::encode_btype(uint32_t imm, uint32_t rs2, uint32_t rs1, uint32_t funct3, uint32_t opcode)
+{
+    uint32_t inst = 0;
+    inst |= (imm & 0b1000000000000) << 19;
+    inst |= (imm & 0b0011111100000) << 20;
+    inst |= rs2 << 20;
+    inst |= rs1 << 15;
+    inst |= funct3 << 12;
+    inst |= (imm & 0b0000000011110) << 7;
+    inst |= (imm & 0b0100000000000) >> 4;
     inst |= opcode;
     return inst;
 }
