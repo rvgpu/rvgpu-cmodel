@@ -116,8 +116,10 @@ uint32_t decompress::translate(uint32_t instcode) {
     uint32_t CLD_imm    = dec_clsd_imm(instcode);
 
     // CSS type
-    uint32_t CSS_immd   = (_BITS(12, 1) << 5) | (_BITS(5, 2) << 3) | (_BITS(2, 3) << 6);
-    uint32_t CSS_imm    = (_BITS(12, 1) << 5) | (_BITS(4, 3) << 2) | (_BITS(2, 2) << 6);
+    uint32_t CSS_limmd   = (_BITS(12, 1) << 5) | (_BITS(5, 2) << 3) | (_BITS(2, 3) << 6);
+    uint32_t CSS_limm    = (_BITS(12, 1) << 5) | (_BITS(4, 3) << 2) | (_BITS(2, 2) << 6);
+    uint32_t CSS_simmd   = (_BITS(10, 3) << 3) | (_BITS(7, 3) << 6);
+    uint32_t CSS_simm    = (_BITS(9, 4) << 2) | (_BITS(7, 2) << 6);
 
     // TODO. decoder with search table
     // f3  op
@@ -226,15 +228,15 @@ uint32_t decompress::translate(uint32_t instcode) {
             break;
         }
         case 0b00110: { // 001_10: c.fldsp
-            ret = encode_itype(CSS_immd, 2, 0b011, C_rd, 0b0000111);
+            ret = encode_itype(CSS_limmd, 2, 0b011, C_rd, 0b0000111);
             break;
         }
         case 0b01010: { // 010_10: c.lwsp
-            ret = encode_itype(CSS_imm, 2, 0b010, C_rd, 0b0000011);
+            ret = encode_itype(CSS_limm, 2, 0b010, C_rd, 0b0000011);
             break;
         }
         case 0b01110: { // 011_10: c.flwsp
-            ret = encode_itype(CSS_imm, 2, 0b010, C_rd, 0b0000111);
+            ret = encode_itype(CSS_limm, 2, 0b010, C_rd, 0b0000111);
             break;
         }
         case 0b10010: { // 100_10: c.jr\c.mv\c.ebreak\c.jalr\c.add
@@ -249,12 +251,15 @@ uint32_t decompress::translate(uint32_t instcode) {
             break;
         }
         case 0b10110: { // 101_10: c.fsdsp
+            ret = encode_stype(CSS_simmd, C_rs2, 2, 0b011, 0b0100111);
             break;
         }
-        case 0b11010: { // 110_10: c.swsp
+        case 0b11010: { // 110_10: c.swsp  ==> sw rs2, offset[7:2](x2)
+            ret = encode_stype(CSS_simm, C_rs2, 2, 0b010, 0b0100011);
             break;
         }
         case 0b11110: { // 111_10: c.fswsp
+            ret = encode_stype(CSS_simm, C_rs2, 2, 0b010, 0b0100111);
             break;
         }
         default:
