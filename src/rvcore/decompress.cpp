@@ -76,6 +76,7 @@ enum {
 };
 
 #define _BITS(pos, width)   (((instcode) >> (pos)) & ((1ULL << (width)) - 1ULL))
+#define sext_32(x, pos)      (((int32_t)(x) << (32 - pos)) >> (32 - pos))
 
 decompress::decompress() {
 
@@ -91,18 +92,18 @@ uint32_t decompress::translate(uint32_t instcode) {
     }
 
     // Command bits
-    uint8_t  C_rd       = dec_rd(instcode);
+    uint8_t  C_rd       = _BITS(7, 5);
     uint8_t  C_rs1      = C_rd;
-    uint8_t  C_rs2      = dec_rs2(instcode);
+    uint8_t  C_rs2      = _BITS(2, 5);
     // 3-bit short register, need mapping to  to a0~a8, so need to or 0b1000
     uint8_t  C_rds      = (C_rd & 0b0111) | 0b1000;
     uint8_t  C_rs1s     = C_rds;
     uint8_t  C_rs2s     = (C_rs2 & 0b0111) | 0b1000;
 
     // CI type: Immediate
-    uint32_t CI_uimm    = dec_ci_uimm(instcode);
-    uint32_t CI_imm94   = dec_ci_imm94(instcode);
-    uint32_t CI_imm     = sign_extend(CI_uimm, 5);
+    uint32_t CI_uimm    = (_BITS(12, 1) << 5) | (_BITS(2, 5));
+    uint32_t CI_imm94   = dec_ci_imm94(instcode);           // used in c.addi16sp only
+    uint32_t CI_imm     = sext_32(CI_uimm, 6);
 
     // CJ type: Jump
     uint32_t CJ_imm     = dec_cj_imm(instcode);
@@ -270,35 +271,6 @@ uint32_t decompress::translate(uint32_t instcode) {
     return ret;
 }
 
-// sign extend from specific position to MSB
-inline uint32_t decompress::sign_extend(uint32_t x, uint8_t sign_position)
-{
-    uint32_t sign = (x >> sign_position) & 1;
-    for (uint8_t i = sign_position + 1; i < 32; ++i)
-        x |= sign << i;
-    return x;
-}
-
-// decode rd field
-inline uint8_t decompress::dec_rd(uint16_t inst)
-{
-    return (inst & C_RD) >> 7;
-}
-
-// decode rs2 field
-inline uint8_t decompress::dec_rs2(uint16_t inst)
-{
-    return (inst & C_RS2) >> 2;
-}
-
-// decode CI-format instruction immediate
-inline uint32_t decompress::dec_ci_uimm(uint16_t inst) {
-    uint32_t imm = 0;
-    imm |= (inst & CI_MASK_12) >> 7;
-    imm |= (inst & (CI_MASK_6_4 | CI_MASK_3_2)) >> 2;
-    return imm;
-}
-
 // decode immediate of C.LW and C.SW
 inline uint32_t decompress::dec_clsd_imm(uint16_t inst)
 {
@@ -329,7 +301,7 @@ inline uint32_t decompress::dec_ci_imm94(uint16_t inst) {
     imm94 |= (inst & 0x0020) << 1;
     imm94 |= (inst & 0x0004) << 3;
     imm94 |= (inst & 0x0040) >> 2;
-    imm94 = sign_extend(imm94, 9);
+    imm94 = sext_32(imm94, 10);
     return imm94;
 }
 
@@ -345,7 +317,7 @@ inline uint32_t decompress::dec_cj_imm(uint16_t inst) {
     imm |= (inst & CJ_OFFSET_5) << 3;
     imm |= (inst & CJ_OFFSET_4) >> 7;
     imm |= (inst & CJ_OFFSET_3_1) >> 2;
-    imm = sign_extend(imm, 11);
+    imm = sext_32(imm, 11);
     return imm;
 }
 
@@ -359,7 +331,7 @@ inline uint32_t decompress::dec_branch_imm(uint16_t inst)
     imm |= (inst & CB_OFFSET_5) << 3;
     imm |= (inst & CB_OFFSET_4_3) >> 7;
     imm |= (inst & CB_OFFSET_2_1) >> 2;
-    imm = sign_extend(imm, 8);
+    imm = sext_32(imm, 9);
     return imm;
 }
 
