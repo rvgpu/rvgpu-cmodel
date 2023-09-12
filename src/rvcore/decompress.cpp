@@ -238,6 +238,14 @@ uint32_t decompress::translate(uint32_t instcode) {
             break;
         }
         case 0b10010: { // 100_10: c.jr\c.mv\c.ebreak\c.jalr\c.add
+            if (C_rs2 != 0) {
+                uint8_t rs1 = _BITS(12, 1) ? C_rd : 0;
+                ret = encode_rtype(0b0000000, C_rs2, rs1, 0b000, C_rd, 0b0110011);
+            } else if (C_rd == 0) { // c.ebreak
+                ret = encode_itype(1, 0, 0b000, 0, 0b1110011);
+            } else {
+                ret = encode_itype(0, C_rs1, 0b000, _BITS(12, 1), 0b1100111);
+            }
             break;
         }
         case 0b10110: { // 101_10: c.fsdsp
