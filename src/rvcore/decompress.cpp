@@ -75,6 +75,8 @@ enum {
     CJ_OFFSET_5   = 0b0000000000000100,
 };
 
+#define _BITS(pos, width)   (((instcode) >> (pos)) & ((1ULL << (width)) - 1ULL))
+
 decompress::decompress() {
 
 }
@@ -112,6 +114,10 @@ uint32_t decompress::translate(uint32_t instcode) {
     // CL type
     uint32_t CLW_imm    = dec_clsw_imm(instcode);
     uint32_t CLD_imm    = dec_clsd_imm(instcode);
+
+    // CSS type
+    uint32_t CSS_immd   = (_BITS(12, 1) << 5) | (_BITS(5, 2) << 3) | (_BITS(2, 3) << 6);
+    uint32_t CSS_imm    = (_BITS(12, 1) << 5) | (_BITS(4, 3) << 2) | (_BITS(2, 2) << 6);
 
     // TODO. decoder with search table
     // f3  op
@@ -220,12 +226,15 @@ uint32_t decompress::translate(uint32_t instcode) {
             break;
         }
         case 0b00110: { // 001_10: c.fldsp
+            ret = encode_itype(CSS_immd, 2, 0b011, C_rd, 0b0000111);
             break;
         }
         case 0b01010: { // 010_10: c.lwsp
+            ret = encode_itype(CSS_imm, 2, 0b010, C_rd, 0b0000011);
             break;
         }
         case 0b01110: { // 011_10: c.flwsp
+            ret = encode_itype(CSS_imm, 2, 0b010, C_rd, 0b0000111);
             break;
         }
         case 0b10010: { // 100_10: c.jr\c.mv\c.ebreak\c.jalr\c.add
