@@ -9,5 +9,6 @@ endfunction()
 
 rvsim_unit_test(rvsim_gtest_framework gtest_framework.cpp)
 
+add_subdirectory(sim_framework)
 add_subdirectory(single_instruction)
 # add_subdirectory(insns_gen)
