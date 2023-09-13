@@ -39,7 +39,6 @@ private:
 
     uint32_t dec_branch_imm(uint16_t inst);
     uint32_t dec_cj_imm(uint16_t inst);
-    uint32_t dec_ci_imm94(uint16_t inst);
     uint32_t dec_ciw_imm(uint16_t inst);
     uint32_t dec_clsw_imm(uint16_t inst);
     uint32_t dec_clsd_imm(uint16_t inst);

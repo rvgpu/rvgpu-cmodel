@@ -102,7 +102,8 @@ uint32_t decompress::translate(uint32_t instcode) {
 
     // CI type: Immediate
     uint32_t CI_uimm    = (_BITS(12, 1) << 5) | (_BITS(2, 5));
-    uint32_t CI_imm94   = dec_ci_imm94(instcode);           // used in c.addi16sp only
+    uint32_t CI_uimm94  = (_BITS(12, 1) << 9) | (_BITS(3, 2) << 7) | (_BITS(5, 1) << 6) | (_BITS(2, 1) << 5) | (_BITS(6, 1) << 4);
+    uint32_t CI_imm94   = sext_32(CI_uimm94, 10);   // used in c.addi16sp only
     uint32_t CI_imm     = sext_32(CI_uimm, 6);
 
     // CJ type: Jump
@@ -290,19 +291,6 @@ inline uint32_t decompress::dec_clsw_imm(uint16_t inst)
     imm |= (inst & CLWSW_IMM_5_3) >> 7;
     imm |= (inst & CLWSW_IMM_2) >> 4;
     return imm;
-}
-
-// decode CI-format instruction immediate[9:4]
-inline uint32_t decompress::dec_ci_imm94(uint16_t inst) {
-    // decode nzimm
-    uint32_t imm94 = 0;
-    imm94 |= (inst & 0x1000) >> 3;
-    imm94 |= (inst & 0x0018) << 4;
-    imm94 |= (inst & 0x0020) << 1;
-    imm94 |= (inst & 0x0004) << 3;
-    imm94 |= (inst & 0x0040) >> 2;
-    imm94 = sext_32(imm94, 10);
-    return imm94;
 }
 
 // decode CJ-format instruction immediate
