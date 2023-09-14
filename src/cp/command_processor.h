@@ -23,30 +23,19 @@
 
 #pragma once
 
-#include <list>
-#include <pthread.h>
-
 #include "top/command_stream.h"
 
-class rvgpu;
+class noc;
 
 class command_processor {
 public:
     command_processor();
     ~command_processor();
 
+    void communicate_with(noc *noc_comm);
     void run(uint64_t cmds);
-
-    bool has_msg();
-    message get_msg();
-    pthread_mutex_t * get_mutex();
-    void receive_response();
     bool finished();
-
 private:
-    int m_message_size;
-    std::list<message> m_message;
-    pthread_mutex_t m_message_mutex;
-
+    noc *m_noc;
     void command_split_1d(rvgpu_command *cs);
 };

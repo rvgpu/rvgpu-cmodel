@@ -23,14 +23,13 @@
 
 #pragma once
 
-#include <cstdint>
 #include "common/configs.h"
+#include "top/command_stream.h"
 
-#include "command_stream.h"
-
+class vram;
+class noc;
 class command_processor;
 class sm;
-class vram;
 
 class rvgpu {
 public:
@@ -46,6 +45,7 @@ public:
     uint32_t read_register(uint64_t addr);
 private:
     vram *m_vram;
+    noc *m_noc;
     command_processor *m_cp;
     sm *m_sm[SM_NUM];
     uint32_t *regs;

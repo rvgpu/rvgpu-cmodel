@@ -8,14 +8,10 @@
 #include "common/configs.h"
 #include "top/rvgpu.h"
 
-#define IO_NUM 4
-#define SHADER_BINARY_SIZE 0x1000
-#define STACK_POINT_SIZE 0x4000
-
 class GPUExecuator : public ::testing::Test {
 protected:
     void SetUp() override {
-        stack_pointer = (uint64_t)malloc(STACK_POINT_SIZE * 128 + 0x1000);
+        stack_pointer = (uint64_t)malloc(SM_STACK_SIZE * SM_NUM + 0x1000);
         stack_pointer += 0x1000;
         gpu = new rvgpu();
     }

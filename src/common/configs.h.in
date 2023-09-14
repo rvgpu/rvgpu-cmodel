@@ -9,6 +9,7 @@
 
 /* Configure STREAM MULTIPROCESSOR */
 #define SM_NUM                      8
+#define SM_STACK_SIZE               (16 * 0x1000)
 
 /* Configure STREAM PROCESSOR */
 #define SP_WARP_N                   1

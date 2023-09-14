@@ -21,53 +21,29 @@
  * IN THE SOFTWARE.
  */
 
-#include "noc/network_on_chip.h"
-#include "simt/simt.hpp"
-#include "stream_multiprocessor.h"
+#pragma once
 
-void * sm::multithread_runner(void *arg) {
-    sm *this_sm = (sm *)arg;
+#include <list>
+#include <pthread.h>
+#include "common/configs.h"
+#include "top/command_stream.h"
 
-    while (1) {
-        if (this_sm->has_msg()) {
-            message msg = this_sm->get_msg();
+class noc {
+public:
+    noc();
+    ~noc();
 
-            this_sm->run(msg);
-            this_sm->send_response();
-        }
-    }
+    void write_message_size(int msg_size);
+    int read_message_size();
+    void decrease_message_size();
+    bool message_size_is_zero();
 
-    return nullptr;
-}
-
-sm::sm(uint32_t id) {
-    m_id = id;
-    m_simt = new simt();
-    pthread_create(&m_thread, nullptr, multithread_runner, this);
-}
-
-sm::~sm() {
-    delete m_simt;
-    pthread_join(m_thread, nullptr);
-}
-
-void sm::communicate_with(noc *noc_comm) {
-    m_noc = noc_comm;
-}
-
-void sm::run(message msg) {
-    m_simt->setup(msg);
-    m_simt->run();
-}
-
-bool sm::has_msg() {
-    return m_noc->has_message(m_id);
-}
-
-message sm::get_msg() {
-    return m_noc->read_message(m_id);
-}
-
-void sm::send_response() {
-    m_noc->decrease_message_size();
-}
+    void write_message(uint32_t sm_id, message msg);
+    message read_message(uint32_t sm_id);
+    bool has_message(uint32_t sm_id);
+private:
+    int m_message_size;
+    pthread_mutex_t m_message_size_mutex;
+    std::list<message> m_message[SM_NUM];
+    pthread_mutex_t m_message_mutex[SM_NUM];
+};

@@ -21,20 +21,25 @@
  * IN THE SOFTWARE.
  */
 
-#include "vram/vram.hpp"
-#include "sm/stream_multiprocessor.h"
-#include "cp/command_processor.h"
-#include "common/configs.h"
+#include <cstdlib>
+#include "common/debug.hpp"
 
-#include "command_stream.h"
+#include "vram/vram.hpp"
+#include "noc/network_on_chip.h"
+#include "cp/command_processor.h"
+#include "sm/stream_multiprocessor.h"
 #include "rvgpu.h"
 
 rvgpu::rvgpu() {
     m_vram = new vram(VRAM_SIZE);
+    m_noc = new noc();
+
     m_cp = new command_processor();
+    m_cp->communicate_with(m_noc);
 
     for (int i = 0; i < SM_NUM; i++) {
-        m_sm[i] = new sm(i, m_cp);
+        m_sm[i] = new sm(i);
+        m_sm[i]->communicate_with(m_noc);
     }
 
     regs = (uint32_t *)malloc(MBYTE(2));
@@ -42,6 +47,7 @@ rvgpu::rvgpu() {
 
 rvgpu::~rvgpu() {
     delete m_vram;
+    delete m_noc;
     delete m_cp;
 
     for (int i = 0; i < SM_NUM; i++) {

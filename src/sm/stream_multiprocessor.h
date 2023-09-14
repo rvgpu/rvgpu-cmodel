@@ -23,25 +23,27 @@
 
 #pragma once
 
+#include <pthread.h>
 #include "top/command_stream.h"
-#include "cp/command_processor.h"
-#include "simt/simt.hpp"
+
+class noc;
+class simt;
 
 class sm {
 public:
-    sm(int id, command_processor *cp);
+    sm(uint32_t id);
     ~sm();
 
+    void communicate_with(noc *noc_comm);
     static void * multithread_runner(void *arg);
     void run(message msg);
 private:
-    int m_id;
-    command_processor *m_cp;
+    uint32_t m_id;
+    noc *m_noc;
     simt *m_simt;
     pthread_t m_thread;
 
     bool has_msg();
     message get_msg();
-    pthread_mutex_t * get_mutex();
     void send_response();
 };

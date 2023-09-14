@@ -13,6 +13,7 @@ add_subdirectory(sm)
 add_subdirectory(simt)
 add_subdirectory(cp)
 add_subdirectory(vram)
+add_subdirectory(noc)
 add_subdirectory(top)
 
 # set(CMAKE_SHARED_LINKER_FLAGS "-fPIC")
@@ -23,6 +24,7 @@ add_library(rvgsim SHARED
         $<TARGET_OBJECTS:cp>
         $<TARGET_OBJECTS:top>
         $<TARGET_OBJECTS:vram>
+        $<TARGET_OBJECTS:noc>
         $<TARGET_OBJECTS:utils>)
 target_link_libraries(rvgsim PRIVATE softfloat)
 
