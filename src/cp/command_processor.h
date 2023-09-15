@@ -38,4 +38,5 @@ public:
 private:
     noc *m_noc;
     void command_split_1d(rvgpu_command *cs);
+    void command_split_2d(rvgpu_command *cs);
 };

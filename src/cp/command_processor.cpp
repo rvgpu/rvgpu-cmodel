@@ -44,7 +44,7 @@ void command_processor::run(uint64_t cmds) {
             command_split_1d(cs);
             break;
         case RVGPU_COMMAND_TYPE_2D:
-            // command_split_2d(cs);
+            command_split_2d(cs);
             break;
         default:
             RVGPU_ERROR_PRINT("COMMAND TYPE TODO\n");
@@ -53,11 +53,12 @@ void command_processor::run(uint64_t cmds) {
 }
 
 void command_processor::command_split_1d(rvgpu_command *cs) {
-    int32_t tcount = cs->range.x;
+    uint32_t range_x = cs->range.x;
+    m_noc->write_message_size((range_x - 1) / 16 + 1);
+
+    uint32_t tcount = range_x;
     uint32_t start = 0;
     uint32_t sm_id = 0;
-
-    m_noc->write_message_size((tcount - 1) / 16 + 1);
 
     while (tcount > 0) {
         message msg = {};
@@ -77,6 +78,42 @@ void command_processor::command_split_1d(rvgpu_command *cs) {
         start += 16;
         tcount = tcount - msg.count;
         sm_id = (sm_id + 1) % SM_NUM;
+    }
+}
+
+void command_processor::command_split_2d(rvgpu_command *cs) {
+    uint32_t range_x = cs->range.x;
+    uint32_t range_y = cs->range.y;
+    m_noc->write_message_size(range_y * ((range_x - 1) / 16 + 1));
+
+    uint32_t tcount_x = range_x;
+    uint32_t tcount_y = range_y;
+    uint32_t sm_id = 0;
+
+    while (tcount_y > 0) {
+        tcount_x = range_x;
+        sm_id = 0;
+
+        while(tcount_x > 0) {
+            message msg = {};
+
+            msg.target = sm_id;
+            msg.shader = cs->shader;
+            msg.shader.stack_pointer += sm_id * SM_STACK_SIZE;
+            msg.start = (range_y - tcount_y) * range_x + (range_x - tcount_x);
+            if (tcount_x > 16) {
+                msg.count = 16;
+            } else {
+                msg.count = tcount_x;
+            }
+
+            m_noc->write_message(sm_id, msg);
+
+            tcount_x = tcount_x - msg.count;
+            sm_id = (sm_id + 1) % SM_NUM;
+        }
+
+        tcount_y = tcount_y - 1;
     }
 }
 

@@ -98,7 +98,7 @@ TEST_F(GPUExecuator, games101_hw2) {
         PushParam((uint64_t)color_buffer);
         PushParam((uint64_t)depth_buffer);
         PushParam((uint64_t)(&box));
-        run1d(box_width * box_height);
+        run2d(box_width, box_height);
 #else
         for (long tid = 0; tid < box_width * box_height; tid++) {
             rasterization(tid, &t, color_buffer, depth_buffer, &box);
