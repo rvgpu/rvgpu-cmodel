@@ -65,6 +65,10 @@ void rvgpu::run(uint64_t cmds) {
     }
 }
 
+uint64_t rvgpu::get_vram_addr() {
+    return m_vram->get_base_addr();
+}
+
 void rvgpu::write_register(uint64_t addr, uint32_t data) {
     regs[addr] = data;
 }

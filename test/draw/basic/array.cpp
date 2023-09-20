@@ -1,4 +1,35 @@
 #include "gpu_execuator.hpp"
+#include "gpu_execuator_with_vram.hpp"
+
+TEST_F(GPUExecuator_with_vram, vertex_shader_array_add_with_vram) {
+    uint32_t count = 16;
+    int i = 0;
+
+    // Data
+    uint64_t in = (uint64_t) gpu_malloc(count * sizeof(int));
+    uint64_t out = (uint64_t) gpu_malloc(count * sizeof(int));
+    for (i=0; i<count; i++) {
+        gpu_write_vram(in + i * sizeof(int), i * 100, sizeof(int));
+    }
+
+    // Shader
+    uint64_t shader_addr = (uint64_t) gpu_malloc(0x2000000 * sizeof(uint32_t));
+    LoadELF_with_vram(shader_addr, "basic", "array_add");
+
+    // Parameters
+    uint64_t params_addr = (uint64_t) gpu_malloc(3 * sizeof(uint64_t));
+    PushParam_with_vram(params_addr, 0, 0);
+    PushParam_with_vram(params_addr, 1, (uint64_t)in + gpu_get_vram_addr());
+    PushParam_with_vram(params_addr, 2, (uint64_t)out + gpu_get_vram_addr());
+
+    run1d_with_vram(count, params_addr, 3);
+
+    for (i=0; i<16; i++) {
+        int expected = gpu_read_vram(in + i * sizeof(int), sizeof(int)) + 100;
+        int result = gpu_read_vram(out + i * sizeof(int), sizeof(int));
+        EXPECT_EQ(result, expected);
+    }
+}
 
 TEST_F(GPUExecuator, vertex_shader_array_add) {
     int32_t count = 16;
