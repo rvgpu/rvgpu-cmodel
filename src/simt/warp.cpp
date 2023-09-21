@@ -29,7 +29,9 @@
 #include "common/debug.hpp"
 #include "warp.hpp"
 
-warp::warp(register_file *reg) {
+warp::warp(vram *rvgpu_vram, mmu *simt_mmu, register_file *reg) {
+    m_vram = rvgpu_vram;
+    m_mmu = simt_mmu;
     m_reg = reg;
     m_dec = new decoder();
     m_branch = new branch();

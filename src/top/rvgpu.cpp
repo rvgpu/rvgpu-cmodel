@@ -38,7 +38,7 @@ rvgpu::rvgpu() {
     m_cp->communicate_with(m_noc);
 
     for (int i = 0; i < SM_NUM; i++) {
-        m_sm[i] = new sm(i);
+        m_sm[i] = new sm(i, m_vram);
         m_sm[i]->communicate_with(m_noc);
     }
 

@@ -26,12 +26,13 @@
 #include <pthread.h>
 #include "top/command_stream.h"
 
+class vram;
 class noc;
 class simt;
 
 class sm {
 public:
-    sm(uint32_t id);
+    sm(uint32_t id, vram *rvgpu_vram);
     ~sm();
 
     void communicate_with(noc *noc_comm);

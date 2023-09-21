@@ -23,11 +23,18 @@
 
 #pragma once
 
+#include "vram/vram.hpp"
+#include "mmu/mmu.hpp"
 #include "inst_issue.hpp"
 
 class load_store {
 public:
     load_store();
+    load_store(vram *rvgpu_vram, mmu *simt_mmu);
 
     writeback_t run(inst_issue inst);
+
+private:
+    vram *m_vram;
+    mmu *m_mmu;
 };

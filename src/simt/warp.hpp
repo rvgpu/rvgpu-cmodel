@@ -29,6 +29,8 @@
 
 #include "top/command_stream.h"
 #include "common/configs.h"
+#include "vram/vram.hpp"
+#include "mmu/mmu.hpp"
 #include "rvcore/inst_issue.hpp"
 #include "rvcore/decoder.hpp"
 #include "rvcore/branch.hpp"
@@ -43,7 +45,7 @@ struct warpstore {
 
 class warp {
 public:
-    warp (register_file *reg);
+    warp (vram *rvgpu_vram, mmu *simt_mmu, register_file *reg);
 
     void setup(message msg);
     bool stop();
@@ -51,6 +53,8 @@ public:
     inst_issue schedule();
 
 private:
+    vram *m_vram;
+    mmu *m_mmu;
     register_file *m_reg;
     decoder *m_dec;
     branch *m_branch;

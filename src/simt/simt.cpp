@@ -25,12 +25,14 @@
 
 #include "common/utils.hpp"
 #include "simt.hpp"
+#include "mmu/mmu.hpp"
 #include "rvcore/encoding.hpp"
 
-simt::simt() {
+simt::simt(vram *rvgpu_vram) {
+    m_mmu = new mmu();
     m_reg = new register_file();
-    m_warp = new warp(m_reg);
-    m_ls = new load_store();
+    m_warp = new warp(rvgpu_vram, m_mmu, m_reg);
+    m_ls = new load_store(rvgpu_vram, m_mmu);
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
         m_alu[i] = new alu(i);
         m_fpu[i] = new fpu(i);

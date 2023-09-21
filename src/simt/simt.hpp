@@ -25,6 +25,8 @@
 
 #include "top/command_stream.h"
 
+#include "vram/vram.hpp"
+#include "mmu/mmu.hpp"
 #include "warp.hpp"
 #include "register_file.hpp"
 #include "rvcore/alu.hpp"
@@ -35,11 +37,12 @@
 // A simt-x processor
 class simt {
 public:
-    simt();
+    simt(vram *rvgpu_vram);
     void setup(message msg);
     void run();
 
 private:
+    mmu             *m_mmu;
     warp            *m_warp;
     register_file   *m_reg;
     alu             *m_alu[WARP_THREAD_N];
