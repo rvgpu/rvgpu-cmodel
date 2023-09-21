@@ -21,7 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-#include "noc/network_on_chip.h"
+#include "noc/network_on_chip.hpp"
 
 noc::noc() {
     pthread_mutex_init(&m_message_size_mutex, nullptr);

@@ -22,9 +22,9 @@
  */
 
 #include "vram/vram.hpp"
-#include "noc/network_on_chip.h"
+#include "noc/network_on_chip.hpp"
 #include "simt/simt.hpp"
-#include "stream_multiprocessor.h"
+#include "stream_multiprocessor.hpp"
 
 void * sm::multithread_runner(void *arg) {
     sm *this_sm = (sm *)arg;

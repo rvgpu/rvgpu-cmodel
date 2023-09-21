@@ -25,9 +25,9 @@
 #include "common/debug.hpp"
 
 #include "vram/vram.hpp"
-#include "noc/network_on_chip.h"
-#include "cp/command_processor.h"
-#include "sm/stream_multiprocessor.h"
+#include "noc/network_on_chip.hpp"
+#include "cp/command_processor.hpp"
+#include "sm/stream_multiprocessor.hpp"
 #include "rvgpu.h"
 
 rvgpu::rvgpu() {

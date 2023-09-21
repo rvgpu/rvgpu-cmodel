@@ -24,8 +24,8 @@
 #include "common/configs.h"
 #include "common/debug.hpp"
 
-#include "noc/network_on_chip.h"
-#include "command_processor.h"
+#include "noc/network_on_chip.hpp"
+#include "command_processor.hpp"
 
 command_processor::command_processor() {
 }

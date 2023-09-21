@@ -1,7 +1,6 @@
 set(SM_FILES
-        mmu.h
-        stream_multiprocessor.h
         stream_multiprocessor.cpp
+        stream_multiprocessor.hpp
     )
 
 add_library(sm OBJECT ${SM_FILES})
