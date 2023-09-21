@@ -37,6 +37,11 @@ warp::warp(vram *rvgpu_vram, mmu *simt_mmu, register_file *reg) {
     m_branch = new branch();
 }
 
+// Only for tests
+void warp::set_vram_flag() {
+    vram_flag = true;
+}
+
 void warp::setup(message msg) {
     pc = msg.shader.pointer;
     startpc = msg.shader.pointer;
@@ -57,8 +62,17 @@ void warp::setup(message msg) {
 
             RVGPU_DEBUG_PRINT("[SP][WARP0.%d] setup a0(tid): 0x%x\n", i, msg.start + i);
             m_reg->write(i, uint64_t(reg::a0), msg.start + i);
+
             for (uint32_t argi=1; argi<msg.shader.argsize; argi++) {
+                if (vram_flag) {
+                    printf("Warp setup with vram\n");
+
+                    uint64_t args_pa = m_mmu->mmu_trans(msg.shader.arg_addr + argi * 8);
+                    msg.shader.args[argi] = m_vram->read<uint64_t>(args_pa);
+                }
+
                 RVGPU_DEBUG_PRINT("[SP][WARP0.%d] setup a%d(arg[%d]): 0x%lx\n", i, argi, argi, msg.shader.args[argi]);
+
                 m_reg->write(i, uint64_t(reg::a0) + argi, msg.shader.args[argi]);
             }
         }
@@ -69,7 +83,17 @@ void warp::setup(message msg) {
 }
 
 inst_issue warp::schedule() {
-    uint32_t instcode = *((uint32_t *)pc);
+    uint32_t instcode = 0;
+
+    if (vram_flag) {
+        printf("Warp schedule with vram\n");
+
+        uint64_t pc_pa = m_mmu->mmu_trans(pc);
+        instcode = m_vram->read<uint32_t>(pc_pa);
+    } else {
+        instcode = *((uint32_t *)pc);
+    }
+
     RVGPU_DEBUG_PRINT("[%06lx] 0x%08x ==> ", (uint64_t(pc) - uint64_t(startpc)), instcode);
     uint8_t pc_step = IS_COMPRESSED_INST(instcode) ? 2 : 4;
     inst_issue to_issue = m_dec->decode_inst(instcode);

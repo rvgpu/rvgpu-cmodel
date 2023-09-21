@@ -37,6 +37,7 @@ public:
     ~rvgpu();
 
     void run(uint64_t cmd);
+    void run_with_vram(uint64_t cmd);
 
     uint64_t get_vram_addr();
 

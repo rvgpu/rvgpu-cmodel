@@ -52,6 +52,9 @@ public:
 
     inst_issue schedule();
 
+    // Only for tests
+    void set_vram_flag();
+
 private:
     vram *m_vram;
     mmu *m_mmu;
@@ -70,4 +73,7 @@ private:
     bool merge_lanes(struct warpstore &w0, struct warpstore &w1);
 
     friend ut_branch;
+
+    // Only for tests
+    bool vram_flag = false;
 };

@@ -33,7 +33,13 @@ void * sm::multithread_runner(void *arg) {
         if (this_sm->has_msg()) {
             message msg = this_sm->get_msg();
 
-            this_sm->run(msg);
+            // Only for tests
+            if (this_sm->get_vram_flag()) {
+                this_sm->run_with_vram(msg);
+            } else {
+                this_sm->run(msg);
+            }
+
             this_sm->send_response();
         }
     }
@@ -57,6 +63,21 @@ void sm::communicate_with(noc *noc_comm) {
 }
 
 void sm::run(message msg) {
+    m_simt->setup(msg);
+    m_simt->run();
+}
+
+// Only for tests
+bool sm::get_vram_flag() {
+    return vram_flag;
+}
+
+void sm::set_vram_flag() {
+    vram_flag = true;
+}
+
+void sm::run_with_vram(message msg) {
+    m_simt->set_vram_flag();
     m_simt->setup(msg);
     m_simt->run();
 }

@@ -65,6 +65,19 @@ void rvgpu::run(uint64_t cmds) {
     }
 }
 
+void rvgpu::run_with_vram(uint64_t cmds) {
+    // Only for tests
+    for (int i = 0; i < SM_NUM; i++) {
+        m_sm[i]->set_vram_flag();
+    }
+
+    m_cp->run(cmds);
+
+    while (!m_cp->finished()) {
+        // Wait
+    }
+}
+
 uint64_t rvgpu::get_vram_addr() {
     return m_vram->get_base_addr();
 }

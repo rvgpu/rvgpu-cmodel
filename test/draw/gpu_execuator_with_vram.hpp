@@ -70,12 +70,10 @@ protected:
         cmd.shader.stack_pointer = stack_pointer;
 
         cmd.shader.argsize = params_size;
-        for (uint32_t i=0; i<params_size; i++) {
-            cmd.shader.args[i] = gpu->read_vram(params_addr + i * 8, 8);
-        }
+        cmd.shader.arg_addr = params_addr;
 
         commands.push_back(std::move(cmd));
-        gpu->run((uint64_t)commands.data());
+        gpu->run_with_vram((uint64_t)commands.data());
 
         commands.clear();
     }
@@ -89,13 +87,10 @@ protected:
         cmd.shader.stack_pointer = stack_pointer;
 
         cmd.shader.argsize = params_size;
-        uint64_t *addr = (uint64_t *)params_addr;
-        for (uint32_t i=0; i<params_size; i++) {
-            cmd.shader.args[i] = gpu->read_vram(params_addr + i * 8, 8);
-        }
+        cmd.shader.arg_addr = params_addr;
 
         commands.push_back(std::move(cmd));
-        gpu->run((uint64_t)commands.data());
+        gpu->run_with_vram((uint64_t)commands.data());
 
         commands.clear();
     }
@@ -192,7 +187,7 @@ private:
             }
         }
 
-        pc = ((uint64_t)shader_addr + gpu_get_vram_addr()) + header->e_entry;
+        pc = (uint64_t)shader_addr + header->e_entry;
     }
 
     char *elf_binary;

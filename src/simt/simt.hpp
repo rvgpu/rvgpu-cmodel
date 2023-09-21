@@ -41,6 +41,9 @@ public:
     void setup(message msg);
     void run();
 
+    // Only for tests
+    void set_vram_flag();
+
 private:
     mmu             *m_mmu;
     warp            *m_warp;
@@ -53,4 +56,7 @@ private:
 
     void issue(inst_issue inst);
     void issue_single(inst_issue inst, uint32_t tid);
+
+    // Only for tests
+    bool vram_flag = false;
 };
