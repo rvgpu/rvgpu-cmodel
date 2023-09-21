@@ -19,8 +19,8 @@ TEST_F(GPUExecuator_with_vram, vertex_shader_array_add_with_vram) {
     // Parameters
     uint64_t params_addr = (uint64_t) gpu_malloc(3 * sizeof(uint64_t));
     PushParam_with_vram(params_addr, 0, 0);
-    PushParam_with_vram(params_addr, 1, (uint64_t)in + gpu_get_vram_addr());
-    PushParam_with_vram(params_addr, 2, (uint64_t)out + gpu_get_vram_addr());
+    PushParam_with_vram(params_addr, 1, (uint64_t)in);
+    PushParam_with_vram(params_addr, 2, (uint64_t)out);
 
     run1d_with_vram(count, params_addr, 3);
 

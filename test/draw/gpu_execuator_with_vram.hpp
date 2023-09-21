@@ -11,11 +11,10 @@
 class GPUExecuator_with_vram : public ::testing::Test {
 protected:
     void SetUp() override {
-        stack_pointer = (uint64_t)malloc(SM_STACK_SIZE * SM_NUM + 0x1000);
-        stack_pointer += 0x1000;
-        gpu_malloc_addr = 0;
-
         gpu = new rvgpu();
+        gpu_malloc_addr = 0;
+        stack_pointer = gpu_malloc(SM_STACK_SIZE * SM_NUM + 0x1000);
+        stack_pointer += 0x1000;
     }
 
     void TearDown() override {
@@ -57,10 +56,6 @@ protected:
         }        
     }
 
-    uint64_t gpu_get_vram_addr() {
-        return gpu->get_vram_addr();
-    }
-
     void run1d_with_vram(uint32_t count, uint64_t params_addr, uint32_t params_size) {
         rvgpu_command cmd;
         cmd.type = RVGPU_COMMAND_TYPE_1D;
@@ -70,7 +65,9 @@ protected:
         cmd.shader.stack_pointer = stack_pointer;
 
         cmd.shader.argsize = params_size;
-        cmd.shader.arg_addr = params_addr;
+        for (uint32_t i = 0; i < params_size; i++) {
+            cmd.shader.args[i] = gpu->read_vram(params_addr + i * 8, 8);
+        }
 
         commands.push_back(std::move(cmd));
         gpu->run_with_vram((uint64_t)commands.data());
@@ -87,7 +84,9 @@ protected:
         cmd.shader.stack_pointer = stack_pointer;
 
         cmd.shader.argsize = params_size;
-        cmd.shader.arg_addr = params_addr;
+        for (uint32_t i = 0; i < params_size; i++) {
+            cmd.shader.args[i] = gpu->read_vram(params_addr + i * 8, 8);
+        }
 
         commands.push_back(std::move(cmd));
         gpu->run_with_vram((uint64_t)commands.data());

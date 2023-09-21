@@ -35,7 +35,6 @@ typedef struct {
     uint64_t pointer;
     uint64_t stack_pointer;
     uint32_t argsize;
-    uint64_t arg_addr;
     uint64_t args[8];
 } program_t;
 
