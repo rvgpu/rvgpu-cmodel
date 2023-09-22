@@ -36,7 +36,7 @@ TEST_F(GPUExecuator_with_vram, vertex_shader_vt14_with_vram) {
     float *mycolor = (float *) malloc(count * 3 * sizeof(float));
 
     for (uint32_t i=0; i<count; i++) {
-        gpumain(i, myposition, mycolor, vp_host);
+        vertex_shader(i, myposition, mycolor, vp_host);
 
         uint32_t result_x = gpu_read_vram(out_position + (i * 4 + 0) * sizeof(uint32_t), sizeof(uint32_t));
         uint32_t result_y = gpu_read_vram(out_position + (i * 4 + 1) * sizeof(uint32_t), sizeof(uint32_t));
@@ -80,7 +80,7 @@ TEST_F(GPUExecuator, vertex_shader_vt14) {
     float *myposition = (float *) malloc(count * 4 * sizeof(float));
     float *mycolor = (float *) malloc(count * 3 * sizeof(float));
     for (int32_t i=0; i<count; i++) {
-        gpumain(i, myposition, mycolor, vp);
+        vertex_shader(i, myposition, mycolor, vp);
 
         EXPECT_EQ(out_position[i * 4 + 0], myposition[i * 4 + 0]);
         EXPECT_EQ(out_position[i * 4 + 1], myposition[i * 4 + 1]);

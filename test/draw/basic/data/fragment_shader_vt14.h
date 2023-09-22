@@ -1,6 +1,6 @@
 #define WIDTH 800
 
-long gpumain(long pixel, float *in_position, float *in_color, unsigned char *out_color_buffer, int v0_id, int v1_id, int v2_id)
+long fragment_shader(long pixel, float *in_position, float *in_color, unsigned char *out_color_buffer, int v0_id, int v1_id, int v2_id)
 {
     unsigned int pixel_x = pixel % 800;
     unsigned int pixel_y = pixel / 800;

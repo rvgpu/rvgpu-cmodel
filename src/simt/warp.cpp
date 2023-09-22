@@ -78,8 +78,6 @@ inst_issue warp::schedule() {
     uint32_t instcode = 0;
 
     if (vram_flag) {
-        printf("Warp schedule with vram\n");
-
         uint64_t pc_pa = m_mmu->mmu_trans(pc);
         instcode = m_vram->read<uint32_t>(pc_pa);
     } else {

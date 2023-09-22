@@ -18,7 +18,7 @@ float colors[3][3] = {
         {1.0, 0.0, 0.0},
 };
 
-void gpumain(long vid, float *out_position, float *out_color, struct viewport *vp)
+void vertex_shader(long vid, float *out_position, float *out_color, struct viewport *vp)
 {
     float fx = position[vid][0];
     float fy = position[vid][1];
