@@ -1,5 +1,6 @@
 #include "gpu_execuator.hpp"
 #include "gpu_execuator_with_vram.hpp"
+#include "common/utils.hpp"
 
 TEST_F(GPUExecuator_with_vram, array_add_with_vram) {
     uint32_t count = 16;
@@ -242,7 +243,43 @@ TEST_F(GPUExecuator, multi_array_muladd) {
     }
 }
 
-TEST_F(GPUExecuator, vertex_shader_multi_array_fmuladd) {
+TEST_F(GPUExecuator_with_vram, multi_array_fmuladd_with_vram) {
+    uint32_t count = 32;
+    int i = 0;
+
+    // Data
+    uint64_t in1 = (uint64_t) gpu_malloc(count * sizeof(uint32_t));
+    uint64_t in2 = (uint64_t) gpu_malloc(count * sizeof(uint32_t));
+    uint64_t in3 = (uint64_t) gpu_malloc(count * sizeof(uint32_t));
+    uint64_t out = (uint64_t) gpu_malloc(count * sizeof(uint32_t));
+    for (i=0; i<count; i++) {
+        gpu_write_vram(in1 + i * sizeof(uint32_t), utils::f2ui(i * 100.0f), sizeof(uint32_t));
+        gpu_write_vram(in2 + i * sizeof(uint32_t), utils::f2ui(i + 34.0f), sizeof(uint32_t));
+        gpu_write_vram(in3 + i * sizeof(uint32_t), utils::f2ui(i * 4.0f), sizeof(uint32_t));
+    }
+
+    // Shader
+    uint64_t shader_addr = (uint64_t) gpu_malloc(0x2000000 * sizeof(uint32_t));
+    LoadELF_with_vram(shader_addr, "basic", "multi_array_fmuladd");
+
+    // Parameters
+    uint64_t params_addr = (uint64_t) gpu_malloc(5 * sizeof(uint64_t));
+    PushParam_with_vram(params_addr, 0, 0);
+    PushParam_with_vram(params_addr, 1, (uint64_t)in1);
+    PushParam_with_vram(params_addr, 2, (uint64_t)in2);
+    PushParam_with_vram(params_addr, 3, (uint64_t)in3);
+    PushParam_with_vram(params_addr, 4, (uint64_t)out);
+
+    run1d_with_vram(count, params_addr, 5);
+
+    for (i=0; i<16; i++) {
+        float expected = (i * 100.0f) * (i + 34.0f) + (i * 4.0f);
+        uint32_t result = gpu_read_vram(out + i * sizeof(uint32_t), sizeof(uint32_t));
+        EXPECT_EQ(utils::ui2f(result), expected);
+    }
+}
+
+TEST_F(GPUExecuator, multi_array_fmuladd) {
     int32_t count = 32;
     int i = 0;
     float *in1 = (float *)malloc(count * 4);
