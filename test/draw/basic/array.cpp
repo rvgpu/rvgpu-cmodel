@@ -25,7 +25,7 @@ TEST_F(GPUExecuator_with_vram, array_add_with_vram) {
 
     run1d_with_vram(count, params_addr, 3);
 
-    for (i=0; i<16; i++) {
+    for (i=0; i<count; i++) {
         int expected = (i * 100) + 100;
         int result = gpu_read_vram(out + i * sizeof(int), sizeof(int));
         EXPECT_EQ(result, expected);
@@ -51,7 +51,7 @@ TEST_F(GPUExecuator, array_add) {
 
     run1d(count);
 
-    for (i=0; i<16; i++) {
+    for (i=0; i<count; i++) {
         EXPECT_EQ(out[i], in[i] + 100);
     }
 }
@@ -82,7 +82,7 @@ TEST_F(GPUExecuator_with_vram, multi_array_add_with_vram) {
 
     run1d_with_vram(count, params_addr, 4);
 
-    for (i=0; i<16; i++) {
+    for (i=0; i<count; i++) {
         int expected = (i * 100) + (i + 34);
         int result = gpu_read_vram(out + i * sizeof(int), sizeof(int));
         EXPECT_EQ(result, expected);
@@ -142,7 +142,7 @@ TEST_F(GPUExecuator_with_vram, multi_array_mul_with_vram) {
 
     run1d_with_vram(count, params_addr, 4);
 
-    for (i=0; i<16; i++) {
+    for (i=0; i<count; i++) {
         int expected = (i * 100) * (i + 34);
         int result = gpu_read_vram(out + i * sizeof(int), sizeof(int));
         EXPECT_EQ(result, expected);
@@ -205,7 +205,7 @@ TEST_F(GPUExecuator_with_vram, multi_array_muladd_with_vram) {
 
     run1d_with_vram(count, params_addr, 5);
 
-    for (i=0; i<16; i++) {
+    for (i=0; i<count; i++) {
         int expected = (i * 100) * (i + 34) + (i * 4);
         int result = gpu_read_vram(out + i * sizeof(int), sizeof(int));
         EXPECT_EQ(result, expected);
@@ -272,7 +272,7 @@ TEST_F(GPUExecuator_with_vram, multi_array_fmuladd_with_vram) {
 
     run1d_with_vram(count, params_addr, 5);
 
-    for (i=0; i<16; i++) {
+    for (i=0; i<count; i++) {
         float expected = (i * 100.0f) * (i + 34.0f) + (i * 4.0f);
         uint32_t result = gpu_read_vram(out + i * sizeof(uint32_t), sizeof(uint32_t));
         EXPECT_EQ(utils::ui2f(result), expected);
