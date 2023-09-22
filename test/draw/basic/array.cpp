@@ -175,7 +175,43 @@ TEST_F(GPUExecuator, multi_array_mul) {
     }
 }
 
-TEST_F(GPUExecuator, vertex_shader_multi_array_muladd) {
+TEST_F(GPUExecuator_with_vram, multi_array_muladd_with_vram) {
+    uint32_t count = 32;
+    int i = 0;
+
+    // Data
+    uint64_t in1 = (uint64_t) gpu_malloc(count * sizeof(int));
+    uint64_t in2 = (uint64_t) gpu_malloc(count * sizeof(int));
+    uint64_t in3 = (uint64_t) gpu_malloc(count * sizeof(int));
+    uint64_t out = (uint64_t) gpu_malloc(count * sizeof(int));
+    for (i=0; i<count; i++) {
+        gpu_write_vram(in1 + i * sizeof(int), i * 100, sizeof(int));
+        gpu_write_vram(in2 + i * sizeof(int), i + 34, sizeof(int));
+        gpu_write_vram(in3 + i * sizeof(int), i * 4, sizeof(int));
+    }
+
+    // Shader
+    uint64_t shader_addr = (uint64_t) gpu_malloc(0x2000000 * sizeof(uint32_t));
+    LoadELF_with_vram(shader_addr, "basic", "multi_array_muladd");
+
+    // Parameters
+    uint64_t params_addr = (uint64_t) gpu_malloc(5 * sizeof(uint64_t));
+    PushParam_with_vram(params_addr, 0, 0);
+    PushParam_with_vram(params_addr, 1, (uint64_t)in1);
+    PushParam_with_vram(params_addr, 2, (uint64_t)in2);
+    PushParam_with_vram(params_addr, 3, (uint64_t)in3);
+    PushParam_with_vram(params_addr, 4, (uint64_t)out);
+
+    run1d_with_vram(count, params_addr, 5);
+
+    for (i=0; i<16; i++) {
+        int expected = (i * 100) * (i + 34) + (i * 4);
+        int result = gpu_read_vram(out + i * sizeof(int), sizeof(int));
+        EXPECT_EQ(result, expected);
+    }
+}
+
+TEST_F(GPUExecuator, multi_array_muladd) {
     int32_t count = 32;
     int i = 0;
     uint32_t *in1 = (uint32_t *)malloc(count * 4);
