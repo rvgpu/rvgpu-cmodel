@@ -39,8 +39,6 @@ public:
     void run(uint64_t cmd);
     void run_with_vram(uint64_t cmd);
 
-    uint64_t get_vram_addr();
-
     // Interface of register and vram
     void write_vram(uint64_t addr, uint64_t data, uint32_t size);
     uint64_t read_vram(uint64_t addr, uint32_t size);

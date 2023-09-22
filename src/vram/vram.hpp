@@ -38,10 +38,6 @@ public:
         *(T *)(m_mem + addr) = data;
     }
 
-    uint64_t get_base_addr() {
-        return m_mem;
-    }
-
 private:
     uint64_t m_mem;
 };
