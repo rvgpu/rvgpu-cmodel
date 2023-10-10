@@ -6,12 +6,12 @@
 
 #include "top/command_stream.h"
 #include "common/configs.h"
-#include "top/rvgpu.h"
+#include "top/rvgsim.h"
 
 class GPUExecuator_with_vram : public ::testing::Test {
 protected:
     void SetUp() override {
-        gpu = new rvgpu();
+        gpu = new rvgsim();
         gpu_malloc_addr = 0;
         stack_pointer = gpu_malloc(SM_STACK_SIZE * SM_NUM + 0x1000);
         stack_pointer += 0x1000;
@@ -190,7 +190,7 @@ private:
     }
 
     char *elf_binary;
-    rvgpu *gpu;
+    rvgsim *gpu;
     uint64_t pc;
     uint64_t stack_pointer;
     uint64_t gpu_malloc_addr;

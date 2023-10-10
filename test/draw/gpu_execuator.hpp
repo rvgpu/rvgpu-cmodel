@@ -6,14 +6,14 @@
 
 #include "top/command_stream.h"
 #include "common/configs.h"
-#include "top/rvgpu.h"
+#include "top/rvgsim.h"
 
 class GPUExecuator : public ::testing::Test {
 protected:
     void SetUp() override {
         stack_pointer = (uint64_t)malloc(SM_STACK_SIZE * SM_NUM + 0x1000);
         stack_pointer += 0x1000;
-        gpu = new rvgpu();
+        gpu = new rvgsim();
     }
 
     void TearDown() override {
@@ -152,7 +152,7 @@ private:
     uint64_t pc;
     std::vector<uint64_t> params;
 
-    rvgpu *gpu;
+    rvgsim *gpu;
     std::vector<rvgpu_command> commands;
     uint64_t stack_pointer;
     uint32_t instmem[0x2000000];

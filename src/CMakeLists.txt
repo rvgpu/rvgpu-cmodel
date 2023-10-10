@@ -3,7 +3,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 include_directories(${project_top_path})
 include(compile_options.cmake)
 
-configure_file(top/librvgpu.pc.in librvgpu.pc @ONLY)
+configure_file(top/librvgsim.pc.in librvgsim.pc @ONLY)
 
 add_compile_options(-fPIC)
 
@@ -32,6 +32,6 @@ target_link_libraries(rvgsim PRIVATE softfloat)
 
 set_target_properties(rvgsim PROPERTIES VERSION 0.0.1)
 install(TARGETS rvgsim LIBRARY DESTINATION lib)
-install(FILES top/rvgpu.h DESTINATION include)
+install(FILES top/rvgsim.h DESTINATION include)
 install(FILES top/command_stream.h DESTINATION include)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librvgpu.pc DESTINATION lib/pkgconfig)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/librvgsim.pc DESTINATION lib/pkgconfig)

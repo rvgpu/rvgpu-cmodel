@@ -2,8 +2,8 @@ prefix=@CMAKE_INSTALL_PREFIX@
 libdir=${prefix}/lib
 includedir=${prefix}/include
 
-Name: rvgpu
-Description: interface to rvgpu
+Name: rvgsim
+Description: interface to rvgsim
 URL: www.rvgpu.com
 Version: 1.0.0
 Libs: -L${libdir} -lrvgsim

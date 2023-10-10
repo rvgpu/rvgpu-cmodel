@@ -31,10 +31,10 @@ class noc;
 class command_processor;
 class sm;
 
-class rvgpu {
+class rvgsim{
 public:
-    rvgpu();
-    ~rvgpu();
+    rvgsim();
+    ~rvgsim();
 
     void run(uint64_t cmd);
     void run_with_vram(uint64_t cmd);
