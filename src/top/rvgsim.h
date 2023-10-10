@@ -23,8 +23,7 @@
 
 #pragma once
 
-#include "common/configs.h"
-#include "top/command_stream.h"
+/* This file will export to user, Don't include any internal file here. */
 
 class vram;
 class noc;
@@ -48,6 +47,6 @@ private:
     vram *m_vram;
     noc *m_noc;
     command_processor *m_cp;
-    sm *m_sm[SM_NUM];
+    sm *m_sm[8];
     uint32_t *regs;
 };
