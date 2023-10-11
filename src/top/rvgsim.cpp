@@ -33,13 +33,10 @@
 rvgsim::rvgsim() {
     m_vram = new vram(VRAM_SIZE);
     m_noc = new noc();
-
-    m_cp = new command_processor();
-    m_cp->communicate_with(m_noc);
+    m_cp = new command_processor(m_noc);
 
     for (int i = 0; i < SM_NUM; i++) {
-        m_sm[i] = new sm(i, m_vram);
-        m_sm[i]->communicate_with(m_noc);
+        m_sm[i] = new sm(i, m_vram, m_noc);
     }
 
     regs = (uint32_t *)malloc(MBYTE(2));

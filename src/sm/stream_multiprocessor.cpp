@@ -47,8 +47,9 @@ void * sm::multithread_runner(void *arg) {
     return nullptr;
 }
 
-sm::sm(uint32_t id, vram *rvgpu_vram) {
+sm::sm(uint32_t id, vram *rvgpu_vram, noc* connector) {
     m_id = id;
+    m_noc = connector;
     m_simt = new simt(rvgpu_vram);
     pthread_create(&m_thread, nullptr, multithread_runner, this);
 }
@@ -56,10 +57,6 @@ sm::sm(uint32_t id, vram *rvgpu_vram) {
 sm::~sm() {
     delete m_simt;
     pthread_join(m_thread, nullptr);
-}
-
-void sm::communicate_with(noc *noc_comm) {
-    m_noc = noc_comm;
 }
 
 void sm::run(message msg) {

@@ -27,14 +27,11 @@
 #include "noc/network_on_chip.hpp"
 #include "command_processor.hpp"
 
-command_processor::command_processor() {
+command_processor::command_processor(noc* connector) {
+    m_noc = connector;
 }
 
 command_processor::~command_processor() {
-}
-
-void command_processor::communicate_with(noc *noc_comm) {
-    m_noc = noc_comm;
 }
 
 void command_processor::run(uint64_t cmds) {

@@ -29,10 +29,9 @@ class noc;
 
 class command_processor {
 public:
-    command_processor();
+    command_processor(noc* connector);
     ~command_processor();
 
-    void communicate_with(noc *noc_comm);
     void run(uint64_t cmds);
     bool finished();
 private:

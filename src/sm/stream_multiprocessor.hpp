@@ -32,10 +32,9 @@ class simt;
 
 class sm {
 public:
-    sm(uint32_t id, vram *rvgpu_vram);
+    sm(uint32_t id, vram *rvgpu_vram, noc* connector);
     ~sm();
 
-    void communicate_with(noc *noc_comm);
     static void * multithread_runner(void *arg);
     void run(message msg);
 
