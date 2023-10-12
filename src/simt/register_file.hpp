@@ -60,6 +60,9 @@ public:
         return m_sreg[tid][static_cast<uint32_t>(rid)];
     }
 
+    void sreg_write(uint32_t tid, special_reg rid, reg_t data) {
+        m_sreg[tid][static_cast<uint32_t>(rid)] = data;
+    }
 private:
     uint64_t reg[WARP_THREAD_N][64] = {};
     //special register

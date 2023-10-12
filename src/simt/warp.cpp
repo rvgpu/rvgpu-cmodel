@@ -56,6 +56,7 @@ void warp::setup(message msg) {
 
             m_reg->write(i, uint64_t(reg::s0), 0);
             m_reg->write(i, uint64_t(reg::ra), 0);
+            m_reg->sreg_write(i, special_reg::t0, msg.start + i);
 
             RVGPU_DEBUG_PRINT("[SP][WARP0.%d] setup sp: 0x%lx\n", i, msg.shader.stack_pointer + 0x1000 * i);
             m_reg->write(i, uint64_t(reg::sp), msg.shader.stack_pointer + 0x1000 * i);
