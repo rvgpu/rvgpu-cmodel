@@ -109,3 +109,21 @@ enum class fpreg {
     f30 = FRID(30),   ft10 = FRID(30),
     f31 = FRID(31),   ft11 = FRID(31),
 };
+
+//same with cuda
+enum class special_reg {
+    t0 = 0,     // tid.x
+    t1,         // tid.y
+    t2,         // tid.z
+    t3,         // ntid.x
+    t4,         // ntid.y
+    t5,         // ntid.z
+    t6,         // laneid
+    t7,         // warpid
+    t8,         // nwarpid
+    t9,         // ctaid.x
+    t10,        // ctaid.y
+    t11,        // ctaid.z
+    t12,        // simd
+    t13         // nsimd
+};

@@ -61,6 +61,8 @@ void decoder::fill_issues(inst_issue &to_issue) {
     to_issue.frs1_id = to_issue.rs1_id + 32;
     to_issue.frs2_id = to_issue.rs2_id + 32;
     to_issue.frs3_id = to_issue.rs3_id + 32;
+
+    to_issue.sreg_id = (uint32_t)xget(20, 4);
 }
 
 inst_issue decoder::decode_inst(uint32_t instcode) {

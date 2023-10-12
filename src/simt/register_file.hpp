@@ -42,6 +42,7 @@ public:
         to_issue.frs1 = read(tid, to_issue.frs1_id);
         to_issue.frs2 = read(tid, to_issue.frs2_id);
         to_issue.frs3 = read(tid, to_issue.frs3_id);
+        to_issue.sreg = sreg_read(tid, to_issue.sreg_id);
     }
 
     uint64_t read(uint32_t tid, uint32_t rid) {
@@ -54,6 +55,12 @@ public:
         }
     }
 
+    reg_t sreg_read(uint32_t tid, uint32_t rid) {
+        return m_sreg[tid][rid];
+    }
+
 private:
     uint64_t reg[WARP_THREAD_N][64];
+    //special register
+    reg_t m_sreg[WARP_THREAD_N][14];
 };

@@ -32,6 +32,11 @@ protected:
         return (uint64_t)single_inst;
     }
 
+    //only the thread register can be preloaded;
+    void preload_register(special_reg regid, reg_t data) {
+        m_cpu->SetSReg(regid, data);
+    }
+
     void exec_instruction(uint32_t inst, IN in1, IN in2) {
         // Initialize Instruction and register
         single_inst[0] = inst;

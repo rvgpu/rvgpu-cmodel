@@ -73,6 +73,7 @@ typedef enum {
     INST_ALU_OR,
     INST_ALU_XOR,
     INST_ALU_XORI,
+    INST_ALU_LDTREG,
 
     INST_TYPE_FPU = 0x200,
     INST_FPU_FADD_S,
