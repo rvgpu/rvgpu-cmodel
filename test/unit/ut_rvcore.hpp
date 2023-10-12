@@ -104,6 +104,6 @@ private:
         to_issue.frs1 = m_reg[to_issue.frs1_id];
         to_issue.frs2 = m_reg[to_issue.frs2_id];
         to_issue.frs3 = m_reg[to_issue.frs3_id];
-        to_issue.sreg = m_sreg[to_issue.sreg_id];
+        to_issue.sreg = m_sreg[static_cast<uint32_t>(to_issue.sreg_id)];
     };
 };

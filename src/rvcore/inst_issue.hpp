@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include "rvmacro.h"
+#include "common/regid.hpp"
 
 typedef struct {
     uint64_t lanes;
@@ -17,7 +18,7 @@ typedef struct {
     uint64_t frs1_id;
     uint64_t frs2_id;
     uint64_t frs3_id;
-    uint32_t sreg_id;
+    special_reg sreg_id;
 
     uint64_t rd;
     uint64_t frd;
