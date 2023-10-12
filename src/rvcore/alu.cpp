@@ -164,6 +164,7 @@ writeback_t alu::run(inst_issue instruction) {
             break;
         case encoding::INST_ALU_LDTREG:
             ret = writeback_t {.rid = inst.rd, .wdata = instruction.sreg};
+            ALU_INFO("[LDTREG] r[%ld] = 0x%lx\n", inst.rd, instruction.sreg);
             break;
         default:
             printf("ALU.%d Inst TODO\n", m_id);

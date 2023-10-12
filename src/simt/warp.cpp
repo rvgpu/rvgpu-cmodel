@@ -85,7 +85,7 @@ inst_issue warp::schedule() {
         instcode = *((uint32_t *)pc);
     }
 
-    RVGPU_DEBUG_PRINT("[%06lx] 0x%08x ==> ", (uint64_t(pc) - uint64_t(startpc)), instcode);
+    RVGPU_DEBUG_PRINT("[%06lx] 0x%08x ==> \n", (uint64_t(pc) - uint64_t(startpc)), instcode);
     uint8_t pc_step = IS_COMPRESSED_INST(instcode) ? 2 : 4;
     inst_issue to_issue = m_dec->decode_inst(instcode);
     to_issue.lanes = lanes.to_ulong();
