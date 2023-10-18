@@ -29,7 +29,7 @@
 #include "rvcore/encoding.hpp"
 
 simt::simt(vram *rvgpu_vram) {
-    m_mmu = new mmu();
+    m_mmu = new mmu(rvgpu_vram);
     m_reg = new register_file();
     m_warp = new warp(rvgpu_vram, m_mmu, m_reg);
     m_ls = new load_store(rvgpu_vram, m_mmu);

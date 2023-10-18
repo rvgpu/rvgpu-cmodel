@@ -25,8 +25,18 @@
 
 #include <cstdint>
 
+class vram;
+
 class mmu {
 public:
-    mmu();
+    mmu(vram *rvgpu_vram);
     uint64_t mmu_trans(uint64_t va);
+
+private:
+    vram *m_vram;
+    bool m_enable_paging;
+
+    // Page table
+    uint64_t PT_BASE;
+    uint64_t lookup_page_table(uint64_t pt_base, uint64_t index);
 };
