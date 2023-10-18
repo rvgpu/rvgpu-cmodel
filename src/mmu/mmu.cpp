@@ -46,7 +46,7 @@ uint64_t mmu::lookup_page_table(uint64_t pt_base, uint64_t index) {
     }
 }
 
-uint64_t mmu::mmu_trans(uint64_t va) {
+uint64_t mmu::find_pa(uint64_t va) {
     uint64_t level1 = lookup_page_table(PT_BASE, _BITS(va, 39, 9));
     uint64_t level2 = lookup_page_table(level1, _BITS(va, 30, 9));
     uint64_t level3 = lookup_page_table(level2, _BITS(va, 21, 9));

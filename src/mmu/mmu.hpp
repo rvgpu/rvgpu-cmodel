@@ -30,11 +30,10 @@ class vram;
 class mmu {
 public:
     mmu(vram *rvgpu_vram);
-    uint64_t mmu_trans(uint64_t va);
+    uint64_t find_pa(uint64_t va);
 
 private:
     vram *m_vram;
-    bool m_enable_paging;
 
     // Page table
     uint64_t PT_BASE;
