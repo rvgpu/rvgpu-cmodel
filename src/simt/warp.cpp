@@ -37,11 +37,6 @@ warp::warp(vram *rvgpu_vram, mmu *simt_mmu, register_file *reg) {
     m_branch = new branch();
 }
 
-// Only for tests
-void warp::set_vram_flag() {
-    vram_flag = true;
-}
-
 void warp::setup(message msg) {
     pc = msg.shader.pointer;
     startpc = msg.shader.pointer;
@@ -75,12 +70,8 @@ void warp::setup(message msg) {
 inst_issue warp::schedule() {
     uint32_t instcode = 0;
 
-    if (vram_flag) {
-        uint64_t pc_pa = m_mmu->find_pa(pc);
-        instcode = m_vram->read<uint32_t>(pc_pa);
-    } else {
-        instcode = *((uint32_t *)pc);
-    }
+    uint64_t pc_pa = m_mmu->find_pa(pc);
+    instcode = m_vram->read<uint32_t>(pc_pa);
 
     RVGPU_DEBUG_PRINT("[%06lx] 0x%08x ==> \n", (uint64_t(pc) - uint64_t(startpc)), instcode);
     uint8_t pc_step = IS_COMPRESSED_INST(instcode) ? 2 : 4;

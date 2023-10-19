@@ -41,7 +41,6 @@ simt::simt(vram *rvgpu_vram) {
 
 void simt::setup(message msg) {
     if (vram_flag) {
-        m_warp->set_vram_flag();
         m_ls->set_vram_flag();
     }
     m_warp->setup(msg);
