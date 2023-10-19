@@ -39,7 +39,7 @@ rvgsim::rvgsim() {
         m_sm[i] = new sm(i, m_vram, m_noc);
     }
 
-    regs = (uint32_t *)malloc(MBYTE(2));
+    regs = (uint64_t *)malloc(MBYTE(2));
 }
 
 rvgsim::~rvgsim() {
@@ -54,32 +54,26 @@ rvgsim::~rvgsim() {
     free(regs);
 }
 
-void rvgsim::run(uint64_t cmds) {
-    m_cp->run(cmds);
+void rvgsim::write_register(uint64_t addr, uint64_t data) {
+    regs[addr] = data;
 
-    while (!m_cp->finished()) {
-        // Wait
-    }
-}
-
-void rvgsim::run_with_vram(uint64_t cmds) {
-    // Only for tests
     for (int i = 0; i < SM_NUM; i++) {
         m_sm[i]->set_vram_flag();
     }
 
-    m_cp->run(cmds);
+    // 0x1000, cmds
+    // 0x1008, run rvgsim
+    if (addr == 0x1008 && data != 0) {
+        uint64_t cmds = regs[0x1000];
+        m_cp->run(cmds);
 
-    while (!m_cp->finished()) {
-        // Wait
+        while (!m_cp->finished()) {
+            // Wait
+        }
     }
 }
 
-void rvgsim::write_register(uint64_t addr, uint32_t data) {
-    regs[addr] = data;
-}
-
-uint32_t rvgsim::read_register(uint64_t addr) {
+uint64_t rvgsim::read_register(uint64_t addr) {
     return regs[addr];
 }
 

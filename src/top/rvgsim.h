@@ -35,18 +35,15 @@ public:
     rvgsim();
     ~rvgsim();
 
-    void run(uint64_t cmd);
-    void run_with_vram(uint64_t cmd);
-
     // Interface of register and vram
     void write_vram(uint64_t addr, uint64_t data, uint32_t size);
     uint64_t read_vram(uint64_t addr, uint32_t size);
-    void write_register(uint64_t addr, uint32_t data);
-    uint32_t read_register(uint64_t addr);
+    void write_register(uint64_t addr, uint64_t data);
+    uint64_t read_register(uint64_t addr);
 private:
     vram *m_vram;
     noc *m_noc;
     command_processor *m_cp;
     sm *m_sm[8];
-    uint32_t *regs;
+    uint64_t *regs;
 };
