@@ -25,17 +25,21 @@
 
 #include "top/command_stream.h"
 
+class vram;
+class mmu;
 class noc;
 
 class command_processor {
 public:
-    command_processor(noc* connector);
+    command_processor(vram *rvgpu_vram, mmu *rvgpu_mmu, noc* connector);
     ~command_processor();
 
     void run(uint64_t cmds);
     bool finished();
 private:
+    vram *m_vram;
+    mmu *m_mmu;
     noc *m_noc;
-    void command_split_1d(rvgpu_command *cs);
-    void command_split_2d(rvgpu_command *cs);
+    void command_split_1d(uint64_t cmds);
+    void command_split_2d(uint64_t cmds);
 };

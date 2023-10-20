@@ -35,7 +35,7 @@ rvgsim::rvgsim() {
     m_vram = new vram(VRAM_SIZE);
     m_mmu = new mmu(m_vram);
     m_noc = new noc();
-    m_cp = new command_processor(m_noc);
+    m_cp = new command_processor(m_vram, m_mmu, m_noc);
 
     for (int i = 0; i < SM_NUM; i++) {
         m_sm[i] = new sm(i, m_vram, m_mmu, m_noc);
@@ -62,11 +62,11 @@ void rvgsim::write_register(uint64_t addr, uint64_t data) {
 
     // 0x1000, cmds
     // 0x1008, run rvgsim
+    // 0x1010, page table base
     if (addr == 0x1008 && data != 0) {
         uint64_t cmds = regs[0x1000];
 
-        rvgpu_command *cs = (rvgpu_command *)cmds;
-        m_mmu->set_page_table_base(cs->page_table_base);
+        m_mmu->set_page_table_base(regs[0x1010]);
 
         m_cp->run(cmds);
 
