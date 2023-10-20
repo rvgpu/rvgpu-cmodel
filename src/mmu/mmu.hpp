@@ -30,6 +30,8 @@ class vram;
 class mmu {
 public:
     mmu(vram *rvgpu_vram);
+    void set_page_table_base(uint64_t pt_base);
+
     uint64_t find_pa(uint64_t va);
 
 private:

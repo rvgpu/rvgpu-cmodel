@@ -22,6 +22,7 @@
  */
 
 #include "vram/vram.hpp"
+#include "mmu/mmu.hpp"
 #include "noc/network_on_chip.hpp"
 #include "simt/simt.hpp"
 #include "stream_multiprocessor.hpp"
@@ -40,10 +41,10 @@ void * sm::multithread_runner(void *arg) {
     return nullptr;
 }
 
-sm::sm(uint32_t id, vram *rvgpu_vram, noc* connector) {
+sm::sm(uint32_t id, vram *rvgpu_vram, mmu *rvgpu_mmu, noc* connector) {
     m_id = id;
     m_noc = connector;
-    m_simt = new simt(rvgpu_vram);
+    m_simt = new simt(rvgpu_vram, rvgpu_mmu);
     pthread_create(&m_thread, nullptr, multithread_runner, this);
 }
 

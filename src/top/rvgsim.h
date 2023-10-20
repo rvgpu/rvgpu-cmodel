@@ -26,6 +26,7 @@
 /* This file will export to user, Don't include any internal file here. */
 
 class vram;
+class mmu;
 class noc;
 class command_processor;
 class sm;
@@ -42,6 +43,7 @@ public:
     uint64_t read_register(uint64_t addr);
 private:
     vram *m_vram;
+    mmu *m_mmu;
     noc *m_noc;
     command_processor *m_cp;
     sm *m_sm[8];

@@ -19,7 +19,6 @@ protected:
     void SetUp() override {
         m_vram = new vram(1 * 1024 * 1024 * 1024);
         m_mmu = new mmu(m_vram);
-        m_cpu = new rvcore(m_vram, m_mmu);
 
         stack_pointer = 0x123;
 
@@ -29,6 +28,7 @@ protected:
         uint64_t level1 = PT_BASE + 0x1000;
         uint64_t level2 = PT_BASE + 0x2000;
         uint64_t level3 = PT_BASE + 0x3000;
+        m_mmu->set_page_table_base(PT_BASE);
 
         m_vram->write<uint64_t>(PT_BASE + 8 * 0, level1);
         m_vram->write<uint64_t>(level1 + 8 * 0, level2);

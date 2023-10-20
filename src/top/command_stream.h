@@ -47,6 +47,8 @@ typedef struct {
         uint32_t y;
         uint32_t z;
     } range;
+
+    uint64_t page_table_base;
 } rvgpu_command;
 
 typedef struct {

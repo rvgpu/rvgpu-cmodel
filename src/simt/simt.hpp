@@ -37,12 +37,11 @@
 // A simt-x processor
 class simt {
 public:
-    simt(vram *rvgpu_vram);
+    simt(vram *rvgpu_vram, mmu *rvgpu_mmu);
     void setup(message msg);
     void run();
 
 private:
-    mmu             *m_mmu;
     warp            *m_warp;
     register_file   *m_reg;
     alu             *m_alu[WARP_THREAD_N];

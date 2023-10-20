@@ -27,12 +27,13 @@
 #include "top/command_stream.h"
 
 class vram;
+class mmu;
 class noc;
 class simt;
 
 class sm {
 public:
-    sm(uint32_t id, vram *rvgpu_vram, noc* connector);
+    sm(uint32_t id, vram *rvgpu_vram, mmu *rvgpu_mmu, noc* connector);
     ~sm();
 
     static void * multithread_runner(void *arg);

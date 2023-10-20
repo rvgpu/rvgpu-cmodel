@@ -30,9 +30,10 @@
 
 mmu::mmu(vram *rvgpu_vram) {
     m_vram = rvgpu_vram;
+}
 
-    // Page table
-    PT_BASE = 0x00100000;
+void mmu::set_page_table_base(uint64_t pt_base) {
+    PT_BASE = pt_base;
 }
 
 uint64_t mmu::lookup_page_table(uint64_t pt_base, uint64_t index) {

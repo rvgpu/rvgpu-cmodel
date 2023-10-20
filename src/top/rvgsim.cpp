@@ -25,6 +25,7 @@
 #include "common/debug.hpp"
 
 #include "vram/vram.hpp"
+#include "mmu/mmu.hpp"
 #include "noc/network_on_chip.hpp"
 #include "cp/command_processor.hpp"
 #include "sm/stream_multiprocessor.hpp"
@@ -32,11 +33,12 @@
 
 rvgsim::rvgsim() {
     m_vram = new vram(VRAM_SIZE);
+    m_mmu = new mmu(m_vram);
     m_noc = new noc();
     m_cp = new command_processor(m_noc);
 
     for (int i = 0; i < SM_NUM; i++) {
-        m_sm[i] = new sm(i, m_vram, m_noc);
+        m_sm[i] = new sm(i, m_vram, m_mmu, m_noc);
     }
 
     regs = (uint64_t *)malloc(MBYTE(2));
@@ -44,6 +46,7 @@ rvgsim::rvgsim() {
 
 rvgsim::~rvgsim() {
     delete m_vram;
+    delete m_mmu;
     delete m_noc;
     delete m_cp;
 
@@ -61,6 +64,10 @@ void rvgsim::write_register(uint64_t addr, uint64_t data) {
     // 0x1008, run rvgsim
     if (addr == 0x1008 && data != 0) {
         uint64_t cmds = regs[0x1000];
+
+        rvgpu_command *cs = (rvgpu_command *)cmds;
+        m_mmu->set_page_table_base(cs->page_table_base);
+
         m_cp->run(cmds);
 
         while (!m_cp->finished()) {
