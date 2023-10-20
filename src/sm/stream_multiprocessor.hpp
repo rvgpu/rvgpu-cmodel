@@ -37,11 +37,6 @@ public:
 
     static void * multithread_runner(void *arg);
     void run(message msg);
-
-    // Only for tests
-    bool get_vram_flag();
-    void set_vram_flag();
-    void run_with_vram(message msg);
 private:
     uint32_t m_id;
     noc *m_noc;
@@ -51,7 +46,4 @@ private:
     bool has_msg();
     message get_msg();
     void send_response();
-
-    // Only for tests
-    bool vram_flag = false;
 };

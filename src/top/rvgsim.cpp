@@ -57,10 +57,6 @@ rvgsim::~rvgsim() {
 void rvgsim::write_register(uint64_t addr, uint64_t data) {
     regs[addr] = data;
 
-    for (int i = 0; i < SM_NUM; i++) {
-        m_sm[i]->set_vram_flag();
-    }
-
     // 0x1000, cmds
     // 0x1008, run rvgsim
     if (addr == 0x1008 && data != 0) {

@@ -29,18 +29,11 @@
 
 class load_store {
 public:
-    load_store();
     load_store(vram *rvgpu_vram, mmu *simt_mmu);
 
     writeback_t run(inst_issue inst);
 
-    // Only for tests
-    void set_vram_flag();
-
 private:
     vram *m_vram;
     mmu *m_mmu;
-
-    // Only for tests
-    bool vram_flag = false;
 };
