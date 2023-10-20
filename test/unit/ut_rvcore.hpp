@@ -8,11 +8,11 @@
 
 class rvcore {
 public:
-    rvcore() {
+    rvcore(vram *rvcore_vram, mmu *rvcore_mmu) {
         m_dec = new decoder();
         m_alu = new alu(0);
         m_fpu = new fpu(0);
-        m_ls = new load_store();
+        m_ls = new load_store(rvcore_vram, rvcore_mmu);
         m_branch = new branch();
 
         m_reg[0] = 0;

@@ -49,12 +49,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.s_imm;
             RVGPU_DEBUG_PRINT("[EXEC.LS.FSW] store.i32: mem[0x%lx] = 0x%lx (%f)\n", addr, inst.frs2, utils::reg2f(inst.frs2));
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                m_vram->write<uint32_t>(pa, (uint32_t)inst.frs2);
-            } else {
-                *((uint32_t *)addr) = (uint32_t)inst.frs2;
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            m_vram->write<uint32_t>(pa, (uint32_t)inst.frs2);
 
             break;
         }
@@ -62,12 +58,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint32_t data = 0;
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                data = m_vram->read<uint32_t>(pa);
-            } else {
-                data = *((uint32_t *)addr);
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            data = m_vram->read<uint32_t>(pa);
 
             RVGPU_DEBUG_PRINT("[EXEC.LS.FLW] load.i32: fr[%ld] 0x%x (%f) from mem[0x%lx]\n", inst.rd, data, utils::reg2f(data), addr);
             result = writeback_t {inst.frd, data};
@@ -77,12 +69,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.s_imm;
             RVGPU_DEBUG_PRINT("[EXEC.LS.FSD] store.i64: mem[0x%lx] = 0x%lx (%f)\n", addr, inst.frs2, utils::reg2d(inst.frs2));
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                m_vram->write<uint64_t>(pa, (uint64_t)inst.frs2);
-            } else {
-                *((uint64_t *)addr) = (uint64_t)inst.frs2;
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            m_vram->write<uint64_t>(pa, (uint64_t)inst.frs2);
 
             break;
         }
@@ -90,12 +78,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint64_t data = 0;
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                data = m_vram->read<uint64_t>(pa);
-            } else {
-                data = *((uint64_t *)addr);
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            data = m_vram->read<uint64_t>(pa);
 
             RVGPU_DEBUG_PRINT("[EXEC.LS.FLD] load.i64: fr[%ld] 0x%lx (%f) from mem[0x%lx]\n", inst.rd, data, utils::reg2d(data), addr);
             result = writeback_t {inst.frd, data};
@@ -105,12 +89,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.s_imm;
             RVGPU_DEBUG_PRINT("[EXEC.LS.SB] store.i8: mem[0x%lx] = 0x%x\n", addr, (uint32_t)inst.rs2);
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                m_vram->write<int8_t>(pa, (int8_t)inst.rs2);
-            } else {
-                *((int8_t *)addr) = (int8_t)inst.rs2;
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            m_vram->write<int8_t>(pa, (int8_t)inst.rs2);
 
             break;
         }
@@ -118,12 +98,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.s_imm;
             RVGPU_DEBUG_PRINT("[EXEC.LS.SH] store.i16: mem[0x%lx] = 0x%x\n", addr, (uint32_t)inst.rs2);
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                m_vram->write<uint16_t>(pa, (uint16_t)inst.rs2);
-            } else {
-                *((uint16_t *)addr) = (uint16_t)inst.rs2;
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            m_vram->write<uint16_t>(pa, (uint16_t)inst.rs2);
 
             break;
         }
@@ -131,12 +107,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.s_imm;
             RVGPU_DEBUG_PRINT("[EXEC.LS.SW] store.i32: mem[0x%lx] = 0x%x\n", addr, (uint32_t)inst.rs2);
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                m_vram->write<int32_t>(pa, (int32_t)inst.rs2);
-            } else {
-                *((int32_t *)addr) = (int32_t)inst.rs2;
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            m_vram->write<int32_t>(pa, (int32_t)inst.rs2);
 
             break;
         }
@@ -144,12 +116,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.s_imm;
             RVGPU_DEBUG_PRINT("[EXEC.LS.SD] store.i64: mem[0x%lx] = 0x%lx\n", addr, inst.rs2);
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                m_vram->write<int64_t>(pa, (int64_t)inst.rs2);
-            } else {
-                *((int64_t *)addr) = (int64_t)inst.rs2;
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            m_vram->write<int64_t>(pa, (int64_t)inst.rs2);
 
             break;
         }
@@ -157,12 +125,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int8_t data = 0;
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                data = m_vram->read<int8_t>(pa);
-            } else {
-                data = *((int8_t *)addr);
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            data = m_vram->read<int8_t>(pa);
 
             RVGPU_DEBUG_PRINT("[EXEC.LS.LB] load.i8: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             result = writeback_t {inst.rd, uint64_t(data)};
@@ -172,12 +136,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint8_t data = 0;
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                data = m_vram->read<uint8_t>(pa);
-            } else {
-                data = *((uint8_t *)addr);
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            data = m_vram->read<uint8_t>(pa);
 
             RVGPU_DEBUG_PRINT("[EXEC.LS.LBU] load.u8: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             result = writeback_t {inst.rd, uint64_t(data)};
@@ -187,12 +147,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int16_t data = 0;
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                data = m_vram->read<int16_t>(pa);
-            } else {
-                data = *((int16_t *)addr);
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            data = m_vram->read<int16_t>(pa);
 
             RVGPU_DEBUG_PRINT("[EXEC.LS.LH] load.i16: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             result = writeback_t {inst.rd, uint64_t(data)};
@@ -202,12 +158,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint16_t data = 0;
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                data = m_vram->read<uint16_t>(pa);
-            } else {
-                data = *((uint16_t *)addr);
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            data = m_vram->read<uint16_t>(pa);
 
             RVGPU_DEBUG_PRINT("[EXEC.LS.LHU] load.u16: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             result = writeback_t {inst.rd, uint64_t(data)};
@@ -217,12 +169,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int32_t data = 0;
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                data = m_vram->read<int32_t>(pa);
-            } else {
-                data = *((int32_t *)addr);
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            data = m_vram->read<int32_t>(pa);
 
             RVGPU_DEBUG_PRINT("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             result = writeback_t {inst.rd, uint64_t(data)};
@@ -232,12 +180,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             uint32_t data = 0;
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                data = m_vram->read<uint32_t>(pa);
-            } else {
-                data = *((uint32_t *)addr);
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            data = m_vram->read<uint32_t>(pa);
 
             RVGPU_DEBUG_PRINT("[EXEC.LS.LW] load.i32: r[%ld] 0x%x from mem[0x%lx]\n", inst.rd, data, addr);
             result = writeback_t {inst.rd, uint64_t(data)};
@@ -247,12 +191,8 @@ writeback_t load_store::run(inst_issue inst) {
             uint64_t addr = inst.rs1 + inst.i_imm;
             int64_t data = 0;
 
-            if (vram_flag) {
-                uint64_t pa = m_mmu->find_pa(addr);
-                data = m_vram->read<int64_t>(pa);
-            } else {
-                data = *((int64_t *)addr);
-            }
+            uint64_t pa = m_mmu->find_pa(addr);
+            data = m_vram->read<int64_t>(pa);
 
             RVGPU_DEBUG_PRINT("[EXEC.LS.LD] load.i64: r[%ld] 0x%lx from mem[0x%lx]\n", inst.rd, data, addr);
             result = writeback_t {inst.rd, uint64_t(data)};
