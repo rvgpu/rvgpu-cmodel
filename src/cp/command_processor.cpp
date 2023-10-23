@@ -39,57 +39,30 @@ command_processor::~command_processor() {
 }
 
 void command_processor::run(uint64_t cmds) {
-    uint64_t pa = m_mmu->find_pa(cmds);
-    uint32_t type = m_vram->read<uint32_t>(pa);
+    rvgpu_command cmd;
+    cmd.dim.x = m_vram->read<uint32_t>(m_mmu->find_pa(cmds + 0));
+    cmd.dim.y = m_vram->read<uint32_t>(m_mmu->find_pa(cmds + 4));
+    cmd.dim.z = m_vram->read<uint32_t>(m_mmu->find_pa(cmds + 8));
+    cmd.program.pointer         = m_vram->read<uint32_t>(m_mmu->find_pa(cmds + 16));
+    cmd.program.stack_pointer   = m_vram->read<uint32_t>(m_mmu->find_pa(cmds + 24));
+    cmd.program.argsize         = m_vram->read<uint32_t>(m_mmu->find_pa(cmds + 32));    
+    for (uint32_t i=0; i<cmd.program.argsize; i++) {
+        cmd.program.args[i]     = m_vram->read<uint32_t>(m_mmu->find_pa(cmds + 40 + i*8));
+    }
 
-    switch (type) {
-        case RVGPU_COMMAND_TYPE_1D:
-            command_split_1d(cmds);
-            break;
-        case RVGPU_COMMAND_TYPE_2D:
-            command_split_2d(cmds);
-            break;
-        default:
-            RVGPU_ERROR_PRINT("COMMAND TYPE TODO\n");
-            break;
+    for (uint32_t sz=0; sz<cmd.dim.z; sz+=1) {
+        // Split Z
+        for (uint32_t sy=0; sy<cmd.dim.y; sy+=1) {
+            // Split Y
+            command_split_1d(cmd.dim.x, cmd.program);
+        }
     }
 }
 
-void command_processor::command_split_1d(uint64_t cmds) {
-    uint64_t pa = m_mmu->find_pa(cmds);
+void command_processor::command_split_1d(uint32_t splitx, program_t prog) {
+    m_noc->write_message_size((splitx - 1) / 16 + 1);
 
-    // rvgpu_command_type type
-    pa += 8;
-
-    uint64_t shader_pointer = m_vram->read<uint64_t>(pa);
-    pa += 8;
-
-    uint64_t shader_stack_pointer = m_vram->read<uint64_t>(pa);
-    pa += 8;
-
-    uint32_t shader_argsize = m_vram->read<uint32_t>(pa);
-    pa += 8;
-
-    uint64_t shader_args[8];
-
-    for (uint32_t i = 0; i < 8; i++) {
-        shader_args[i] = m_vram->read<uint64_t>(pa);
-        pa += 8;
-    }
-
-    program_t shader;
-    shader.pointer = shader_pointer;
-    shader.stack_pointer = shader_stack_pointer;
-    shader.argsize = shader_argsize;
-    for (uint32_t i = 0; i < 8; i++) {
-        shader.args[i] = shader_args[i];
-    }
-
-    uint32_t range_x = m_vram->read<uint32_t>(pa);
-
-    m_noc->write_message_size((range_x - 1) / 16 + 1);
-
-    uint32_t tcount = range_x;
+    uint32_t tcount = splitx;
     uint32_t start = 0;
     uint32_t sm_id = 0;
 
@@ -97,7 +70,7 @@ void command_processor::command_split_1d(uint64_t cmds) {
         message msg = {};
 
         msg.target = sm_id;
-        msg.shader = shader;
+        msg.shader = prog;
         msg.shader.stack_pointer += sm_id * SM_STACK_SIZE;
         msg.start = start;
         if (tcount > 16) {
@@ -111,73 +84,6 @@ void command_processor::command_split_1d(uint64_t cmds) {
         start += 16;
         tcount = tcount - msg.count;
         sm_id = (sm_id + 1) % SM_NUM;
-    }
-}
-
-void command_processor::command_split_2d(uint64_t cmds) {
-    uint64_t pa = m_mmu->find_pa(cmds);
-
-    // rvgpu_command_type type
-    pa += 8;
-
-    uint64_t shader_pointer = m_vram->read<uint64_t>(pa);
-    pa += 8;
-
-    uint64_t shader_stack_pointer = m_vram->read<uint64_t>(pa);
-    pa += 8;
-
-    uint32_t shader_argsize = m_vram->read<uint32_t>(pa);
-    pa += 8;
-
-    uint64_t shader_args[8];
-
-    for (uint32_t i = 0; i < 8; i++) {
-        shader_args[i] = m_vram->read<uint64_t>(pa);
-        pa += 8;
-    }
-
-    program_t shader;
-    shader.pointer = shader_pointer;
-    shader.stack_pointer = shader_stack_pointer;
-    shader.argsize = shader_argsize;
-    for (uint32_t i = 0; i < 8; i++) {
-        shader.args[i] = shader_args[i];
-    }
-
-    uint32_t range_x = m_vram->read<uint32_t>(pa);
-    pa += 4;
-    uint32_t range_y = m_vram->read<uint32_t>(pa);
-
-    m_noc->write_message_size(range_y * ((range_x - 1) / 16 + 1));
-
-    uint32_t tcount_x = range_x;
-    uint32_t tcount_y = range_y;
-    uint32_t sm_id = 0;
-
-    while (tcount_y > 0) {
-        tcount_x = range_x;
-        sm_id = 0;
-
-        while(tcount_x > 0) {
-            message msg = {};
-
-            msg.target = sm_id;
-            msg.shader = shader;
-            msg.shader.stack_pointer += sm_id * SM_STACK_SIZE;
-            msg.start = (range_y - tcount_y) * range_x + (range_x - tcount_x);
-            if (tcount_x > 16) {
-                msg.count = 16;
-            } else {
-                msg.count = tcount_x;
-            }
-
-            m_noc->write_message(sm_id, msg);
-
-            tcount_x = tcount_x - msg.count;
-            sm_id = (sm_id + 1) % SM_NUM;
-        }
-
-        tcount_y = tcount_y - 1;
     }
 }
 

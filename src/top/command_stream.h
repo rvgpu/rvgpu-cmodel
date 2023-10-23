@@ -25,28 +25,25 @@
 
 #include  <stdint.h>
 
-typedef enum {
-    RVGPU_COMMAND_TYPE_1D = 1,
-    RVGPU_COMMAND_TYPE_2D,
-    RVGPU_COMMAND_TYPE_END,
-} rvgpu_command_type;
+#define PACKED __attribute__((aligned(8)))
 
-typedef struct {
-    uint64_t pointer;
-    uint64_t stack_pointer;
-    uint32_t argsize;
-    uint64_t args[8];
+typedef PACKED struct {
+    uint64_t        pointer:64;
+    uint64_t        stack_pointer:64;
+    uint64_t        argsize:64;
+    uint64_t        args[8];
 } program_t;
 
-typedef struct {
-    rvgpu_command_type type;
-    program_t shader;
+typedef PACKED struct {
+    uint64_t        x:32;
+    uint64_t        y:32;
+    uint64_t        z:32;
+    uint64_t        res:32;
+} dimension_t;
 
-    struct {
-        uint32_t x;
-        uint32_t y;
-        uint32_t z;
-    } range;
+typedef PACKED struct {
+    dimension_t     dim;
+    program_t       program;
 } rvgpu_command;
 
 typedef struct {

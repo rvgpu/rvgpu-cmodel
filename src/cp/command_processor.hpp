@@ -40,6 +40,5 @@ private:
     vram *m_vram;
     mmu *m_mmu;
     noc *m_noc;
-    void command_split_1d(uint64_t cmds);
-    void command_split_2d(uint64_t cmds);
+    void command_split_1d(uint32_t splitx, program_t program);
 };
