@@ -9,6 +9,7 @@ function build()
         -B ${workspace}/build \
         -G Ninja \
         -DCMAKE_INSTALL_PREFIX=${install_dir} \
+        -DBUILD_PACKAGE=on \
         -DCMAKE_BUILD_TYPE=release
 
     if [ $? -ne 0 ]; then
