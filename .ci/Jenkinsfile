@@ -2,13 +2,23 @@ pipeline {
     agent any
 
     stages {
+        stage('SetUp') {
+            steps {
+                echo 'Set Up'
+                sh "git clean -dfx"
+                sh "docker image build -t rvgpu/build-csim:latest .ci/"
+            }
+        }
         stage('Build') {
             steps {
-                echo 'Build docs to html files'
-                sh "git clean -dfx"
-                sh "cmake -G Ninja -DCMAKE_BUILD_TYPE=release -B build"
-                sh "cmake --build build"
-                sh "ctest --test-dir build"
+                echo 'Build and run unit test on docker'
+                sh 'docker run --rm -v .:/source -u ${id -u}:${id -g} rvgpu/build-csim /source/.ci/release.sh'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'TODO'
+                sh 'ls'
             }
         }
     }
