@@ -12,7 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Build and run unit test on docker'
-                sh 'docker run --rm -v .:/source -u ${id -u}:${id -g} rvgpu/build-csim /source/.ci/release.sh'
+                sh 'docker run --rm -v .:/source -u $(id -u):$(id -g) rvgpu/build-csim /source/.ci/release.sh'
             }
         }
         stage('Deploy') {
