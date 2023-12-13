@@ -1,4 +1,4 @@
-prefix=@CMAKE_INSTALL_PREFIX@
+prefix=@PKG_INSTALL_DIR@
 libdir=${prefix}/lib
 includedir=${prefix}/include
 
