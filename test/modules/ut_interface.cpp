@@ -1,25 +1,25 @@
 #include <gtest/gtest.h>
 #include <string>
 
-#include "module/interface.hpp"
+#include "modules/interface.hpp"
 
 struct messages {
     uint32_t idata;
     float fdata;
 };
 
-class module_A : public rmodule {
+class module_A : public modules {
 public:
-    module_A(std::string name): rmodule(name) {
+    module_A(std::string name): modules(name) {
         io_a = new interface<struct messages>(this);
     }
 
     interface<struct messages> *io_a;
 };
 
-class module_B : public rmodule {
+class module_B : public modules {
 public:
-    module_B(std::string name): rmodule(name) {
+    module_B(std::string name): modules(name) {
         io_b = new interface<struct messages>(this);
     }
 

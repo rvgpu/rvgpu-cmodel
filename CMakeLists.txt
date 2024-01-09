@@ -12,9 +12,11 @@ else()
     set(PACKAGE_INSTALL_DIR ${CMAKE_INSTALL_PREFIX})
 endif()
 
-add_subdirectory(softfloat)
-
 enable_testing()
+
+add_subdirectory(softfloat)
+add_subdirectory(modules)
+
 add_subdirectory(src)
 add_subdirectory(libdrm)
 add_subdirectory(test)

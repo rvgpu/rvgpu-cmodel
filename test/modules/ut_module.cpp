@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "module/module.hpp"
-#include "module/interface.hpp"
+#include "modules/modules.hpp"
+#include "modules/interface.hpp"
 
 struct messages {
     uint32_t idata;
@@ -9,9 +9,9 @@ struct messages {
     float res;
 };
 
-class module_A : public rmodule {
+class module_A : public modules {
 public:
-    module_A(std::string name) : rmodule(name) {
+    module_A(std::string name) : modules(name) {
         io_m = new interface<messages>(this);
     }
 
@@ -30,9 +30,9 @@ public:
     float res;
 };
 
-class module_B : public rmodule {
+class module_B : public modules {
 public:
-    module_B(std::string name) : rmodule(name) {
+    module_B(std::string name) : modules(name) {
         io_s = new interface<messages>(this);
     }
 

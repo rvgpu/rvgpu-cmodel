@@ -2,12 +2,12 @@
 #include <cstdio>
 #include <queue>
 
-#include "module/module.hpp"
+#include "modules.hpp"
 
 template <typename T>
 class interface {
 public:
-    interface(rmodule *m) {
+    interface(modules *m) {
         m_m = m;
     }
 
@@ -35,5 +35,5 @@ protected:
     interface *m_connected;
     std::queue<T> data;
 
-    rmodule *m_m;
+    modules *m_m;
 };
