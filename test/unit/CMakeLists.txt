@@ -1,3 +1,4 @@
+include_directories(${project_top_path})
 include_directories(${project_top_path}/src)
 include_directories(${project_top_path}/test/unit)
 
