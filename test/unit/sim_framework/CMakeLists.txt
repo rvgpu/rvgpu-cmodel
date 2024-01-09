@@ -3,3 +3,4 @@ function(rvsim_ut_sim_framework testname)
 endfunction()
 
 rvsim_ut_sim_framework(interface)
+rvsim_ut_sim_framework(module)

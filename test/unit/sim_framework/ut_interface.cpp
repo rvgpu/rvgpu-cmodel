@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <string>
 
 #include "module/interface.hpp"
 
@@ -7,27 +8,27 @@ struct messages {
     float fdata;
 };
 
-class module_A {
+class module_A : public rmodule {
 public:
-    module_A() {
-        io_a = new interface<struct messages>();
+    module_A(std::string name): rmodule(name) {
+        io_a = new interface<struct messages>(this);
     }
 
     interface<struct messages> *io_a;
 };
 
-class module_B {
+class module_B : public rmodule {
 public:
-    module_B() {
-        io_b = new interface<struct messages>();
+    module_B(std::string name): rmodule(name) {
+        io_b = new interface<struct messages>(this);
     }
 
     interface<struct messages> *io_b;
 };
 
 TEST(simulator_framework_interface, connect_ok) {
-    module_A *a = new module_A();
-    module_B *b = new module_B();
+    module_A *a = new module_A("module A");
+    module_B *b = new module_B("module B");
     a->io_a->connect_to(b->io_b);
 
     a->io_a->write(messages {.idata = 0x1234, .fdata = 0.1234f});

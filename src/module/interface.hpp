@@ -2,13 +2,18 @@
 #include <cstdio>
 #include <queue>
 
+#include "module/module.hpp"
+
 template <typename T>
 class interface {
 public:
-    interface() {}
+    interface(rmodule *m) {
+        m_m = m;
+    }
 
     void write(T data) {
         m_connected->data.push(data);
+        m_connected->m_m->signal();
     }
 
     T read() {
@@ -29,4 +34,6 @@ protected:
 
     interface *m_connected;
     std::queue<T> data;
+
+    rmodule *m_m;
 };
