@@ -22,56 +22,25 @@
  */
 
 #include <cstdio>
-
 #include "common/utils.hpp"
+#include "rvcore/rvcore.hpp"
 #include "simt.hpp"
 #include "rvcore/encoding.hpp"
 
 simt::simt(vram *rvgpu_vram, mmu *rvgpu_mmu) {
-    m_reg = new register_file();
-    m_warp = new warp(rvgpu_vram, rvgpu_mmu, m_reg);
-    m_ls = new load_store(rvgpu_vram, rvgpu_mmu);
-    for (uint32_t i=0; i<WARP_THREAD_N; i++) {
-        m_alu[i] = new alu(i);
-        m_fpu[i] = new fpu(i);
-    }
+    m_core = new riskvcore(rvgpu_vram, rvgpu_mmu);
+    m_warp = new warp(rvgpu_vram, rvgpu_mmu, m_core);
 }
 
 void simt::setup(message msg) {
     m_warp->setup(msg);
 }
 
-void simt::issue_single(inst_issue to_issue, uint32_t tid) {
-    writeback_t wb = {};
-    switch (to_issue.type) {
-        case encoding::INST_TYPE_ALU: {
-            wb = m_alu[tid]->run(to_issue);
-            break;
-        }
-        case encoding::INST_TYPE_FPU: {
-            wb = m_fpu[tid]->run(to_issue);
-            break;
-        }
-        case encoding::INST_TYPE_LS: {
-            wb = m_ls->run(to_issue);
-            break;
-        }
-        case encoding::INST_TYPE_NOP: {
-            break;
-        }
-        default:
-            RVGPU_ERROR_PRINT("Instruction ERROR: %x\n", to_issue.bits);
-            break;
-    }
-
-    m_reg->write(tid, wb.rid, wb.wdata);
-}
-
 void simt::issue(inst_issue to_issue) {
     FOREACH_WARP_THREAD {
         if (to_issue.lanes & (1 << thread)) {
-            m_reg->register_stage(thread, to_issue);
-            issue_single(to_issue, thread);
+            m_core->get_operand(thread, to_issue);
+            m_core->exe(to_issue, thread);
         }
     }
 }
@@ -79,7 +48,6 @@ void simt::issue(inst_issue to_issue) {
 void simt::run() {
     while (!m_warp->stop()) {
         inst_issue to_issue = m_warp->schedule();
-
         issue(to_issue);
     }
 }

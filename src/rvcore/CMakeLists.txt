@@ -11,6 +11,9 @@ set(RVCORE_FILES
     branch.hpp
     decompress.cpp
     decompress.hpp
+    rvcore.hpp
+    rvcore.cpp
+    register_file.hpp
     )
 
 add_library(rvcore OBJECT ${RVCORE_FILES})

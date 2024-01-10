@@ -53,7 +53,7 @@ public:
         to_issue.currpc = pc;
 
         // Register Stage
-        register_stage(to_issue);
+        get_operand(to_issue);
 
         // Execuate Instruction
         switch (to_issue.type) {
@@ -97,7 +97,7 @@ private:
     uint64_t m_reg[64]={};
     reg_t m_sreg[14]={};
 
-    void register_stage(inst_issue &to_issue) {
+    void get_operand(inst_issue &to_issue) {
         to_issue.rs1  = m_reg[to_issue.rs1_id];
         to_issue.rs2  = m_reg[to_issue.rs2_id];
         to_issue.rs3  = m_reg[to_issue.rs3_id];

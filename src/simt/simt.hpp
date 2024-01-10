@@ -28,11 +28,10 @@
 #include "vram/vram.hpp"
 #include "mmu/mmu.hpp"
 #include "warp.hpp"
-#include "register_file.hpp"
-#include "rvcore/alu.hpp"
-#include "rvcore/fpu.hpp"
 #include "rvcore/load_store.hpp"
 #include "rvcore/decoder.hpp"
+
+class mcore;
 
 // A simt-x processor
 class simt {
@@ -43,13 +42,8 @@ public:
 
 private:
     warp            *m_warp;
-    register_file   *m_reg;
-    alu             *m_alu[WARP_THREAD_N];
-    fpu             *m_fpu[WARP_THREAD_N];
-    load_store      *m_ls;
-
-    uint64_t        pc;
+    mcore           *m_core;
 
     void issue(inst_issue inst);
-    void issue_single(inst_issue inst, uint32_t tid);
+
 };

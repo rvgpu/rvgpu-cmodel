@@ -34,9 +34,11 @@
 #include "rvcore/inst_issue.hpp"
 #include "rvcore/decoder.hpp"
 #include "rvcore/branch.hpp"
-#include "register_file.hpp"
+#include "rvcore/register_file.hpp"
+
 
 class ut_branch;
+class mcore;
 
 struct warpstore {
     uint64_t pc;
@@ -45,7 +47,7 @@ struct warpstore {
 
 class warp {
 public:
-    warp (vram *rvgpu_vram, mmu *simt_mmu, register_file *reg);
+    warp (vram *rvgpu_vram, mmu *simt_mmu, mcore *c);
 
     void setup(message msg);
     bool stop();
@@ -58,7 +60,7 @@ private:
     register_file *m_reg;
     decoder *m_dec;
     branch *m_branch;
-
+    mcore   *m_core;
     uint64_t startpc;
     uint64_t pc;
     uint64_t npc[WARP_THREAD_N];

@@ -36,7 +36,7 @@ public:
         }
     };
 
-    void register_stage(uint32_t tid, inst_issue &to_issue) {
+    void get_operand(uint32_t tid, inst_issue &to_issue) {
         to_issue.rs1 = read(tid, to_issue.rs1_id);
         to_issue.rs2 = read(tid, to_issue.rs2_id);
         to_issue.rs3 = read(tid, to_issue.rs3_id);

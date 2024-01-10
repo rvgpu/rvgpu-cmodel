@@ -28,11 +28,13 @@
 #include "common/regid.hpp"
 #include "common/debug.hpp"
 #include "warp.hpp"
+#include "rvcore/rvcore.hpp"
 
-warp::warp(vram *rvgpu_vram, mmu *simt_mmu, register_file *reg) {
+warp::warp(vram *rvgpu_vram, mmu *simt_mmu, mcore *c) {
     m_vram = rvgpu_vram;
     m_mmu = simt_mmu;
-    m_reg = reg;
+    //m_reg = reg;
+    m_core = c;
     m_dec = new decoder();
     m_branch = new branch();
 }
@@ -48,20 +50,9 @@ void warp::setup(message msg) {
         if (i < msg.count) {
             lanes.set(i);
             stops.reset(i);
-
-            m_reg->write(i, uint64_t(reg::s0), 0);
-            m_reg->write(i, uint64_t(reg::ra), 0);
-            m_reg->sreg_write(i, special_reg::t0, msg.start + i);
-
-            RVGPU_DEBUG_PRINT("[SP][WARP0.%d] setup sp: 0x%lx\n", i, msg.shader.stack_pointer + 0x1000 * i);
-            m_reg->write(i, uint64_t(reg::sp), msg.shader.stack_pointer + 0x1000 * i);
-
-            for (uint32_t argi=0; argi<msg.shader.argsize; argi++) {
-                RVGPU_DEBUG_PRINT("[SP][WARP0.%d] setup a%d(arg[%d]): 0x%lx\n", i, argi, argi, msg.shader.args[argi]);
-                m_reg->write(i, uint64_t(reg::a0) + argi, msg.shader.args[argi]);
-            }
         }
     }
+    m_core->register_setup(msg);
 
     RVGPU_DEBUG_PRINT("[SP][WARP0] setup lanes: %lx\n", lanes.to_ulong());
     RVGPU_DEBUG_PRINT("[SP][WARP0] setup stops: %lx\n", stops.to_ulong());
@@ -82,9 +73,9 @@ inst_issue warp::schedule() {
     if (to_issue.type == encoding::INST_TYPE_BRANCH) {
         FOREACH_WARP_THREAD {
             if (lanes.test(thread)) {
-                m_reg->register_stage(thread, to_issue);
+                m_core->get_operand(thread, to_issue);
                 writeback_t wb = m_branch->run(to_issue, npc[thread]);
-                m_reg->write(thread, wb.rid, wb.wdata);
+                m_core->write_back(thread, wb);
             }
         }
 
