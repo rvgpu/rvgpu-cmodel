@@ -12,7 +12,7 @@ class riskvcore : public mcore {
 public:
     riskvcore(vram *rvgpu_vram, mmu *rvgpu_mmu);
     ~riskvcore();
-    void exe(inst_issue to_issue, uint32_t tid) override;
+    writeback_t exe(inst_issue to_issue, uint32_t tid) override;
 
     void register_setup(message msg) override;
     void get_operand(uint32_t tid, inst_issue &to_issue) override;

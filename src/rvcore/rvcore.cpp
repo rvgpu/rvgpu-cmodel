@@ -18,7 +18,7 @@ riskvcore::~riskvcore() {
     }
 }
 
-void riskvcore::exe(inst_issue to_issue, uint32_t tid) {
+writeback_t riskvcore::exe(inst_issue to_issue, uint32_t tid) {
     writeback_t wb = {};
         switch (to_issue.type) {
             case encoding::INST_TYPE_ALU: {
@@ -41,7 +41,7 @@ void riskvcore::exe(inst_issue to_issue, uint32_t tid) {
                 break;
         }
 
-    m_reg->write(tid, wb.rid, wb.wdata);
+    return wb;
 }
 
 void riskvcore::register_setup(message msg) {

@@ -40,7 +40,8 @@ void simt::issue(inst_issue to_issue) {
     FOREACH_WARP_THREAD {
         if (to_issue.lanes & (1 << thread)) {
             m_core->get_operand(thread, to_issue);
-            m_core->exe(to_issue, thread);
+            writeback_t res = m_core->exe(to_issue, thread);
+            m_core->write_back(thread, res);
         }
     }
 }
