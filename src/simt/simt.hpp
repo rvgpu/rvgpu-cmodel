@@ -44,6 +44,6 @@ private:
     warp            *m_warp;
     mcore           *m_core;
 
-    void issue(inst_issue inst);
+    void issue(warp_status warp);
 
 };

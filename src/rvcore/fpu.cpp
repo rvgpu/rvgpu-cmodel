@@ -35,7 +35,7 @@ fpu::fpu(uint32_t id) {
     m_id = id;
 }
 
-writeback_t fpu::run(inst_issue instruction) {
+writeback_t fpu::run(rvinst_issue instruction) {
     writeback_t ret = {};
 
     inst = instruction;

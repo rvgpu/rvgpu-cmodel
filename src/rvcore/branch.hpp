@@ -5,6 +5,5 @@
 class branch {
 public:
     branch();
-
-    writeback_t run(inst_issue to_issue, uint64_t &pc_increment);
+    writeback_t run(rvinst_issue to_issue, uint64_t &pc_increment);
 };

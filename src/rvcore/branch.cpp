@@ -30,7 +30,7 @@ branch::branch() {
 
 }
 
-writeback_t branch::run(inst_issue inst, uint64_t &pc_increment) {
+writeback_t branch::run(rvinst_issue inst, uint64_t &pc_increment) {
     writeback_t res = {0, 0};
     uint64_t pc = inst.currpc;
     uint8_t pc_step = IS_COMPRESSED_INST(inst.bits) ? 2 : 4;

@@ -13,10 +13,10 @@ class riskvcore : public mcore {
 public:
     riskvcore(vram *rvgpu_vram, mmu *rvgpu_mmu);
     ~riskvcore();
-    writeback_t exe(inst_issue to_issue, uint32_t tid) override;
-    inst_issue decode(uint32_t inst_code) override;
+    writeback_t exe(inst_issue* to_issue, uint32_t tid) override;
+    std::unique_ptr<inst_issue> decode(uint32_t inst_code) override;
     void register_setup(message msg) override;
-    void get_operand(uint32_t tid, inst_issue &to_issue) override;
+    void get_operand(uint32_t tid, inst_issue* to_issue) override;
     void write_back(uint32_t tid, writeback_t data) override;
     void set_reg(uint32_t tid, uint32_t regid, reg_t data);
     reg_t get_reg(uint32_t tid, uint32_t regid);

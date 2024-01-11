@@ -20,20 +20,19 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-
-#pragma once
-
-#include "vram/vram.hpp"
-#include "mmu/mmu.hpp"
-#include "inst_issue.hpp"
-
-class load_store {
-public:
-    load_store(vram *rvgpu_vram, mmu *simt_mmu);
-
-    writeback_t run(rvinst_issue inst);
-
-private:
-    vram *m_vram;
-    mmu *m_mmu;
+#ifndef RVGSIM_TYPE_HPP
+#define RVGSIM_TYPE_HPP
+struct inst_issue{
+    uint64_t lanes;
+    uint32_t bits;
+    uint64_t currpc;
+    virtual ~inst_issue()=default;
 };
+
+struct writeback_t {
+    uint64_t rid;
+    uint64_t wdata;
+    uint64_t pc;
+};
+
+#endif //RVGSIM_TYPE_HPP

@@ -22,39 +22,40 @@ riskvcore::~riskvcore() {
     }
 }
 
-writeback_t riskvcore::exe(inst_issue to_issue, uint32_t tid) {
+writeback_t riskvcore::exe(inst_issue* issue, uint32_t tid) {
+    auto to_issue = dynamic_cast<rvinst_issue*>(issue);
     writeback_t wb = {};
-    bool is_compressed = IS_COMPRESSED_INST(to_issue.bits);
+    bool is_compressed = IS_COMPRESSED_INST(to_issue->bits);
     uint64_t pc_inc = 0;
-    switch (to_issue.type) {
+    switch (to_issue->type) {
         case encoding::INST_TYPE_ALU: {
-            wb = m_alu[tid]->run(to_issue);
+            wb = m_alu[tid]->run(*to_issue);
             break;
         }
         case encoding::INST_TYPE_FPU: {
-            wb = m_fpu[tid]->run(to_issue);
+            wb = m_fpu[tid]->run(*to_issue);
             break;
         }
         case encoding::INST_TYPE_LS: {
-            wb = m_ls->run(to_issue);
+            wb = m_ls->run(*to_issue);
             break;
         }
         case encoding::INST_TYPE_BRANCH: {
-            wb = m_branch->run(to_issue, pc_inc);
+            wb = m_branch->run(*to_issue, pc_inc);
             break;
         }
         case encoding::INST_TYPE_NOP: {
             break;
         }
         default:
-            RVGPU_ERROR_PRINT("Instruction ERROR: %x\n", to_issue.bits);
+            RVGPU_ERROR_PRINT("Instruction ERROR: %x\n", to_issue->bits);
             break;
     }
 
     if(pc_inc) {
-        wb.pc = to_issue.currpc + pc_inc;
+        wb.pc = to_issue->currpc + pc_inc;
     }else {
-        wb.pc = to_issue.currpc + (is_compressed ? 2: 4);
+        wb.pc = to_issue->currpc + (is_compressed ? 2: 4);
     }
     return wb;
 }
@@ -77,14 +78,15 @@ void riskvcore::register_setup(message msg) {
     }
 }
 
-void riskvcore::get_operand(uint32_t tid, inst_issue &to_issue) {
-    to_issue.rs1 = m_reg->read(tid, to_issue.rs1_id);
-    to_issue.rs2 = m_reg->read(tid, to_issue.rs2_id);
-    to_issue.rs3 = m_reg->read(tid, to_issue.rs3_id);
-    to_issue.frs1 = m_reg->read(tid, to_issue.frs1_id);
-    to_issue.frs2 = m_reg->read(tid, to_issue.frs2_id);
-    to_issue.frs3 = m_reg->read(tid, to_issue.frs3_id);
-    to_issue.sreg = m_reg->sreg_read(tid, to_issue.sreg_id);
+void riskvcore::get_operand(uint32_t tid, inst_issue* issue) {
+    auto to_issue = dynamic_cast<rvinst_issue*>(issue);
+    to_issue->rs1 = m_reg->read(tid, to_issue->rs1_id);
+    to_issue->rs2 = m_reg->read(tid, to_issue->rs2_id);
+    to_issue->rs3 = m_reg->read(tid, to_issue->rs3_id);
+    to_issue->frs1 = m_reg->read(tid, to_issue->frs1_id);
+    to_issue->frs2 = m_reg->read(tid, to_issue->frs2_id);
+    to_issue->frs3 = m_reg->read(tid, to_issue->frs3_id);
+    to_issue->sreg = m_reg->sreg_read(tid, to_issue->sreg_id);
 }
 
 void riskvcore::write_back(uint32_t tid, writeback_t data) {
@@ -105,6 +107,7 @@ void riskvcore::set_sreg(uint32_t tid, special_reg regid, reg_t data) {
     m_reg->sreg_write(tid,regid,data);
 }
 
-inst_issue riskvcore::decode(uint32_t inst_code) {
-    return m_decoder->decode_inst(inst_code);
+std::unique_ptr<inst_issue> riskvcore::decode(uint32_t inst_code) {
+    auto res = m_decoder->decode_inst(inst_code);
+    return std::make_unique<rvinst_issue>(res);
 }

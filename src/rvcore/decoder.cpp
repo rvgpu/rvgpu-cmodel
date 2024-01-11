@@ -44,7 +44,7 @@ decoder::decoder() {
     m_decompress = new decompress();
 }
 
-void decoder::fill_issues(inst_issue &to_issue) {
+void decoder::fill_issues(rvinst_issue &to_issue) {
     to_issue.rd = xget(7, 5);
     to_issue.rs1_id = xget(15, 5);
     to_issue.rs2_id = xget(20, 5);
@@ -65,8 +65,8 @@ void decoder::fill_issues(inst_issue &to_issue) {
     to_issue.sreg_id = (special_reg)xget(20, 4);
 }
 
-inst_issue decoder::decode_inst(uint32_t instcode) {
-    inst_issue to_issue;
+rvinst_issue decoder::decode_inst(uint32_t instcode) {
+    rvinst_issue to_issue = {};
     to_issue.bits = instcode;
 
     // translate rvc to rv

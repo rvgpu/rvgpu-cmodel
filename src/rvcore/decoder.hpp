@@ -33,7 +33,7 @@ class decoder {
 public:
     decoder();
 
-    inst_issue decode_inst(uint32_t instcode);
+    rvinst_issue decode_inst(uint32_t instcode);
 
 private:
     decompress *m_decompress;
@@ -41,7 +41,7 @@ private:
     [[nodiscard]] uint64_t xget(int lo, int len) const { return (bits >> lo) & ((uint64_t(1) << len) - 1); }
     [[nodiscard]] uint64_t xsget(int lo, int len) const { return int64_t(bits) << (64 - lo - len) >> (64 - len); }
     [[nodiscard]] uint64_t imm_sign() { return xsget(31, 1); }
-    void fill_issues(inst_issue &to_issue);
+    void fill_issues(rvinst_issue &to_issue);
 
     uint32_t bits;
 

@@ -55,25 +55,25 @@ void warp::setup(message msg) {
     RVGPU_DEBUG_PRINT("[SP][WARP0] setup stops: %lx\n", stops.to_ulong());
 }
 
-inst_issue warp::schedule() {
+warp_status warp::schedule() {
     uint64_t pc_pa = m_mmu->find_pa(pc);
     auto instcode = m_vram->read<uint32_t>(pc_pa);
 
     RVGPU_DEBUG_PRINT("[%06lx] 0x%08x ==> \n", (uint64_t(pc) - uint64_t(startpc)), instcode);
 
-    inst_issue to_issue = {};
+    warp_status warp_issued = {};
 
-    to_issue.bits = instcode;
-    to_issue.lanes = lanes.to_ulong();
-    to_issue.currpc = pc;
+    warp_issued.bits = instcode;
+    warp_issued.lanes = lanes;
+    warp_issued.pc = pc;
 
-    return to_issue;
+    return warp_issued;
 }
 
-warpstore warp::diverage() {
-    warpstore split0 = {0};
-    warpstore split1 = {0};
-    warpstore pop = {0};
+warp_status warp::diverage() {
+    warp_status split0 = {0};
+    warp_status split1 = {0};
+    warp_status pop = {0};
 
     FOREACH_WARP_THREAD {
         if (lanes.test(thread)) {
@@ -112,7 +112,7 @@ warpstore warp::diverage() {
     }
 }
 
-bool warp::merge_lanes(struct warpstore &w0, struct warpstore &w1) {
+bool warp::merge_lanes(struct warp_status &w0, struct warp_status &w1) {
     auto stopflip = stops;
     stopflip.flip();
 
@@ -145,7 +145,7 @@ bool warp::stop() {
         if (warpstack.empty()) {
             return true;
         } else {
-            warpstore torun = warpstack.top();
+            warp_status torun = warpstack.top();
             warpstack.pop();
             lanes = torun.lanes;
             pc = torun.pc;

@@ -31,7 +31,7 @@ alu::alu(uint32_t id) {
     xlen = 64;
 }
 
-writeback_t alu::run(inst_issue instruction) {
+writeback_t alu::run(rvinst_issue instruction) {
     writeback_t ret = {};
 
     inst = instruction;

@@ -73,15 +73,7 @@ protected:
         single_inst[0] = inst;
         m_cpu->set_reg(0, static_cast<uint32_t>(in1.first), in1.second);
         m_cpu->set_reg(0, static_cast<uint32_t>(in2.first), in2.second);
-
-        //Decode inst
-        inst_issue to_issue = m_cpu->decode(inst);
-        m_cpu->get_operand(0, to_issue);
-        to_issue.currpc = GetInstAddr();
-        // Execuate one instruction
-        auto res = m_cpu->exe(to_issue, 0);
-        m_cpu->write_back(0, res);
-        npc = res.pc;
+        exe(inst);
     }
 
     void test_instruction(uint32_t inst, IN in1, IN in2, IN in3, RES reference) {
@@ -90,16 +82,7 @@ protected:
         m_cpu->set_reg(0, static_cast<uint32_t>(in1.first), in1.second);
         m_cpu->set_reg(0, static_cast<uint32_t>(in2.first), in2.second);
         m_cpu->set_reg(0, static_cast<uint32_t>(in3.first), in3.second);
-
-        //Decode inst
-        inst_issue to_issue = m_cpu->decode(inst);
-        m_cpu->get_operand(0, to_issue);
-        to_issue.currpc = GetInstAddr();
-        // Execuate one instruction
-        auto res = m_cpu->exe(to_issue, 0);
-        m_cpu->write_back(0, res);
-        npc = res.pc;
-
+        exe(inst);
         // Check Result
         check_register(reference);
     }
@@ -108,16 +91,7 @@ protected:
         single_inst[0] = inst;
         m_cpu->set_reg(0, static_cast<uint32_t>(in1.first), in1.second);
         m_cpu->set_reg(0, static_cast<uint32_t>(in2.first), in2.second);
-
-        //Decode inst
-        inst_issue to_issue = m_cpu->decode(inst);
-        m_cpu->get_operand(0, to_issue);
-        to_issue.currpc = GetInstAddr();
-        // Execuate one instruction
-        auto res = m_cpu->exe(to_issue, 0);
-        m_cpu->write_back(0, res);
-        npc = res.pc;
-
+        exe(inst);
         // Check Result
         check_register(reference);
     }
@@ -125,32 +99,14 @@ protected:
         // Initialize Instruction and register
         single_inst[0] = inst;
         m_cpu->set_reg(0, static_cast<uint32_t>(in.first), in.second);
-
-        //Decode inst
-        inst_issue to_issue = m_cpu->decode(inst);
-        m_cpu->get_operand(0, to_issue);
-        to_issue.currpc = GetInstAddr();
-        // Execuate one instruction
-        auto res = m_cpu->exe(to_issue, 0);
-        m_cpu->write_back(0, res);
-        npc = res.pc;
-
+        exe(inst);
         // Check Result
         check_register(reference);
     }
     void test_instruction(uint32_t inst, RES reference) {
         // Initialize Instruction
         single_inst[0] = inst;
-
-        //Decode inst
-        inst_issue to_issue = m_cpu->decode(inst);
-        m_cpu->get_operand(0, to_issue);
-        to_issue.currpc = GetInstAddr();
-        // Execuate one instruction
-        auto res = m_cpu->exe(to_issue, 0);
-        m_cpu->write_back(0, res);
-        npc = res.pc;
-
+        exe(inst);
         // Check Result
         check_register(reference);
     }
@@ -166,6 +122,16 @@ private:
     uint32_t single_inst[1];
     uint64_t stack_pointer;
 
+    void exe(uint32_t inst) {
+        //Decode inst
+        auto to_issue = m_cpu->decode(inst);
+        m_cpu->get_operand(0, to_issue.get());
+        to_issue->currpc = GetInstAddr();
+        // Execuate one instruction
+        auto res = m_cpu->exe(to_issue.get(), 0);
+        m_cpu->write_back(0, res);
+        npc = res.pc;
+    }
     void check_register(RES reference) {
         uint32_t regid = static_cast<uint32_t>(reference.first);
         if (regid <= 31) {

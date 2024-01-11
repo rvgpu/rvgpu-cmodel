@@ -21,7 +21,6 @@
  * IN THE SOFTWARE.
  */
 
-#include <cstdio>
 #include "common/utils.hpp"
 #include "rvcore/rvcore.hpp"
 #include "simt.hpp"
@@ -36,13 +35,16 @@ void simt::setup(message msg) {
     m_warp->setup(msg);
 }
 
-void simt::issue(inst_issue to_issue) {
-    m_core->decode(to_issue.bits);
+void simt::issue(warp_status warp) {
+    auto to_issue = m_core->decode(warp.bits);
+    to_issue->bits = warp.bits;
+    to_issue->currpc = warp.pc;
+    to_issue->lanes = warp.lanes.to_ulong();
 
     FOREACH_WARP_THREAD {
-        if (to_issue.lanes & (1 << thread)) {
-            m_core->get_operand(thread, to_issue);
-            writeback_t res = m_core->exe(to_issue, thread);
+        if (to_issue->lanes & (1 << thread)) {
+            m_core->get_operand(thread, to_issue.get());
+            writeback_t res = m_core->exe(to_issue.get(), thread);
             m_warp->update_status(thread, res.pc);
             m_core->write_back(thread, res);
         }
@@ -53,7 +55,7 @@ void simt::issue(inst_issue to_issue) {
 
 void simt::run() {
     while (!m_warp->stop()) {
-        inst_issue to_issue = m_warp->schedule();
+        auto to_issue = m_warp->schedule();
         issue(to_issue);
     }
 }

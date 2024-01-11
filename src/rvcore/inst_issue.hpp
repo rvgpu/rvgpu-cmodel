@@ -3,13 +3,11 @@
 #include <cstdint>
 #include "rvmacro.h"
 #include "common/regid.hpp"
+#include "common/type.hpp"
 
-typedef struct {
-    uint64_t lanes;
-    uint32_t bits;
+struct rvinst_issue : inst_issue{
     uint32_t code;
     uint32_t type;
-    uint64_t currpc;
     int64_t jpc;
 
     uint64_t rs1_id;
@@ -36,10 +34,4 @@ typedef struct {
     int64_t sb_imm;
     int64_t uj_imm;
     uint64_t rm;
-} inst_issue;
-
-typedef struct {
-    uint64_t rid;
-    uint64_t wdata;
-    uint64_t pc;
-} writeback_t;
+} ;

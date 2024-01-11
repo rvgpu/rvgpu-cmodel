@@ -31,10 +31,10 @@ class fpu {
 public:
     fpu(uint32_t id);
 
-    writeback_t run(inst_issue instruction);
+    writeback_t run(rvinst_issue instruction);
 private:
     uint32_t m_id;
-    inst_issue inst;
+    rvinst_issue inst;
     uint32_t fcsr = 0;  // Floating-Point Control and Status Register (FCSR)
 
     uint32_t get_rounding_mode();

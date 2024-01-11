@@ -33,7 +33,7 @@ load_store::load_store(vram *rvgpu_vram, mmu *simt_mmu) {
     m_mmu = simt_mmu;
 }
 
-writeback_t load_store::run(inst_issue inst) {
+writeback_t load_store::run(rvinst_issue inst) {
     writeback_t result = {0, 0};
 
     switch (inst.code) {

@@ -36,13 +36,13 @@
 #include "rvcore/branch.hpp"
 #include "rvcore/register_file.hpp"
 
-
-class ut_branch;
 class mcore;
 
-struct warpstore {
+struct warp_status {
     uint64_t pc;
     std::bitset<WARP_THREAD_N> lanes;
+    //fixme: inst bits should load to icache
+    uint32_t bits;
 };
 
 class warp {
@@ -53,8 +53,8 @@ public:
     bool stop();
     void update_status(uint32_t tid, uint64_t thread_pc);
     void update_status(uint64_t next_pc, std::bitset<WARP_THREAD_N> active_lanes);
-    inst_issue schedule();
-    warpstore diverage();
+    warp_status schedule();
+    warp_status diverage();
 
 private:
     vram *m_vram;
@@ -63,11 +63,9 @@ private:
     uint64_t startpc;
     uint64_t pc;
     uint64_t npc[WARP_THREAD_N];
-    std::stack<struct warpstore> warpstack;
+    std::stack<struct warp_status> warpstack;
     std::bitset<WARP_THREAD_N> lanes;
     std::bitset<WARP_THREAD_N> stops;
 
-    bool merge_lanes(struct warpstore &w0, struct warpstore &w1);
-
-    friend ut_branch;
+    bool merge_lanes(struct warp_status &w0, struct warp_status &w1);
 };

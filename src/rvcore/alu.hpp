@@ -31,11 +31,11 @@ class alu {
 public:
     alu(uint32_t id);
 
-    writeback_t run(inst_issue instruction);
+    writeback_t run(rvinst_issue instruction);
 
 private:
     uint32_t m_id;
-    inst_issue inst;
+    rvinst_issue inst;
     uint32_t xlen;
 
     writeback_t add();
