@@ -30,12 +30,11 @@ branch::branch() {
 
 }
 
-writeback_t branch::run(inst_issue inst, uint64_t &retpc) {
+writeback_t branch::run(inst_issue inst, uint64_t &pc_increment) {
     writeback_t res = {0, 0};
     uint64_t pc = inst.currpc;
     uint8_t pc_step = IS_COMPRESSED_INST(inst.bits) ? 2 : 4;
-    retpc = pc + pc_step;
-
+    pc_increment = pc_step;
     switch (inst.code) {
         case encoding::INST_BRANCH_AUIPC: {
             res = writeback_t {inst.rd, (pc + inst.u_imm)};
@@ -44,55 +43,56 @@ writeback_t branch::run(inst_issue inst, uint64_t &retpc) {
         }
         case encoding::INST_BRANCH_BEQ: {
             if (inst.rs1 == inst.rs2) {
-                retpc = pc + inst.sb_imm;
+                pc_increment = inst.sb_imm;
             }
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BEQ] jump to %lx, if (%lx == %lx)\n", retpc, inst.rs1, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BEQ] jump to %lx, if (%lx == %lx)\n", pc + pc_increment, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BGE: {
             if (sreg_t(inst.rs1) >= sreg_t(inst.rs2)) {
-                retpc = pc + inst.sb_imm;
+                pc_increment = inst.sb_imm;
             }
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BGE] jump to %lx, if (%ld >= %ld)\n", retpc, inst.rs1, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BGE] jump to %lx, if (%ld >= %ld)\n", pc + pc_increment, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BGEU: {
             if (inst.rs1 >= inst.rs2) {
-                retpc = pc + inst.sb_imm;
+                pc_increment = inst.sb_imm;
             }
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BGEU] jump to %lx, if (%lx >= %lx)\n", retpc, inst.rs1, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BGEU] jump to %lx, if (%lx >= %lx)\n", pc + pc_increment, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BLTU: {
             if (inst.rs1 < inst.rs2) {
-                retpc = pc + inst.sb_imm;
+                pc_increment = inst.sb_imm;
             }
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BLTU] jump to %lx, if (%lx < %lx)\n", retpc, inst.rs1, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BLTU] jump to %lx, if (%lx < %lx)\n", pc + pc_increment, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BLT: {
             if (sreg_t(inst.rs1) < sreg_t(inst.rs2)) {
-                retpc = pc + inst.sb_imm;
+                pc_increment = inst.sb_imm;
             }
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BLT] jump to %lx, if (%lx < %lx)\n", retpc, inst.rs1, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BLT] jump to %lx, if (%lx < %lx)\n", pc + pc_increment, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_BNE: {
             if (inst.rs1 != inst.rs2) {
-                retpc = pc + inst.sb_imm;
+                pc_increment = inst.sb_imm;
             }
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BNE] jump to %lx, if (%lx != %lx)\n", retpc, inst.rs1, inst.rs2);
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.BNE] jump to %lx, if (%lx != %lx)\n", pc + pc_increment, inst.rs1, inst.rs2);
             break;
         }
         case encoding::INST_BRANCH_JAL: {
-            retpc = (pc + inst.uj_imm);
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JAL] jump to %lx\n", retpc);
+            pc_increment = inst.uj_imm;
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JAL] jump to %lx\n", pc + pc_increment);
             res = writeback_t {inst.rd, pc + pc_step};
             break;
         }
         case encoding::INST_BRANCH_JALR: {
-            retpc = (inst.rs1 + inst.i_imm) & ~(uint64_t)(1);
-            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JALR] jump to %lx\n", retpc);
+            pc_increment = ((inst.rs1 + inst.i_imm) & ~(uint64_t)(1)) - pc;
+
+            RVGPU_DEBUG_PRINT("[EXEC.BRANCH.JALR] jump to %lx\n", pc + pc_increment);
             res = writeback_t {inst.rd, pc + pc_step};
             break;
         }

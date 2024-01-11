@@ -33,7 +33,6 @@
 warp::warp(vram *rvgpu_vram, mmu *simt_mmu, mcore *c) {
     m_vram = rvgpu_vram;
     m_mmu = simt_mmu;
-    //m_reg = reg;
     m_core = c;
     m_dec = new decoder();
     m_branch = new branch();
@@ -65,28 +64,10 @@ inst_issue warp::schedule() {
     instcode = m_vram->read<uint32_t>(pc_pa);
 
     RVGPU_DEBUG_PRINT("[%06lx] 0x%08x ==> \n", (uint64_t(pc) - uint64_t(startpc)), instcode);
-    uint8_t pc_step = IS_COMPRESSED_INST(instcode) ? 2 : 4;
+
     inst_issue to_issue = m_dec->decode_inst(instcode);
     to_issue.lanes = lanes.to_ulong();
     to_issue.currpc = pc;
-
-    if (to_issue.type == encoding::INST_TYPE_BRANCH) {
-        FOREACH_WARP_THREAD {
-            if (lanes.test(thread)) {
-                m_core->get_operand(thread, to_issue);
-                writeback_t wb = m_branch->run(to_issue, npc[thread]);
-                m_core->write_back(thread, wb);
-            }
-        }
-
-        struct warpstore torun = diverage();
-        lanes = torun.lanes;
-        pc = torun.pc;
-        to_issue.type = encoding::INST_TYPE_NOP;
-        to_issue.lanes = lanes.to_ulong();
-    } else {
-        pc = pc + pc_step;
-    }
 
     return to_issue;
 }
@@ -175,4 +156,13 @@ bool warp::stop() {
     }
 
     return false;
+}
+
+void warp::update_status(uint32_t tid, uint64_t thread_pc) {
+    npc[tid] = thread_pc;
+}
+
+void warp::update_status(uint64_t next_pc, std::bitset<WARP_THREAD_N> active_lanes) {
+    pc = next_pc;
+    lanes = active_lanes;
 }

@@ -41,4 +41,5 @@ typedef struct {
 typedef struct {
     uint64_t rid;
     uint64_t wdata;
+    uint64_t pc;
 } writeback_t;

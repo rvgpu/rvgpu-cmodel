@@ -41,9 +41,12 @@ void simt::issue(inst_issue to_issue) {
         if (to_issue.lanes & (1 << thread)) {
             m_core->get_operand(thread, to_issue);
             writeback_t res = m_core->exe(to_issue, thread);
+            m_warp->update_status(thread, res.pc);
             m_core->write_back(thread, res);
         }
     }
+    auto div = m_warp->diverage();
+    m_warp->update_status(div.pc, div.lanes);
 }
 
 void simt::run() {

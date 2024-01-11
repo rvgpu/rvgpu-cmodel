@@ -51,13 +51,14 @@ public:
 
     void setup(message msg);
     bool stop();
-
+    void update_status(uint32_t tid, uint64_t thread_pc);
+    void update_status(uint64_t next_pc, std::bitset<WARP_THREAD_N> active_lanes);
     inst_issue schedule();
+    warpstore diverage();
 
 private:
     vram *m_vram;
     mmu *m_mmu;
-    register_file *m_reg;
     decoder *m_dec;
     branch *m_branch;
     mcore   *m_core;
@@ -68,7 +69,6 @@ private:
     std::bitset<WARP_THREAD_N> lanes;
     std::bitset<WARP_THREAD_N> stops;
 
-    warpstore diverage();
     bool merge_lanes(struct warpstore &w0, struct warpstore &w1);
 
     friend ut_branch;

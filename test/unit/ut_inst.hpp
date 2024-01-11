@@ -7,10 +7,9 @@
 #include "simt/simt.hpp"
 #include "vram/vram.hpp"
 #include "mmu/mmu.hpp"
-
-#include "ut_rvcore.hpp"
 #include "ut_inst_ref.hpp"
 #include "ut_inst_io.hpp"
+#include "rvcore/rvcore.hpp"
 
 #define _BITS(bits, pos, width) (((bits) >> (pos)) & ((1ULL << (width)) - 1Ull))
 
@@ -19,7 +18,7 @@ protected:
     void SetUp() override {
         m_vram = new vram(1 * 1024 * 1024 * 1024);
         m_mmu = new mmu(m_vram);
-
+        m_dec = new decoder();
         stack_pointer = 0x123;
 
         // Create page table for the stack, virtual address = 0x123
@@ -35,7 +34,7 @@ protected:
         m_vram->write<uint64_t>(level2 + 8 * 0, level3);
         m_vram->write<uint64_t>(level3 + 8 * 0, PA_BASE);
 
-        m_cpu = new rvcore(m_vram, m_mmu);
+        m_cpu = new riskvcore(m_vram, m_mmu);
     }
 
     void TearDown() override {
@@ -67,28 +66,40 @@ protected:
 
     //only the thread register can be preloaded;
     void preload_register(special_reg regid, reg_t data) {
-        m_cpu->SetSReg(regid, data);
+        m_cpu->set_sreg(0, regid, data);
     }
 
     void exec_instruction(uint32_t inst, IN in1, IN in2) {
         // Initialize Instruction and register
         single_inst[0] = inst;
-        m_cpu->SetReg(static_cast<uint32_t>(in1.first), in1.second);
-        m_cpu->SetReg(static_cast<uint32_t>(in2.first), in2.second);
+        m_cpu->set_reg(0, static_cast<uint32_t>(in1.first), in1.second);
+        m_cpu->set_reg(0, static_cast<uint32_t>(in2.first), in2.second);
 
+        //Decode inst
+        inst_issue to_issue = m_dec->decode_inst(inst);
+        m_cpu->get_operand(0, to_issue);
+        to_issue.currpc = GetInstAddr();
         // Execuate one instruction
-        npc = m_cpu->execuate((uint64_t)single_inst);
+        auto res = m_cpu->exe(to_issue, 0);
+        m_cpu->write_back(0, res);
+        npc = res.pc;
     }
 
     void test_instruction(uint32_t inst, IN in1, IN in2, IN in3, RES reference) {
         // Initialize Instruction and register
         single_inst[0] = inst;
-        m_cpu->SetReg(static_cast<uint32_t>(in1.first), in1.second);
-        m_cpu->SetReg(static_cast<uint32_t>(in2.first), in2.second);
-        m_cpu->SetReg(static_cast<uint32_t>(in3.first), in3.second);
+        m_cpu->set_reg(0, static_cast<uint32_t>(in1.first), in1.second);
+        m_cpu->set_reg(0, static_cast<uint32_t>(in2.first), in2.second);
+        m_cpu->set_reg(0, static_cast<uint32_t>(in3.first), in3.second);
 
+        //Decode inst
+        inst_issue to_issue = m_dec->decode_inst(inst);
+        m_cpu->get_operand(0, to_issue);
+        to_issue.currpc = GetInstAddr();
         // Execuate one instruction
-        npc = m_cpu->execuate((uint64_t)single_inst);
+        auto res = m_cpu->exe(to_issue, 0);
+        m_cpu->write_back(0, res);
+        npc = res.pc;
 
         // Check Result
         check_register(reference);
@@ -96,11 +107,17 @@ protected:
     void test_instruction(uint32_t inst, IN in1, IN in2, RES reference) {
         // Initialize Instruction and register
         single_inst[0] = inst;
-        m_cpu->SetReg(static_cast<uint32_t>(in1.first), in1.second);
-        m_cpu->SetReg(static_cast<uint32_t>(in2.first), in2.second);
+        m_cpu->set_reg(0, static_cast<uint32_t>(in1.first), in1.second);
+        m_cpu->set_reg(0, static_cast<uint32_t>(in2.first), in2.second);
 
+        //Decode inst
+        inst_issue to_issue = m_dec->decode_inst(inst);
+        m_cpu->get_operand(0, to_issue);
+        to_issue.currpc = GetInstAddr();
         // Execuate one instruction
-        npc = m_cpu->execuate((uint64_t)single_inst);
+        auto res = m_cpu->exe(to_issue, 0);
+        m_cpu->write_back(0, res);
+        npc = res.pc;
 
         // Check Result
         check_register(reference);
@@ -108,10 +125,16 @@ protected:
     void test_instruction(uint32_t inst, IN in, RES reference) {
         // Initialize Instruction and register
         single_inst[0] = inst;
-        m_cpu->SetReg(static_cast<uint32_t>(in.first), in.second);
+        m_cpu->set_reg(0, static_cast<uint32_t>(in.first), in.second);
 
+        //Decode inst
+        inst_issue to_issue = m_dec->decode_inst(inst);
+        m_cpu->get_operand(0, to_issue);
+        to_issue.currpc = GetInstAddr();
         // Execuate one instruction
-        npc = m_cpu->execuate((uint64_t)single_inst);
+        auto res = m_cpu->exe(to_issue, 0);
+        m_cpu->write_back(0, res);
+        npc = res.pc;
 
         // Check Result
         check_register(reference);
@@ -120,8 +143,14 @@ protected:
         // Initialize Instruction
         single_inst[0] = inst;
 
+        //Decode inst
+        inst_issue to_issue = m_dec->decode_inst(inst);
+        m_cpu->get_operand(0, to_issue);
+        to_issue.currpc = GetInstAddr();
         // Execuate one instruction
-        npc = m_cpu->execuate((uint64_t)single_inst);
+        auto res = m_cpu->exe(to_issue, 0);
+        m_cpu->write_back(0, res);
+        npc = res.pc;
 
         // Check Result
         check_register(reference);
@@ -133,7 +162,8 @@ private:
     uint64_t PT_BASE;  // Page table
     uint64_t PA_BASE;  // Physical address
 
-    rvcore *m_cpu;
+    riskvcore *m_cpu;
+    decoder *m_dec;
     uint64_t npc;
     uint32_t single_inst[1];
     uint64_t stack_pointer;
@@ -142,10 +172,10 @@ private:
         uint32_t regid = static_cast<uint32_t>(reference.first);
         if (regid <= 31) {
             // Compare to inerger register
-            EXPECT_EQ(m_cpu->GetReg(regid), reference.second);
+            EXPECT_EQ(m_cpu->get_reg(0, regid), reference.second);
         } else if (regid <= 63) {
             // Compare to float register
-            EXPECT_DOUBLE_EQ(utils::ul2d(m_cpu->GetReg(regid)), utils::ul2d(reference.second));
+            EXPECT_DOUBLE_EQ(utils::ul2d(m_cpu->get_reg(0, regid)), utils::ul2d(reference.second));
         } else if (regid == 64){
             // Compare npc
             EXPECT_EQ(npc, reference.second);
