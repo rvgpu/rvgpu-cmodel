@@ -59,8 +59,6 @@ public:
 private:
     vram *m_vram;
     mmu *m_mmu;
-    decoder *m_dec;
-    branch *m_branch;
     mcore   *m_core;
     uint64_t startpc;
     uint64_t pc;

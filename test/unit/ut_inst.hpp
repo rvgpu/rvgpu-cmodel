@@ -18,7 +18,6 @@ protected:
     void SetUp() override {
         m_vram = new vram(1 * 1024 * 1024 * 1024);
         m_mmu = new mmu(m_vram);
-        m_dec = new decoder();
         stack_pointer = 0x123;
 
         // Create page table for the stack, virtual address = 0x123
@@ -76,7 +75,7 @@ protected:
         m_cpu->set_reg(0, static_cast<uint32_t>(in2.first), in2.second);
 
         //Decode inst
-        inst_issue to_issue = m_dec->decode_inst(inst);
+        inst_issue to_issue = m_cpu->decode(inst);
         m_cpu->get_operand(0, to_issue);
         to_issue.currpc = GetInstAddr();
         // Execuate one instruction
@@ -93,7 +92,7 @@ protected:
         m_cpu->set_reg(0, static_cast<uint32_t>(in3.first), in3.second);
 
         //Decode inst
-        inst_issue to_issue = m_dec->decode_inst(inst);
+        inst_issue to_issue = m_cpu->decode(inst);
         m_cpu->get_operand(0, to_issue);
         to_issue.currpc = GetInstAddr();
         // Execuate one instruction
@@ -111,7 +110,7 @@ protected:
         m_cpu->set_reg(0, static_cast<uint32_t>(in2.first), in2.second);
 
         //Decode inst
-        inst_issue to_issue = m_dec->decode_inst(inst);
+        inst_issue to_issue = m_cpu->decode(inst);
         m_cpu->get_operand(0, to_issue);
         to_issue.currpc = GetInstAddr();
         // Execuate one instruction
@@ -128,7 +127,7 @@ protected:
         m_cpu->set_reg(0, static_cast<uint32_t>(in.first), in.second);
 
         //Decode inst
-        inst_issue to_issue = m_dec->decode_inst(inst);
+        inst_issue to_issue = m_cpu->decode(inst);
         m_cpu->get_operand(0, to_issue);
         to_issue.currpc = GetInstAddr();
         // Execuate one instruction
@@ -144,7 +143,7 @@ protected:
         single_inst[0] = inst;
 
         //Decode inst
-        inst_issue to_issue = m_dec->decode_inst(inst);
+        inst_issue to_issue = m_cpu->decode(inst);
         m_cpu->get_operand(0, to_issue);
         to_issue.currpc = GetInstAddr();
         // Execuate one instruction
@@ -163,7 +162,6 @@ private:
     uint64_t PA_BASE;  // Physical address
 
     riskvcore *m_cpu;
-    decoder *m_dec;
     uint64_t npc;
     uint32_t single_inst[1];
     uint64_t stack_pointer;

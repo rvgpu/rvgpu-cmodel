@@ -34,8 +34,6 @@ warp::warp(vram *rvgpu_vram, mmu *simt_mmu, mcore *c) {
     m_vram = rvgpu_vram;
     m_mmu = simt_mmu;
     m_core = c;
-    m_dec = new decoder();
-    m_branch = new branch();
 }
 
 void warp::setup(message msg) {
@@ -58,14 +56,14 @@ void warp::setup(message msg) {
 }
 
 inst_issue warp::schedule() {
-    uint32_t instcode = 0;
-
     uint64_t pc_pa = m_mmu->find_pa(pc);
-    instcode = m_vram->read<uint32_t>(pc_pa);
+    auto instcode = m_vram->read<uint32_t>(pc_pa);
 
     RVGPU_DEBUG_PRINT("[%06lx] 0x%08x ==> \n", (uint64_t(pc) - uint64_t(startpc)), instcode);
 
-    inst_issue to_issue = m_dec->decode_inst(instcode);
+    inst_issue to_issue = {};
+
+    to_issue.bits = instcode;
     to_issue.lanes = lanes.to_ulong();
     to_issue.currpc = pc;
 

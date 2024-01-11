@@ -4,6 +4,7 @@
 riskvcore::riskvcore(vram *rvgpu_vram, mmu *rvgpu_mmu) {
     m_reg = new register_file();
     m_ls = new load_store(rvgpu_vram, rvgpu_mmu);
+    m_decoder = new decoder();
 
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
         m_alu[i] = new alu(i);
@@ -12,6 +13,9 @@ riskvcore::riskvcore(vram *rvgpu_vram, mmu *rvgpu_mmu) {
 }
 riskvcore::~riskvcore() {
     delete m_reg;
+    delete m_ls;
+    delete m_decoder;
+
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
         delete m_alu[i];
         delete m_fpu[i];
@@ -99,4 +103,8 @@ reg_t riskvcore::get_reg(uint32_t tid, uint32_t regid) {
 //write special register
 void riskvcore::set_sreg(uint32_t tid, special_reg regid, reg_t data) {
     m_reg->sreg_write(tid,regid,data);
+}
+
+inst_issue riskvcore::decode(uint32_t inst_code) {
+    return m_decoder->decode_inst(inst_code);
 }

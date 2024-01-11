@@ -37,6 +37,8 @@ void simt::setup(message msg) {
 }
 
 void simt::issue(inst_issue to_issue) {
+    m_core->decode(to_issue.bits);
+
     FOREACH_WARP_THREAD {
         if (to_issue.lanes & (1 << thread)) {
             m_core->get_operand(thread, to_issue);
