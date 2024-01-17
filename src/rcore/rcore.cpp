@@ -29,9 +29,6 @@ rcore::rcore(simt *simt_processor,vram *rgpu_vram, mmu *rgpu_mmu) {
     m_simt = simt_processor;
     m_vram = rgpu_vram;
     m_mmu = rgpu_mmu;
-    for (auto tid = 0; tid < SP_WARP_N;) {
-
-    }
 }
 
 static uint32_t get_bits(uint32_t inst, uint32_t lsb, uint32_t len) {

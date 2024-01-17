@@ -46,7 +46,7 @@ public:
 private:
     simt* m_simt;
     //scalar register
-    uint32_t s_reg[SP_WARP_N][REG_SIZE];
+    uint32_t s_reg[SP_WARP_N][REG_SIZE]{};
     vram *m_vram;
     mmu  *m_mmu;
 
