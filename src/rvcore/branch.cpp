@@ -31,13 +31,13 @@ branch::branch() {
 }
 
 writeback_t branch::run(rvinst_issue inst, uint64_t &pc_increment) {
-    writeback_t res = {0, 0};
+    writeback_t res = {};
     uint64_t pc = inst.currpc;
     uint8_t pc_step = IS_COMPRESSED_INST(inst.bits) ? 2 : 4;
     pc_increment = pc_step;
     switch (inst.code) {
         case encoding::INST_BRANCH_AUIPC: {
-            res = writeback_t {inst.rd, (pc + inst.u_imm)};
+            res = writeback_t{inst.rd, (pc + inst.u_imm)};
             RVGPU_DEBUG_PRINT("[EXEC.AUIPC] r[%ld] = %lx\n", res.rid, res.wdata);
             break;
         }

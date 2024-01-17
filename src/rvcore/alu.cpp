@@ -163,7 +163,7 @@ writeback_t alu::run(rvinst_issue instruction) {
             ret = OR();
             break;
         case encoding::INST_ALU_LDTREG:
-            ret = writeback_t {.rid = inst.rd, .wdata = instruction.sreg};
+            ret = writeback_t {inst.rd, instruction.sreg};
             ALU_INFO("[LDTREG] r[%ld] = 0x%lx\n", inst.rd, instruction.sreg);
             break;
         default:

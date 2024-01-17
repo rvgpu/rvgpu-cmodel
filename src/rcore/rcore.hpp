@@ -21,47 +21,40 @@
  * IN THE SOFTWARE.
  */
 
-#include "common/utils.hpp"
-#include "rvcore/rvcore.hpp"
-#include "simt.hpp"
-#include "rvcore/encoding.hpp"
-#include "rcore/rcore.hpp"
+#ifndef RVGSIM_RCORE_HPP
+#define RVGSIM_RCORE_HPP
 
-simt::simt(vram *rvgpu_vram, mmu *rvgpu_mmu) {
-#if RISCV
-    m_core = new riscvcore(rvgpu_vram, rvgpu_mmu);
-#else
-    m_core = new rcore(this, rvgpu_vram, rvgpu_mmu);
-#endif
-    wm = new warp_manager(rvgpu_vram, rvgpu_mmu, m_core);
-}
+#include "simt/core.hpp"
+#include "inst_type.hpp"
+#include "vram/vram.hpp"
+#include "mmu/mmu.hpp"
+#include "common/configs.h"
 
-void simt::setup(message msg) {
-    wm->setup(msg);
-}
+class simt;
+#define REG_SIZE 256
 
-void simt::issue(warp_status ws) {
-    auto to_issue = m_core->decode(ws.bits);
-    to_issue->bits = ws.bits;
-    to_issue->currpc = ws.pc;
-    to_issue->lanes = ws.lanes.to_ulong();
+class rcore : public mcore{
+public:
+    rcore(simt *simt_processor,vram *rgpu_vram, mmu *rgpu_mmu);
+    void register_setup(message msg) override {};
+    std::unique_ptr<inst_issue> decode(uint32_t inst_code) override;
+    void get_operand(uint32_t tid, inst_issue* to_issue) override;
+    std::unique_ptr<writeback_t> exe(inst_issue* to_issue, uint32_t tid) override;
+    void write_back(uint32_t tid, writeback_t* data) override;
 
-    FOREACH_WARP_THREAD {
-        if (to_issue->lanes & (1 << thread)) {
-            m_core->get_operand(thread, to_issue.get());
-            auto res = m_core->exe(to_issue.get(), thread);
-            wm->update_status(thread, res->pc);
-            m_core->write_back(thread, res.get());
-        }
-    }
-    auto div = wm->diverage();
-    wm->update_status(div.pc, div.lanes);
-}
+    std::vector<uint32_t> load(uint64_t addr, uint32_t data_size);
+private:
+    simt* m_simt;
+    //scalar register
+    uint32_t s_reg[SP_WARP_N][REG_SIZE];
+    vram *m_vram;
+    mmu  *m_mmu;
 
-void simt::run() {
-    while (!wm->stop()) {
-        auto inst = wm->fetch_inst(wm->get_pc());
-        auto to_issue = wm->schedule(inst);
-        issue(to_issue);
-    }
-}
+    std::unique_ptr<writeback_t> exe_smem(rinst_issue* issued);
+
+    uint32_t read_sreg(uint32_t tid, uint32_t reg_id);
+    void write_sreg(uint32_t tid, uint32_t reg_id, uint32_t data);
+};
+
+
+#endif //RVGSIM_RCORE_HPP

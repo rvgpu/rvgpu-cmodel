@@ -39,9 +39,8 @@ public:
     simt(vram *rvgpu_vram, mmu *rvgpu_mmu);
     void setup(message msg);
     void run();
-
+    warp_manager    *wm;
 private:
-    warp            *m_warp;
     mcore           *m_core;
 
     void issue(warp_status warp);

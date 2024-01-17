@@ -1,7 +1,7 @@
 #include "rvcore.hpp"
 #include "top/command_stream.h"
 
-riskvcore::riskvcore(vram *rvgpu_vram, mmu *rvgpu_mmu) {
+riscvcore::riscvcore(vram *rvgpu_vram, mmu *rvgpu_mmu) {
     m_reg = new register_file();
     m_ls = new load_store(rvgpu_vram, rvgpu_mmu);
     m_decoder = new decoder();
@@ -11,7 +11,7 @@ riskvcore::riskvcore(vram *rvgpu_vram, mmu *rvgpu_mmu) {
         m_fpu[i] = new fpu(i);
     }
 }
-riskvcore::~riskvcore() {
+riscvcore::~riscvcore() {
     delete m_reg;
     delete m_ls;
     delete m_decoder;
@@ -22,7 +22,7 @@ riskvcore::~riskvcore() {
     }
 }
 
-writeback_t riskvcore::exe(inst_issue* issue, uint32_t tid) {
+std::unique_ptr<writeback_t> riscvcore::exe(inst_issue* issue, uint32_t tid) {
     auto to_issue = dynamic_cast<rvinst_issue*>(issue);
     writeback_t wb = {};
     bool is_compressed = IS_COMPRESSED_INST(to_issue->bits);
@@ -57,10 +57,10 @@ writeback_t riskvcore::exe(inst_issue* issue, uint32_t tid) {
     }else {
         wb.pc = to_issue->currpc + (is_compressed ? 2: 4);
     }
-    return wb;
+    return std::make_unique<writeback_t>(wb);
 }
 
-void riskvcore::register_setup(message msg) {
+void riscvcore::register_setup(message msg) {
     for (uint32_t i=0; i<WARP_THREAD_N; i++) {
         if (i < msg.count) {
             m_reg->write(i, uint64_t(reg::s0), 0);
@@ -78,7 +78,7 @@ void riskvcore::register_setup(message msg) {
     }
 }
 
-void riskvcore::get_operand(uint32_t tid, inst_issue* issue) {
+void riscvcore::get_operand(uint32_t tid, inst_issue* issue) {
     auto to_issue = dynamic_cast<rvinst_issue*>(issue);
     to_issue->rs1 = m_reg->read(tid, to_issue->rs1_id);
     to_issue->rs2 = m_reg->read(tid, to_issue->rs2_id);
@@ -89,25 +89,25 @@ void riskvcore::get_operand(uint32_t tid, inst_issue* issue) {
     to_issue->sreg = m_reg->sreg_read(tid, to_issue->sreg_id);
 }
 
-void riskvcore::write_back(uint32_t tid, writeback_t data) {
-    m_reg->write(tid, data.rid, data.wdata);
+void riscvcore::write_back(uint32_t tid, writeback_t* data) {
+    m_reg->write(tid, data->rid, data->wdata);
 }
 
-void riskvcore::set_reg(uint32_t tid, uint32_t regid, uint64_t data) {
+void riscvcore::set_reg(uint32_t tid, uint32_t regid, uint64_t data) {
     if(regid != 0)
         m_reg->write(tid, regid, data);
 }
 
-reg_t riskvcore::get_reg(uint32_t tid, uint32_t regid) {
+reg_t riscvcore::get_reg(uint32_t tid, uint32_t regid) {
     return m_reg->read(tid, regid);
 }
 
 //write special register
-void riskvcore::set_sreg(uint32_t tid, special_reg regid, reg_t data) {
+void riscvcore::set_sreg(uint32_t tid, special_reg regid, reg_t data) {
     m_reg->sreg_write(tid,regid,data);
 }
 
-std::unique_ptr<inst_issue> riskvcore::decode(uint32_t inst_code) {
+std::unique_ptr<inst_issue> riscvcore::decode(uint32_t inst_code) {
     auto res = m_decoder->decode_inst(inst_code);
     return std::make_unique<rvinst_issue>(res);
 }

@@ -9,5 +9,10 @@ endfunction()
 
 rvsim_unit_test(rvsim_gtest_framework gtest_framework.cpp)
 
-add_subdirectory(single_instruction)
+if (RISCV)
+    add_subdirectory(single_instruction)
+else()
+    add_subdirectory(rsingle_instruction)
+endif ()
+
 # add_subdirectory(insns_gen)

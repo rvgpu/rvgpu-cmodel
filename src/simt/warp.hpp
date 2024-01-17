@@ -45,23 +45,24 @@ struct warp_status {
     uint32_t bits;
 };
 
-class warp {
+class warp_manager {
 public:
-    warp (vram *rvgpu_vram, mmu *simt_mmu, mcore *c);
+    warp_manager (vram *rvgpu_vram, mmu *simt_mmu, mcore *c);
 
     void setup(message msg);
     bool stop();
     void update_status(uint32_t tid, uint64_t thread_pc);
     void update_status(uint64_t next_pc, std::bitset<WARP_THREAD_N> active_lanes);
-    warp_status schedule();
+    warp_status schedule(uint32_t inst);
     warp_status diverage();
-
+    uint32_t fetch_inst(uint64_t pc);
+    uint64_t get_pc();
 private:
     vram *m_vram;
     mmu *m_mmu;
     mcore   *m_core;
     uint64_t startpc;
-    uint64_t pc;
+    uint64_t m_pc;
     uint64_t npc[WARP_THREAD_N];
     std::stack<struct warp_status> warpstack;
     std::bitset<WARP_THREAD_N> lanes;

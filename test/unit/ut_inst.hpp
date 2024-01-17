@@ -33,7 +33,7 @@ protected:
         m_vram->write<uint64_t>(level2 + 8 * 0, level3);
         m_vram->write<uint64_t>(level3 + 8 * 0, PA_BASE);
 
-        m_cpu = new riskvcore(m_vram, m_mmu);
+        m_cpu = new riscvcore(m_vram, m_mmu);
     }
 
     void TearDown() override {
@@ -117,7 +117,7 @@ private:
     uint64_t PT_BASE;  // Page table
     uint64_t PA_BASE;  // Physical address
 
-    riskvcore *m_cpu;
+    riscvcore *m_cpu;
     uint64_t npc;
     uint32_t single_inst[1];
     uint64_t stack_pointer;
@@ -129,8 +129,8 @@ private:
         to_issue->currpc = GetInstAddr();
         // Execuate one instruction
         auto res = m_cpu->exe(to_issue.get(), 0);
-        m_cpu->write_back(0, res);
-        npc = res.pc;
+        m_cpu->write_back(0, res.get());
+        npc = res->pc;
     }
     void check_register(RES reference) {
         uint32_t regid = static_cast<uint32_t>(reference.first);

@@ -33,6 +33,9 @@ struct writeback_t {
     uint64_t rid;
     uint64_t wdata;
     uint64_t pc;
+    writeback_t() {rid = 0; wdata = 0; pc = 0;}
+    writeback_t(uint64_t reg_id, uint64_t data) { rid = reg_id; wdata = data; pc = 0;}
+    virtual ~writeback_t()=default;
 };
 
 #endif //RVGSIM_TYPE_HPP
