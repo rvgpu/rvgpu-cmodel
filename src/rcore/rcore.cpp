@@ -75,12 +75,18 @@ std::unique_ptr<writeback_t> rcore::exe(inst_issue *to_issue, uint32_t tid) {
 
 std::unique_ptr<writeback_t> rcore::exe_smem(rinst_issue *issued) {
     rwriteback_t res{};
+    uint64_t sbase = ((uint64_t) (issued->src0[1]) << 32) | (uint64_t) (issued->src0[0]);
+    uint64_t addr = sbase + issued->offset + issued->src1[0];
+    res.rid = issued->sdata;
+
     switch (issued->op) {
+        case 0: {   //s_load_b32
+            res.data = load(addr, 1);
+            res.data_size = 1;
+            break;
+        }
         case 2: {   //s_load_b128
-            uint64_t sbase = ((uint64_t) (issued->src0[1]) << 32) | (uint64_t) (issued->src0[0]);
-            uint64_t addr = sbase + issued->offset + issued->src1[0];
             res.data = load(addr, 4);
-            res.rid = issued->sdata;
             res.data_size = 4;
             break;
         }
