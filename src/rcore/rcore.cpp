@@ -110,17 +110,11 @@ void rcore::get_operand(uint32_t tid, inst_issue *to_issue) {
     auto issued = dynamic_cast<rinst_issue*>(to_issue);
     switch (issued->type) {
         case SMEM: {
-            switch (issued->op) {
-                case 2: //s_load_b128
-                    //sbase, is a pair of sgpr
-                    issued->src0[0] = read_sreg(tid, issued->sbase);
-                    issued->src0[1] = read_sreg(tid, issued->sbase + 1);
-                    //soffset
-                    issued->src1[0] = read_sreg(tid, issued->soffset);
-                    break;
-                default:
-                    break;
-            }
+            //sbase, is a pair of sgpr
+            issued->src0[0] = read_sreg(tid, issued->sbase);
+            issued->src0[1] = read_sreg(tid, issued->sbase + 1);
+            //soffset
+            issued->src1[0] = read_sreg(tid, issued->soffset);
             break;
         }
         case VOP1: {
