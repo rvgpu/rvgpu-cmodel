@@ -58,6 +58,12 @@ std::unique_ptr<inst_issue> rcore::decode(uint32_t inst_code) {
         issued.src0_id = get_bits(inst_code, 0, 9);
         issued.op = get_bits(inst_code, 9, 8);
         issued.dst_id = get_bits(inst_code, 17, 8);
+    } else if ((inst_code & VOP2_MASK) == VOP2_MATCH) {
+        issued.type = VOP2;
+        issued.src0_id = get_bits(inst_code, 0, 9);
+        issued.src1_id = get_bits(inst_code, 9, 8);
+        issued.dst_id = get_bits(inst_code, 17, 8);
+        issued.op = get_bits(inst_code, 25, 6);
     }
 
     if (issued.type == UNKNOWN) {
@@ -77,6 +83,8 @@ std::unique_ptr<writeback_t> rcore::exe(inst_issue *to_issue, uint32_t tid) {
         case VOP1: {
             return exe_vop1(issued);
         }
+        case VOP2:
+            return exe_vop2(issued);
         default:
             break;
     }
@@ -117,15 +125,18 @@ void rcore::get_operand(uint32_t tid, inst_issue *to_issue) {
             issued->src1[0] = read_sreg(tid, issued->soffset);
             break;
         }
+        case VOP2:
+            issued->src1[0] = read_vreg(tid, issued->src1_id);
+            [[fallthrough]];
         case VOP1: {
             if (issued->src0_id > 255) {
-                issued->src0[0] = read_vreg(tid, issued->src0_id - 255);
+                issued->src0[0] = read_vreg(tid, issued->src0_id - 256);
             } else {
-                issued->src0[0] = read_vreg(tid, issued->src0_id);
+                issued->src0[0] = read_sreg(tid, issued->src0_id);
             }
             break;
         }
-        default:
+            default:
             break;
     }
 }
@@ -179,6 +190,19 @@ std::unique_ptr<writeback_t> rcore::exe_vop1(rinst_issue *issued) {
             res.vreg = true;
             break;
         }
+        default:
+            break;
+    }
+    return std::make_unique<rwriteback_t>(res);
+}
+
+std::unique_ptr<writeback_t> rcore::exe_vop2(rinst_issue *issued) {
+    rwriteback_t res{};
+    switch (issued->op) {
+        case 24:  // V_LSHLREV_B32
+            res.data.push_back(issued->src1[0] << issued->src0[0]);
+            res.data_size = 1;
+            break;
         default:
             break;
     }
