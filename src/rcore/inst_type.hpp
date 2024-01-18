@@ -8,7 +8,8 @@
 enum rinst_type {
     UNKNOWN,
     SOPP,
-    SMEM
+    SMEM,
+    VOP1
 };
 
 struct rwriteback_t : writeback_t {
@@ -20,6 +21,9 @@ struct rinst_issue : inst_issue {
     uint32_t op;
     uint32_t src0[4];
     uint32_t src1[4];
+
+    uint8_t dst_id;
+    uint16_t src0_id;
 
     rinst_type type;
     //sopp
@@ -37,5 +41,8 @@ struct rinst_issue : inst_issue {
 #define SOPP_MATCH 0xbf800000
 #define SMEM_MASK 0xfc000000
 #define SMEM_MATCH 0Xf4000000
+
+#define VOP1_MASK 0xfe000000
+#define VOP1_MATCH 0x7e000000
 
 #endif //RVGSIM_INST_TYPE_HPP

@@ -47,13 +47,19 @@ private:
     simt* m_simt;
     //scalar register
     uint32_t s_reg[SP_WARP_N][REG_SIZE]{};
+    //vector register
+    uint32_t v_reg[SP_WARP_N][REG_SIZE]{};
+
     vram *m_vram;
     mmu  *m_mmu;
 
     std::unique_ptr<writeback_t> exe_smem(rinst_issue* issued);
+    std::unique_ptr<writeback_t> exe_vop1(rinst_issue* issued);
 
     uint32_t read_sreg(uint32_t tid, uint32_t reg_id);
-    void write_sreg(uint32_t tid, uint32_t reg_id, uint32_t data);
+    uint32_t read_vreg(uint32_t tid, uint32_t reg_id);
+    void write_sreg(uint32_t wid, uint32_t reg_id, uint32_t data);
+    void write_vreg(uint32_t wid, uint32_t reg_id, uint32_t data);
 };
 
 

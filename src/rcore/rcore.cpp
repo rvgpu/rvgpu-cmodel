@@ -23,6 +23,7 @@
 
 #include "rcore.hpp"
 #include "common/type.hpp"
+#include "common/math.hpp"
 #include "simt/simt.hpp"
 
 rcore::rcore(simt *simt_processor,vram *rgpu_vram, mmu *rgpu_mmu) {
@@ -36,6 +37,7 @@ static uint32_t get_bits(uint32_t inst, uint32_t lsb, uint32_t len) {
 }
 std::unique_ptr<inst_issue> rcore::decode(uint32_t inst_code) {
     rinst_issue issued {};
+
     if ((inst_code & SOPP_MASK) == SOPP_MATCH) {
         issued.op = get_bits(inst_code, 16, 7);
         issued.simm16 = get_bits(inst_code,0,16);
@@ -51,6 +53,11 @@ std::unique_ptr<inst_issue> rcore::decode(uint32_t inst_code) {
         issued.offset = get_bits(high_word, 0, 21);
         issued.soffset = get_bits(high_word, 25, 7);
         issued.type = SMEM;
+    } else if ((inst_code & VOP1_MASK) == VOP1_MATCH) {
+        issued.type = VOP1;
+        issued.src0_id = get_bits(inst_code, 0, 9);
+        issued.op = get_bits(inst_code, 9, 8);
+        issued.dst_id = get_bits(inst_code, 17, 8);
     }
 
     if (issued.type == UNKNOWN) {
@@ -66,6 +73,9 @@ std::unique_ptr<writeback_t> rcore::exe(inst_issue *to_issue, uint32_t tid) {
             break;
         case SMEM: {
             return exe_smem(issued);
+        }
+        case VOP1: {
+            return exe_vop1(issued);
         }
         default:
             break;
@@ -113,6 +123,14 @@ void rcore::get_operand(uint32_t tid, inst_issue *to_issue) {
             }
             break;
         }
+        case VOP1: {
+            if (issued->src0_id > 255) {
+                issued->src0[0] = read_vreg(tid, issued->src0_id - 255);
+            } else {
+                issued->src0[0] = read_vreg(tid, issued->src0_id);
+            }
+            break;
+        }
         default:
             break;
     }
@@ -124,6 +142,14 @@ uint32_t rcore::read_sreg(uint32_t tid, uint32_t reg_id) {
 
 void rcore::write_sreg(uint32_t tid, uint32_t reg_id, uint32_t data) {
     s_reg[tid][reg_id] = data;
+}
+
+uint32_t rcore::read_vreg(uint32_t wid, uint32_t reg_id) {
+    return v_reg[wid][reg_id];
+}
+
+void rcore::write_vreg(uint32_t wid, uint32_t reg_id, uint32_t data) {
+    v_reg[wid][reg_id] = data;
 }
 
 std::vector<uint32_t> rcore::load(uint64_t addr, uint32_t data_size) {
@@ -141,6 +167,21 @@ void rcore::write_back(uint32_t tid, writeback_t *data) {
     for(uint32_t i= 0; i < wb_data->data_size; i++) {
         write_sreg(tid, wb_data->rid + i, wb_data->data[i]);
     }
+}
+
+std::unique_ptr<writeback_t> rcore::exe_vop1(rinst_issue *issued) {
+    rwriteback_t res{};
+    switch (issued->op) {
+        case 5:  {    //V_CVT_F32_I32
+            //fixme: 目前不清楚向量寄存器需要写多少长度的数据，暂时只写1个32位的数据
+            res.data_size = 1;
+            res.data.push_back(int_to_float((int)(issued->src0[0])));
+            break;
+        }
+        default:
+            break;
+    }
+    return std::make_unique<rwriteback_t>(res);
 }
 
 

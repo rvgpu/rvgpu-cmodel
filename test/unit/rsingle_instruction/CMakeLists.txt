@@ -4,3 +4,4 @@ include_directories(${CMAKE_BINARY_DIR}/src)
 
 add_subdirectory(sopp)
 add_subdirectory(smem)
+add_subdirectory(vop1)
