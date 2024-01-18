@@ -13,6 +13,7 @@ enum rinst_type {
 };
 
 struct rwriteback_t : writeback_t {
+    bool vreg;
     uint32_t data_size;
     std::vector<uint32_t> data;
 };

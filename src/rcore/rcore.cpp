@@ -164,8 +164,14 @@ std::vector<uint32_t> rcore::load(uint64_t addr, uint32_t data_size) {
 void rcore::write_back(uint32_t tid, writeback_t *data) {
     auto wb_data = dynamic_cast<rwriteback_t*>(data);
 
-    for(uint32_t i= 0; i < wb_data->data_size; i++) {
-        write_sreg(tid, wb_data->rid + i, wb_data->data[i]);
+    if (wb_data->vreg) {
+        for(uint32_t i= 0; i < wb_data->data_size; i++) {
+            write_vreg(tid, wb_data->rid + i, wb_data->data[i]);
+        }
+    } else {
+        for(uint32_t i= 0; i < wb_data->data_size; i++) {
+            write_sreg(tid, wb_data->rid + i, wb_data->data[i]);
+        }
     }
 }
 
@@ -176,6 +182,7 @@ std::unique_ptr<writeback_t> rcore::exe_vop1(rinst_issue *issued) {
             //fixme: 目前不清楚向量寄存器需要写多少长度的数据，暂时只写1个32位的数据
             res.data_size = 1;
             res.data.push_back(int_to_float((int)(issued->src0[0])));
+            res.vreg = true;
             break;
         }
         default:
