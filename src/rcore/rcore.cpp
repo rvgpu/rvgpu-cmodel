@@ -64,6 +64,21 @@ std::unique_ptr<inst_issue> rcore::decode(uint32_t inst_code) {
         issued.src1_id = get_bits(inst_code, 9, 8);
         issued.dst_id = get_bits(inst_code, 17, 8);
         issued.op = get_bits(inst_code, 25, 6);
+    } else if ((inst_code & FLAT_MASK) == FLAT_MATCH) {
+        //FLAT类指令长度位64bit
+        uint32_t high_word = m_simt->wm->fetch_inst(m_simt->wm->get_pc() + 4);
+        issued.type = FLAT;
+        issued.op = get_bits(inst_code,18,7);
+        issued.src0_id = get_bits(high_word, 0, 8);  //VGPR
+        issued.src1_id = get_bits(high_word, 16, 7); //SGPR
+        issued.sdata = get_bits(high_word, 8, 8);
+        issued.sve = get_bits(high_word, 23, 1);
+        issued.dst_id = get_bits(high_word, 24, 8);
+        issued.offset = get_bits(inst_code, 0, 13);
+        issued.dlc = get_bits(inst_code,13,1);
+        issued.glc = get_bits(inst_code,14,1);
+        issued.slc = get_bits(inst_code,15,1);
+        issued.seg = get_bits(inst_code, 16, 2);
     }
 
     if (issued.type == UNKNOWN) {
@@ -85,6 +100,8 @@ std::unique_ptr<writeback_t> rcore::exe(inst_issue *to_issue, uint32_t tid) {
         }
         case VOP2:
             return exe_vop2(issued);
+        case FLAT:
+            return exe_flat(issued);
         default:
             break;
     }
@@ -133,6 +150,14 @@ void rcore::get_operand(uint32_t tid, inst_issue *to_issue) {
                 issued->src0[0] = read_vreg(tid, issued->src0_id - 256);
             } else {
                 issued->src0[0] = read_sreg(tid, issued->src0_id);
+            }
+            break;
+        }
+        case FLAT: {
+            issued->src0[0] = read_vreg(tid, issued->src0_id);
+            issued->src1[0] = read_sreg(tid, issued->src1_id);
+            if (issued->src1_id != 0x7c) { // NULL register
+                issued->src1[1] = read_sreg(tid, issued->src1_id + 1);
             }
             break;
         }
@@ -203,6 +228,26 @@ std::unique_ptr<writeback_t> rcore::exe_vop2(rinst_issue *issued) {
             res.data.push_back(issued->src1[0] << issued->src0[0]);
             res.data_size = 1;
             break;
+        default:
+            break;
+    }
+    return std::make_unique<rwriteback_t>(res);
+}
+
+std::unique_ptr<writeback_t> rcore::exe_flat(rinst_issue *issued) {
+    rwriteback_t res{};
+    switch(issued->op) {
+        // global_load_b32
+        case 20 : {
+            uint64_t address = 0;
+            if (issued->src1_id != 0x7c) { // 当SGPR不为NULL寄存器时,SGPU提供基地址，VGPR提供32位偏移
+                address = ((uint64_t)issued->src1[1] << 32) | (uint64_t)issued->src1[0];
+            }
+            address += issued->src0[0];
+            res.data = load(address, 1);
+            res.data_size = 1;
+            break;
+        }
         default:
             break;
     }

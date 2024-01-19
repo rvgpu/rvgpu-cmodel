@@ -56,6 +56,7 @@ private:
     std::unique_ptr<writeback_t> exe_smem(rinst_issue* issued);
     std::unique_ptr<writeback_t> exe_vop1(rinst_issue* issued);
     std::unique_ptr<writeback_t> exe_vop2(rinst_issue* issued);
+    std::unique_ptr<writeback_t> exe_flat(rinst_issue* issued);
 
     uint32_t read_sreg(uint32_t tid, uint32_t reg_id);
     uint32_t read_vreg(uint32_t tid, uint32_t reg_id);

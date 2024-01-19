@@ -10,7 +10,8 @@ enum rinst_type {
     SOPP,
     SMEM,
     VOP1,
-    VOP2
+    VOP2,
+    FLAT
 };
 
 struct rwriteback_t : writeback_t {
@@ -38,6 +39,16 @@ struct rinst_issue : inst_issue {
     bool     glc;
     uint32_t offset;
     uint8_t soffset;
+    //flat
+    // --offset, use the one in smem
+    // --dlc, use the one in smem
+    // --glc, use the one in smem
+    // --data, use the sdata in smem
+    // --addr is src0;
+    // --saddr is src1;
+    bool slc;
+    uint8_t seg;
+    bool sve;
 };
 
 #define SOPP_MASK 0xff800000
@@ -49,5 +60,8 @@ struct rinst_issue : inst_issue {
 #define VOP1_MATCH 0x7e000000
 #define VOP2_MASK 0x80000000
 #define VOP2_MATCH 0x0
+
+#define FLAT_MASK 0xfc000000
+#define FLAT_MATCH 0xdc000000
 
 #endif //RVGSIM_INST_TYPE_HPP
