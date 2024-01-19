@@ -33,6 +33,13 @@ public:
         }
     }
 
+    std::vector<uint32_t> get_vram_data(uint64_t addr, uint32_t data_size) {
+        std::vector<uint32_t> data;
+        for (uint32_t len = 0; len < data_size; len++) {
+            data.push_back(read<uint32_t>(addr + sizeof(uint32_t) * len));
+        }
+        return data;
+    }
 private:
     void wm_init() {
         program_t shader;

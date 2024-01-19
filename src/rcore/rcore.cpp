@@ -71,7 +71,7 @@ std::unique_ptr<inst_issue> rcore::decode(uint32_t inst_code) {
         issued.op = get_bits(inst_code,18,7);
         issued.src0_id = get_bits(high_word, 0, 8);  //VGPR
         issued.src1_id = get_bits(high_word, 16, 7); //SGPR
-        issued.sdata = get_bits(high_word, 8, 8);
+        issued.vdata = get_bits(high_word, 8, 8);  //VGPR
         issued.sve = get_bits(high_word, 23, 1);
         issued.dst_id = get_bits(high_word, 24, 8);
         issued.offset = get_bits(inst_code, 0, 13);
@@ -131,6 +131,28 @@ std::unique_ptr<writeback_t> rcore::exe_smem(rinst_issue *issued) {
     return std::make_unique<rwriteback_t>(res);
 }
 
+static bool is_flat_store(uint32_t op) {
+    if ((op > 23) && (op < 30)) {
+        //GLOBAL_STORE
+        return true;
+    }
+    return false;
+}
+
+static uint32_t data_size(rinst_type type, uint32_t op ) {
+    switch (type) {
+        case FLAT:{
+            if (op == 26) {
+                return 1;
+            }
+            break;
+        }
+        default:
+            break;
+    }
+    return 0;
+}
+
 void rcore::get_operand(uint32_t tid, inst_issue *to_issue) {
     auto issued = dynamic_cast<rinst_issue*>(to_issue);
     switch (issued->type) {
@@ -159,6 +181,11 @@ void rcore::get_operand(uint32_t tid, inst_issue *to_issue) {
             if (issued->src1_id != 0x7c) { // NULL register
                 issued->src1[1] = read_sreg(tid, issued->src1_id + 1);
             }
+            if (is_flat_store(issued->op)) {
+                for(uint32_t i = 0; i < data_size(issued->type, issued->op); i++) {
+                    issued->src2[i] = read_vreg(tid, issued->vdata + i);
+                }
+            }
             break;
         }
             default:
@@ -184,11 +211,18 @@ void rcore::write_vreg(uint32_t wid, uint32_t reg_id, uint32_t data) {
 
 std::vector<uint32_t> rcore::load(uint64_t addr, uint32_t data_size) {
     std::vector<uint32_t> res;
-    auto pa = m_mmu->find_pa(addr);
     for(uint32_t len = 0; len < data_size; len++) {
-        res.push_back(m_vram->read<uint32_t >(pa + sizeof(uint32_t)*len));
+        auto pa = m_mmu->find_pa(addr + sizeof(uint32_t) * len);
+        res.push_back(m_vram->read<uint32_t >(pa));
     }
     return res;
+}
+
+void rcore::store(uint64_t addr, uint32_t data[], uint32_t data_size) {
+    for(uint32_t len = 0; len < data_size; len++) {
+        auto pa = m_mmu->find_pa(addr + sizeof(uint32_t) * len);
+        m_vram->write<uint32_t>(pa, data[len]);
+    }
 }
 
 void rcore::write_back(uint32_t tid, writeback_t *data) {
@@ -240,16 +274,23 @@ std::unique_ptr<writeback_t> rcore::exe_vop2(rinst_issue *issued) {
 
 std::unique_ptr<writeback_t> rcore::exe_flat(rinst_issue *issued) {
     rwriteback_t res{};
+    uint64_t address = 0;
+    if (issued->src1_id != 0x7c) { // 当SGPR不为NULL寄存器时,SGPU提供基地址，VGPR提供32位偏移
+        address = ((uint64_t)issued->src1[1] << 32) | (uint64_t)issued->src1[0];
+    }
+    address += issued->src0[0];
+
     switch(issued->op) {
         // global_load_b32
-        case 20 : {
-            uint64_t address = 0;
-            if (issued->src1_id != 0x7c) { // 当SGPR不为NULL寄存器时,SGPU提供基地址，VGPR提供32位偏移
-                address = ((uint64_t)issued->src1[1] << 32) | (uint64_t)issued->src1[0];
-            }
-            address += issued->src0[0];
+        case 20: {
             res.data = load(address, 1);
             res.data_size = 1;
+            break;
+        }
+        case 26: {
+            // global_store_b32
+            store(address, issued->src2, 1);
+            res.data_size = 0; //目前store指令不需要向寄存器中写回数据
             break;
         }
         default:
@@ -257,6 +298,8 @@ std::unique_ptr<writeback_t> rcore::exe_flat(rinst_issue *issued) {
     }
     return std::make_unique<rwriteback_t>(res);
 }
+
+
 
 
 

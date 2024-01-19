@@ -24,6 +24,7 @@ struct rinst_issue : inst_issue {
     uint32_t op;
     uint32_t src0[4];
     uint32_t src1[4];
+    uint32_t src2[4];
 
     uint8_t dst_id;
     uint16_t src0_id;
@@ -49,6 +50,7 @@ struct rinst_issue : inst_issue {
     bool slc;
     uint8_t seg;
     bool sve;
+    uint8_t vdata; //VGPR that supplies data
 };
 
 #define SOPP_MASK 0xff800000

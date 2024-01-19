@@ -43,6 +43,7 @@ public:
     void write_back(uint32_t tid, writeback_t* data) override;
 
     std::vector<uint32_t> load(uint64_t addr, uint32_t data_size);
+    void store(uint64_t addr, uint32_t data[], uint32_t data_size);
 private:
     simt* m_simt;
     //scalar register
