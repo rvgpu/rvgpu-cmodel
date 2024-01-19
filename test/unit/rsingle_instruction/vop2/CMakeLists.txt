@@ -3,3 +3,4 @@ function(rsim_ut testname)
 endfunction()
 
 rsim_ut(shift)
+rsim_ut(mul)

@@ -224,6 +224,10 @@ std::unique_ptr<writeback_t> rcore::exe_vop1(rinst_issue *issued) {
 std::unique_ptr<writeback_t> rcore::exe_vop2(rinst_issue *issued) {
     rwriteback_t res{};
     switch (issued->op) {
+        case 8: // V_MUL_F32
+            res.data.push_back(fmul(issued->src0[0], issued->src1[0]));
+            res.data_size = 1;
+            break;
         case 24:  // V_LSHLREV_B32
             res.data.push_back(issued->src1[0] << issued->src0[0]);
             res.data_size = 1;
