@@ -25,14 +25,11 @@
 #include "rvcore/rvcore.hpp"
 #include "simt.hpp"
 #include "rvcore/encoding.hpp"
-#include "rcore/rcore.hpp"
+
 
 simt::simt(vram *rvgpu_vram, mmu *rvgpu_mmu) {
-#if RISCV
+
     m_core = new riscvcore(rvgpu_vram, rvgpu_mmu);
-#else
-    m_core = new rcore(this, rvgpu_vram, rvgpu_mmu);
-#endif
     wm = new warp_manager(rvgpu_vram, rvgpu_mmu, m_core);
 }
 

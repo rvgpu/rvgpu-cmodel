@@ -1,7 +1,6 @@
 #ifndef RVGSIM_GENERATE_CONFIGS
 #define RVGSIM_GENERATE_CONFIGS
 
-#define RISCV                       0
 /* Global String Macro */
 #define PROJECT_TOP_PATH                    "@project_top_path@"
 #define PROJECT_TEST_DRAW_PATH              PROJECT_TOP_PATH"/test/draw"
