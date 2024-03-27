@@ -23,13 +23,7 @@
 
 #pragma once
 
-/* This file will export to user, Don't include any internal file here. */
-
-class vram;
-class mmu;
-class noc;
-class command_processor;
-class sm;
+#include <cstdint>
 
 class rvgsim{
 public:
@@ -39,13 +33,10 @@ public:
     // Interface of register and vram
     void write_vram(uint64_t addr, uint64_t data, uint32_t size);
     uint64_t read_vram(uint64_t addr, uint32_t size);
-    void write_register(uint64_t addr, uint64_t data);
-    uint64_t read_register(uint64_t addr);
-private:
-    vram *m_vram;
-    mmu *m_mmu;
-    noc *m_noc;
-    command_processor *m_cp;
-    sm *m_sm[8];
-    uint64_t *regs;
+
+    void write_mmio(uint64_t addr, uint64_t data);
+    uint64_t read_mmio(uint64_t addr);
+
+    void write_doorbell(uint64_t addr, uint64_t data);
+    uint64_t read_doorbell(uint64_t addr);
 };

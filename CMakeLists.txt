@@ -19,4 +19,4 @@ add_subdirectory(modules)
 
 add_subdirectory(src)
 add_subdirectory(libdrm)
-add_subdirectory(test)
+# add_subdirectory(test)

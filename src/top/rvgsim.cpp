@@ -24,102 +24,37 @@
 #include <cstdlib>
 #include "common/debug.hpp"
 
-#include "vram/vram.hpp"
-#include "mmu/mmu.hpp"
-#include "noc/network_on_chip.hpp"
-#include "cp/command_processor.hpp"
-#include "sm/stream_multiprocessor.hpp"
 #include "rvgsim.h"
 
 rvgsim::rvgsim() {
-    m_vram = new vram(VRAM_SIZE);
-    m_mmu = new mmu(m_vram);
-    m_noc = new noc();
-    m_cp = new command_processor(m_vram, m_mmu, m_noc);
-
-    for (int i = 0; i < SM_NUM; i++) {
-        m_sm[i] = new sm(i, m_vram, m_mmu, m_noc);
-    }
-
-    regs = (uint64_t *)malloc(MBYTE(2));
 }
 
 rvgsim::~rvgsim() {
-    delete m_vram;
-    delete m_mmu;
-    delete m_noc;
-    delete m_cp;
-
-    for (int i = 0; i < SM_NUM; i++) {
-        delete m_sm[i];
-    }
-
-    free(regs);
 }
 
-void rvgsim::write_register(uint64_t addr, uint64_t data) {
-    regs[addr] = data;
-
-    // 0x1000, cmds
-    // 0x1008, run rvgsim
-    // 0x1010, page table base
-    if (addr == 0x1008 && data != 0) {
-        uint64_t cmds = regs[0x1000];
-
-        m_mmu->set_page_table_base(regs[0x1010]);
-
-        m_cp->run(cmds);
-
-        while (!m_cp->finished()) {
-            // Wait
-        }
-    }
+void rvgsim::write_doorbell(uint64_t addr, uint64_t data) {
+    printf("write doorbell[0x%lx]: 0x%lx\n", addr, data);
 }
 
-uint64_t rvgsim::read_register(uint64_t addr) {
-    return regs[addr];
+uint64_t rvgsim::read_doorbell(uint64_t addr) {
+    printf("read doorbell[0x%lx]\n", addr);
+    return 0;
+}
+
+void rvgsim::write_mmio(uint64_t addr, uint64_t data) {
+    printf("write mmio[0x%lx]: 0x%lx\n", addr, data);
+}
+
+uint64_t rvgsim::read_mmio(uint64_t addr) {
+    printf("read mmio[0x%lx]\n", addr);
+    return 0;
 }
 
 void rvgsim::write_vram(uint64_t addr, uint64_t data, uint32_t size) {
-    switch (size) {
-    case 8:
-        m_vram->write<uint64_t>(addr, uint64_t(data));
-        break;
-    case 4:
-        m_vram->write<uint32_t>(addr, uint32_t(data));
-        break;
-    case 2:
-        m_vram->write<uint16_t>(addr, uint16_t(data));
-        break;
-    case 1:
-        m_vram->write<uint8_t>(addr, uint8_t(data));
-        break;
-    default:
-        RVGPU_ERROR_PRINT("[TOP] write rvgsim.vram with error size: %d\n", size);
-        break;
-    }
+    printf("write vram[0x%lx]: 0x%lx\n", addr, data);
 }
 
 uint64_t rvgsim::read_vram(uint64_t addr, uint32_t size) {
-    uint64_t rdata = 0;
-
-    switch (size) {
-    case 8:
-        rdata = (uint64_t)m_vram->read<uint64_t>(addr);
-        break;
-    case 4:
-        rdata = (uint64_t)m_vram->read<uint32_t>(addr);
-        break;
-    case 2:
-        rdata = (uint64_t)m_vram->read<uint16_t>(addr);
-        break;
-    case 1:
-        rdata = (uint64_t)m_vram->read<uint8_t>(addr);
-        break;
-    default:
-        RVGPU_ERROR_PRINT("[TOP] read rvgsim.vram with error size: %d\n", size);
-        break;
-    }
-
-    return rdata;
+    printf("read vram[0x%lx]\n", addr);
+    return 0;
 }
