@@ -24,10 +24,10 @@
 #define WARP_THREAD_N_MASK          0xF
 
 /* Configure VRAM */
-#define KBYTE(x)                    (x * 1024)
-#define MBYTE(x)                    (1024 * KBYTE(x))
-#define GBYTE(x)                    (1024 * MBYTE(x))
-#define VRAM_SIZE                   GBYTE(1)
+#define KBYTE(x)                    ((uint64_t)(x * 1024))
+#define MBYTE(x)                    ((uint64_t)(1024 * KBYTE(x)))
+#define GBYTE(x)                    ((uint64_t)(1024 * MBYTE(x)))
+#define VRAM_SIZE                   GBYTE(24)
 
 #define RVGPU_DEBUG                 0
 

@@ -21,29 +21,37 @@
  * IN THE SOFTWARE.
  */
 
-#pragma once
+#include "common/debug.hpp"
 
-#include <cstdint>
+#include "rvgpu.hpp"
 
-class rvgpu;
-class vram;
+rvgpu::rvgpu() {
+    // internal noc here
 
-class rvgsim{
-public:
-    rvgsim();
-    ~rvgsim();
+    init_mmio();
+}
 
-    // Interface of register and vram
-    void write_vram(uint64_t addr, uint64_t data, uint32_t size);
-    uint64_t read_vram(uint64_t addr, uint32_t size);
+rvgpu::~rvgpu() {
+}
 
-    void write_mmio(uint64_t addr, uint64_t data);
-    uint64_t read_mmio(uint64_t addr);
+void rvgpu::write_mmio(uint64_t addr, uint64_t data) {
+    write_reg32(addr, data);
+}
 
-    void write_doorbell(uint64_t addr, uint64_t data);
-    uint64_t read_doorbell(uint64_t addr);
+uint64_t rvgpu::read_mmio(uint64_t addr) {
+    return read_reg32(addr);
+}
 
-private:
-    rvgpu *m_gpu;
-    vram  *m_vram;
-};
+void rvgpu::init_mmio(void) {
+    write_reg32(REGOFF(mmRCC_CONFIG_MEMSIZE), (VRAM_SIZE >> 20));
+}
+
+void rvgpu::write_reg32(uint64_t addr, uint32_t data) {
+    uint32_t *regptr = (uint32_t *)(&m_regs[addr]);
+    *regptr = data;
+}
+
+uint32_t rvgpu::read_reg32(uint64_t addr) {
+    uint32_t *regptr = (uint32_t *)(&m_regs[addr]);
+    return *regptr;
+}

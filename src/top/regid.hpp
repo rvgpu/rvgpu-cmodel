@@ -23,27 +23,10 @@
 
 #pragma once
 
-#include <cstdint>
+#define REGOFF(x)                       (x * 4)
 
-class rvgpu;
-class vram;
+// MMIO Register Define
 
-class rvgsim{
-public:
-    rvgsim();
-    ~rvgsim();
-
-    // Interface of register and vram
-    void write_vram(uint64_t addr, uint64_t data, uint32_t size);
-    uint64_t read_vram(uint64_t addr, uint32_t size);
-
-    void write_mmio(uint64_t addr, uint64_t data);
-    uint64_t read_mmio(uint64_t addr);
-
-    void write_doorbell(uint64_t addr, uint64_t data);
-    uint64_t read_doorbell(uint64_t addr);
-
-private:
-    rvgpu *m_gpu;
-    vram  *m_vram;
-};
+// NBIO
+#define mmRCC_CONFIG_MEMSIZE            0xDE3
+#define mmRCC_IOV_FUNC_IDENTIFIER       0xDE5

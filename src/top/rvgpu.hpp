@@ -25,25 +25,23 @@
 
 #include <cstdint>
 
-class rvgpu;
-class vram;
+#include "common/configs.h"
 
-class rvgsim{
+#include "regid.hpp"
+
+
+class rvgpu {
 public:
-    rvgsim();
-    ~rvgsim();
-
-    // Interface of register and vram
-    void write_vram(uint64_t addr, uint64_t data, uint32_t size);
-    uint64_t read_vram(uint64_t addr, uint32_t size);
+    rvgpu();
+    ~rvgpu();
 
     void write_mmio(uint64_t addr, uint64_t data);
     uint64_t read_mmio(uint64_t addr);
 
-    void write_doorbell(uint64_t addr, uint64_t data);
-    uint64_t read_doorbell(uint64_t addr);
-
 private:
-    rvgpu *m_gpu;
-    vram  *m_vram;
+    void init_mmio(void);
+    void write_reg32(uint64_t addr, uint32_t data);
+    uint32_t read_reg32(uint64_t addr);
+
+    uint8_t m_regs[MBYTE(1)];
 };
